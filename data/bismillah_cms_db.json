@@ -660,6 +660,22 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1793186195748-367",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:16:35.748Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793185914074-183",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:11:54.074Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
       "id": "log-1793177327118-932",
       "action": "NEW_LEAD",
       "entity": "Enquiry",

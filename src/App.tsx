@@ -22,9 +22,51 @@ import { Helmet } from "./components/ui/Helmet";
 
 function MainAppContent() {
   const { settings, isDarkMode, toggleDarkMode } = useCMS();
-  const [currentPage, setCurrentPage] = useState<string>("home");
+
+  // Persist authentication state across page reloads
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Boolean(localStorage.getItem("bismillah_admin_token"));
+  });
+
+  // Persist current page & respect direct hash URLs (e.g. #admin, #properties)
+  const [currentPage, setCurrentPage] = useState<string>(() => {
+    if (typeof window === "undefined") return "home";
+    const hash = window.location.hash.replace("#", "").trim();
+    if (["admin", "apartments", "properties", "about", "home"].includes(hash)) {
+      return hash;
+    }
+    const saved = localStorage.getItem("bismillah_current_page");
+    if (saved && ["admin", "apartments", "properties", "about", "home"].includes(saved)) {
+      return saved;
+    }
+    return "home";
+  });
+
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
+
+  // Sync hash changes dynamically
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "").trim();
+      if (hash === "admin") {
+        const token = localStorage.getItem("bismillah_admin_token");
+        if (token) {
+          setIsAdminAuthenticated(true);
+          setCurrentPage("admin");
+          localStorage.setItem("bismillah_current_page", "admin");
+        } else {
+          setIsAdminAuthModalOpen(true);
+        }
+      } else if (["home", "apartments", "properties", "about"].includes(hash)) {
+        setCurrentPage(hash);
+        localStorage.setItem("bismillah_current_page", hash);
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   // Universal Navigation Routing handler
   const handleNavigation = (targetId: string) => {
@@ -35,6 +77,8 @@ function MainAppContent() {
 
     if (targetId === "home-private-office") {
       setCurrentPage("home");
+      localStorage.setItem("bismillah_current_page", "home");
+      window.location.hash = "home";
       setTimeout(() => {
         const element = document.getElementById("private-office");
         if (element) {
@@ -50,6 +94,8 @@ function MainAppContent() {
 
     if (["home", "apartments", "properties", "about"].includes(targetId)) {
       setCurrentPage(targetId);
+      localStorage.setItem("bismillah_current_page", targetId);
+      window.location.hash = targetId === "home" ? "" : targetId;
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -57,6 +103,7 @@ function MainAppContent() {
     // Scroll handling within home views
     if (currentPage !== "home") {
       setCurrentPage("home");
+      localStorage.setItem("bismillah_current_page", "home");
       setTimeout(() => {
         handleScrollToElement(targetId);
       }, 150);
@@ -81,6 +128,7 @@ function MainAppContent() {
 
   const handleContactInquiry = (propertyTitle: string = "") => {
     setCurrentPage("home");
+    localStorage.setItem("bismillah_current_page", "home");
     setTimeout(() => {
       const element = document.getElementById("private-office");
       if (element) {
@@ -101,8 +149,12 @@ function MainAppContent() {
   };
 
   const handleOpenAdmin = () => {
-    if (isAdminAuthenticated) {
+    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("bismillah_admin_token"));
+    if (isAdminAuthenticated || hasToken) {
+      setIsAdminAuthenticated(true);
       setCurrentPage("admin");
+      localStorage.setItem("bismillah_current_page", "admin");
+      window.location.hash = "admin";
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       setIsAdminAuthModalOpen(true);
@@ -113,6 +165,8 @@ function MainAppContent() {
     setIsAdminAuthenticated(true);
     setIsAdminAuthModalOpen(false);
     setCurrentPage("admin");
+    localStorage.setItem("bismillah_current_page", "admin");
+    window.location.hash = "admin";
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -279,6 +333,7 @@ function MainAppContent() {
       <MaintenanceOverlay
         onOpenAdmin={handleOpenAdmin}
         isDarkMode={isDarkMode}
+        isAdminAuthenticated={isAdminAuthenticated}
       />
 
       {/* Admin Authentication Gate Modal */}

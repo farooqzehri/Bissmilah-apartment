@@ -148,8 +148,11 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.SyntheticEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     // Validation
     const newErrors: Record<string, string> = {};
@@ -696,7 +699,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                 Cancel
               </button>
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 className="w-full sm:w-auto px-8 py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2"
               >
                 <Check size={14} className="stroke-[2.5]" />

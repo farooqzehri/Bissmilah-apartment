@@ -5,15 +5,18 @@ import { useCMS } from "../../utils/cmsContext";
 interface MaintenanceOverlayProps {
   onOpenAdmin: () => void;
   isDarkMode: boolean;
+  isAdminAuthenticated?: boolean;
 }
 
 export const MaintenanceOverlay: React.FC<MaintenanceOverlayProps> = ({
   onOpenAdmin,
   isDarkMode,
+  isAdminAuthenticated = false,
 }) => {
   const { settings } = useCMS();
 
-  if (!settings || !settings.behavior.maintenanceMode) {
+  // If maintenance mode is off OR admin is authenticated, do not show maintenance overlay
+  if (!settings || !settings.behavior.maintenanceMode || isAdminAuthenticated) {
     return null;
   }
 
