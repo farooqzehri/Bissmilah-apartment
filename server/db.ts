@@ -1,0 +1,699 @@
+import fs from "fs";
+import path from "path";
+import { DatabaseSchema, GlobalSettings, HomepageSections, Property, MediaItem, PageContent, EnquiryLead, AuditLog } from "./types";
+
+const DATA_DIR = path.resolve(process.cwd(), "data");
+const DB_FILE = path.join(DATA_DIR, "bismillah_cms_db.json");
+
+// Initial Seed Data
+const DEFAULT_SETTINGS: GlobalSettings = {
+  branding: {
+    websiteName: "Bismillah Real Estate",
+    businessName: "Bismillah Real Estate & Builders",
+    tagline: "Apna Ghar, Apni Zameen — Haji Saud Zehri ki Sarbarahi Mein",
+    shortDescription: "The premier real estate agency and title curation collective in Quetta, Balochistan. Specializing in high-density premium apartments, exclusive walled estates, and secured land schemes.",
+    companyIntroduction: "Established by Haji Saud Zehri, Bismillah Real Estate stands as the cornerstone of property security and luxury residential excellence in Quetta.",
+    ownerName: "Haji Saud Zehri",
+    ownerTitle: "Founder & Managing Director",
+    ownerQuote: "Hum sirf zameen nahi bechty, hum aap ka khwab banatay hain. 100% legal registry aur mehfooz zameen ke sath apna ghar banayen.",
+    ownerImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+    mainLogo: "",
+    browserTabTitle: "Bismillah Real Estate | Haji Saud Zehri — Quetta",
+    copyrightText: "© 2026 Bismillah Real Estate & Builders. All rights reserved. Registered under Government of Balochistan Revenue Department.",
+    footerBrandName: "BISMILLAH REAL ESTATE",
+    primaryColor: "#FF9E4A",
+    secondaryColor: "#1A1A1A",
+    accentColor: "#10B981",
+    fontFamily: "Space Grotesk, sans-serif",
+    borderRadius: "1rem",
+  },
+  contact: {
+    primaryPhone: "+92 333 786 1928",
+    secondaryPhone: "+92 81 283 4910",
+    whatsappNumber: "+923337861928",
+    emailAddress: "hajisaud@bismillahrealestate.pk",
+    officeAddress: "Bismillah Executive Plaza, Sector A-1 Commercial Double Road, Quetta, Balochistan, Pakistan",
+    city: "Quetta, Balochistan",
+    googleMapsEmbedUrl: "https://maps.google.com/maps?q=Quetta,Balochistan&t=&z=13&ie=UTF8&iwloc=&output=embed",
+    googleMapsDirectionUrl: "https://maps.google.com/?q=Quetta,Balochistan",
+    businessHours: "Saturday - Thursday: 9:00 AM - 9:00 PM (Friday Closed for Prayers)",
+    socialLinks: {
+      facebook: "https://facebook.com/bismillahrealestatequetta",
+      instagram: "https://instagram.com/bismillahrealestate",
+      youtube: "https://youtube.com/@bismillahrealestate",
+      linkedin: "https://linkedin.com/company/bismillah-real-estate",
+    },
+  },
+  behavior: {
+    defaultLanguage: "Urdu / English",
+    defaultCurrency: "PKR",
+    defaultTimezone: "Asia/Karachi",
+    maintenanceMode: false,
+    maintenanceMessage: "Hamari website par security aur inventory updates jaari hain. Baraye meherbani direct phone ya WhatsApp par rabta karein.",
+    announcementBanner: {
+      enabled: true,
+      text: "✨ Exclusive New Registry: A-1 Executive Commercial & Luxury Apartments files now available for instant transfer under Haji Saud Zehri personal supervision.",
+      actionText: "View Listings",
+      actionUrl: "#curation",
+      type: "gold",
+    },
+    sectionToggles: {
+      hero: true,
+      about: true,
+      amenities: true,
+      propertiesCatalog: true,
+      statistics: true,
+      gallery: true,
+      testimonials: true,
+      faq: true,
+      ctaBooking: true,
+      footer: true,
+    },
+    enableWhatsAppFloating: true,
+    enableSocialIcons: true,
+    enableContactForm: true,
+  },
+  updatedAt: new Date().toISOString(),
+};
+
+const DEFAULT_HOMEPAGE: HomepageSections = {
+  hero: {
+    headingLine1: "Bismillah",
+    headingLine2: "Real Estate.",
+    subheadingBadge: "APNA GHAR, APNI ZAMEEN",
+    subheadingText: "Haji Saud Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat",
+    description: "Quetta ke behtareen verified plots, shandaar apartments, aur home schemes. Mukammal legal registry deeds aur Haji Saud Zehri ki zati tasdeeq ke sath.",
+    backgroundImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    overlayOpacity: 0.65,
+    primaryButtonText: "Explore Properties",
+    primaryButtonAction: "#curation",
+    secondaryButtonText: "Private Briefing",
+    secondaryButtonAction: "#private-office",
+    published: true,
+  },
+  about: {
+    badge: "LEGACY & FIDELITY",
+    heading: "Haji Saud Zehri ki Sarbarahi Mein Bismillah Real Estate",
+    subheading: "100% Legal Registry aur Mehfooz Zameen ki Tareekh",
+    descriptionP1: "Bismillah Real Estate ki bunyad Haji Saud Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.",
+    descriptionP2: "Hum har plot, apartment aur home scheme ki documents file ko khud check kartay hain. Hum se zameen khareedna bilkul safe aur aasan hai. Hamaray har client ko mukammal legal verification aur safety guaranteed di jati hai.",
+    ownerName: "Haji Saud Zehri",
+    ownerTitle: "Founder & Managing Partner",
+    ownerImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+    published: true,
+  },
+  amenities: [
+    {
+      id: "amenity-1",
+      name: "100% Registry Verification",
+      description: "Direct mutation title clearance certified under Balochistan Revenue Board.",
+      icon: "ShieldCheck",
+      category: "Legal",
+      order: 1,
+      published: true,
+    },
+    {
+      id: "amenity-2",
+      name: "24/7 Solar Power Backup",
+      description: "Pre-installed hybrid solar system and battery banks for continuous uninterrupted electricity.",
+      icon: "Zap",
+      category: "Utilities",
+      order: 2,
+      published: true,
+    },
+    {
+      id: "amenity-3",
+      name: "Sweet-Water Deep Wells",
+      description: "Dedicated high-capacity tube wells delivering clean, sweet drinking water year-round.",
+      icon: "Droplets",
+      category: "Utilities",
+      order: 3,
+      published: true,
+    },
+    {
+      id: "amenity-4",
+      name: "Walled Society & Gated Checkpoints",
+      description: "Reinforced 12-ft perimeter boundary with armed security guards and biometric gates.",
+      icon: "Lock",
+      category: "Security",
+      order: 4,
+      published: true,
+    },
+    {
+      id: "amenity-5",
+      name: "High-Speed Elevators",
+      description: "Modern smart elevator cabins with emergency power evacuation in all apartment towers.",
+      icon: "ArrowUpCircle",
+      category: "Infrastructure",
+      order: 5,
+      published: true,
+    },
+    {
+      id: "amenity-6",
+      name: "Family Parks & Green Belts",
+      description: "Botanical gardens, walking trails, and secure playgrounds for children.",
+      icon: "Trees",
+      category: "Lifestyle",
+      order: 6,
+      published: true,
+    },
+  ],
+  stats: [
+    {
+      id: "stat-1",
+      label: "Registry Verified Units",
+      value: "100%",
+      subtext: "Every property backed by legal revenue mutation",
+      order: 1,
+      published: true,
+    },
+    {
+      id: "stat-2",
+      label: "Active Projects in Quetta",
+      value: "14+",
+      subtext: "Apartment towers & gated schemes",
+      order: 2,
+      published: true,
+    },
+    {
+      id: "stat-3",
+      label: "Happy Families Housed",
+      value: "850+",
+      subtext: "Living in peaceful, verified communities",
+      order: 3,
+      published: true,
+    },
+    {
+      id: "stat-4",
+      label: "Years of Trust",
+      value: "22+",
+      subtext: "Under Haji Saud Zehri leadership",
+      order: 4,
+      published: true,
+    },
+  ],
+  gallery: [
+    {
+      id: "gal-1",
+      title: "The Zehri Heights Front Elevation",
+      altText: "Duplex penthouse tower overlooking Quetta mountain horizon",
+      url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+      category: "Apartments",
+      featured: true,
+      order: 1,
+    },
+    {
+      id: "gal-2",
+      title: "Buland Crest Haveli Gardens",
+      altText: "Luxury walled courtyard with stone masonry",
+      url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      category: "Estates",
+      featured: true,
+      order: 2,
+    },
+    {
+      id: "gal-3",
+      title: "A-1 Executive Commercial Double Road",
+      altText: "Prime roadside commercial plazas and corner plots",
+      url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+      category: "Commercial",
+      featured: true,
+      order: 3,
+    },
+    {
+      id: "gal-4",
+      title: "Bismillah Dream Gardens Masterplan",
+      altText: "Lush green residential plot development",
+      url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+      category: "Schemes",
+      featured: true,
+      order: 4,
+    },
+  ],
+  testimonials: [
+    {
+      id: "test-1",
+      clientName: "Mir Asadullah Mengal",
+      location: "Quetta Cantonment",
+      quote: "Haji Saud Zehri Sahab ke paas zameen khareedna bilkul be-fikr tajarba hai. File aur registry hand-to-hand verify hui aur transfer aik haftay mein mukammal ho gaya.",
+      rating: 5,
+      propertyTitle: "The Zehri Heights Penthouse",
+      order: 1,
+      published: true,
+    },
+    {
+      id: "test-2",
+      clientName: "Dr. Tariq Baloch",
+      location: "A-1 City, Block C",
+      quote: "Sweet water connection aur continuous solar power promises were delivered 100%. Bismillah Real Estate is truly the most trustworthy name in Balochistan.",
+      rating: 5,
+      propertyTitle: "A-1 Executive Home Scheme",
+      order: 2,
+      published: true,
+    },
+    {
+      id: "test-3",
+      clientName: "Sardar Farooq Rind",
+      location: "Double Road, Quetta",
+      quote: "Commercial plaza corner plot ki valuation pichlay do saal mein double hui hai. Best investment decision guided personally by Haji Saud Zehri.",
+      rating: 5,
+      propertyTitle: "Double Road Commercial Frontage",
+      order: 3,
+      published: true,
+    },
+  ],
+  faqs: [
+    {
+      id: "faq-1",
+      question: "Zameen ya flat ki registry ka kya process hota hai?",
+      answer: "Tamam plots aur apartments direct Balochistan Land Revenue Department ke official register mein transfer hotay hain. Har purchase se pehle Haji Saud Zehri ki team file verification aur mutation clearance tasdeeq karti hai.",
+      category: "Legal & Registry",
+      order: 1,
+      published: true,
+    },
+    {
+      id: "faq-2",
+      question: "Quetta mein bijli aur meethay paani ka kya intezam hai?",
+      answer: "Bismillah Real Estate ke tamam residential projects mein dedicated sweet-water tube wells aur pre-installed solar hybrid power systems shamil hain takay loadshedding ya paani ki kami ka samna na ho.",
+      category: "Utilities",
+      order: 2,
+      published: true,
+    },
+    {
+      id: "faq-3",
+      question: "Installment plans ya aasan aqsaat dastiyab hain?",
+      answer: "Ji haan! Select projects aur home schemes mein 1 saal se 3 saal tak aasan monthly aur quarterly installment plans available hain with immediate possession on down-payment.",
+      category: "Payment",
+      order: 3,
+      published: true,
+    },
+    {
+      id: "faq-4",
+      question: "Haji Saud Zehri se direct private meeting kaise schedule karein?",
+      answer: "Aap hamari website par 'Private Briefing' form submit karein ya direct WhatsApp / phone par rabta karein. Hamari office team aap ka exclusive VIP meeting time schedule karegi.",
+      category: "General",
+      order: 4,
+      published: true,
+    },
+  ],
+  cta: {
+    badge: "PRIVATE OFFICE — MEHFOOZ RABTA",
+    heading: "Khush-Aamdeed. Haji Saud Zehri ki Sarbarahi Mein Apna Mehfooz Mustaqbil Banayen.",
+    description: "Hamari private office mein tashreef layein ya direct consultation schedule karein. Hum aap ko Quetta ke verified tareen plots aur apartments ka mukammal briefing package faraham karein ge.",
+    officeLocationNote: "Bismillah Executive Plaza, Sector A-1 Commercial Double Road, Quetta",
+    backgroundImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    published: true,
+  },
+  updatedAt: new Date().toISOString(),
+};
+
+const DEFAULT_PROPERTIES: Property[] = [
+  {
+    id: "zehri-heights",
+    slug: "zehri-heights-penthouse-quetta",
+    category: "apartments",
+    title: "The Zehri Heights Penthouses (Shandaar Residence)",
+    location: "A-1 City, Block C, Quetta",
+    city: "Quetta",
+    area: "A-1 City",
+    price: "PKR 3.4 Crore",
+    numericPrice: 34000000,
+    currency: "PKR",
+    size: "4,200 Sq. Ft.",
+    coveredAreaUnit: "Sq. Ft.",
+    tag: "Shandaar Flat",
+    status: "100% Registry Ready",
+    availability: "Available",
+    published: true,
+    featured: true,
+    bedrooms: 4,
+    bathrooms: 5,
+    floorNumber: "12th Floor",
+    totalFloors: "14 Floors",
+    furnishingStatus: "Semi-Furnished",
+    description: "Ultra-luxury duplex penthouse with mountain horizons over Koh-e-Murdar. Features Italian marble floors, high-speed elevator access, 24/7 solar power backup, and gated private entrance.",
+    fullOverview: "The Zehri Heights represents vertical luxury engineering at its finest. Designed specifically for Quetta's climate with double-glazed thermo-acoustic windows and pre-installed solar heating infrastructure.",
+    highlights: [
+      "Beautiful luxury view of Quetta mountain ranges",
+      "Fine marble floors, bright open rooms, and royal decoration",
+      "Private direct lift and safe reserved parking spot",
+      "Full title deed registered under Haji Saud Zehri supervision"
+    ],
+    specs: [
+      { label: "Bedrooms", value: "4 En-Suite" },
+      { label: "Bathrooms", value: "5 Premium" },
+      { label: "Format", value: "Duplex Penthouse" },
+      { label: "Solar Backup", value: "10kW Hybrid" }
+    ],
+    image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
+    ],
+    createdAt: "2026-01-10T10:00:00.000Z",
+    updatedAt: "2026-03-15T12:00:00.000Z",
+  },
+  {
+    id: "obsidian-pavilion",
+    slug: "obsidian-pavilion-sunehri-bungalow",
+    category: "estates",
+    title: "The Obsidian Pavilion (Sunehri Bungalow)",
+    location: "Estate Boulevard, A-1 City, Quetta",
+    city: "Quetta",
+    area: "Estate Boulevard",
+    price: "PKR 12.5 Crore",
+    numericPrice: 125000000,
+    currency: "PKR",
+    size: "1,200 Sq. Yds",
+    coveredAreaUnit: "Sq. Yds",
+    tag: "Zeenat Palace",
+    status: "Available for Assignment",
+    availability: "Available",
+    published: true,
+    featured: true,
+    bedrooms: 6,
+    bathrooms: 7,
+    floorNumber: "Ground + 1",
+    totalFloors: "2 Floors",
+    furnishingStatus: "Furnished",
+    description: "Balochistan ke behtareen patharo se bana shandaar sunehra bungalow. Absolute state-of-the-art layout designed for ultimate luxury, year-round winter climate insulation, and timeless family gatherings.",
+    highlights: [
+      "Beautiful strong stone walls with traditional Balochistan grace",
+      "Big open family courtyard and green grassy flower garden",
+      "Completely insulated rooms to stay cozy in winter and cool in summer",
+      "Sweet-water deep tube well with multi-stage automated filtration"
+    ],
+    specs: [
+      { label: "Type", value: "Private Mansion" },
+      { label: "Courtyard", value: "Traditional Lawn" },
+      { label: "Security", value: "High Secured Walls" },
+      { label: "Parking", value: "6 Vehicles" }
+    ],
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1200&q=80"
+    ],
+    createdAt: "2026-01-15T10:00:00.000Z",
+    updatedAt: "2026-03-20T12:00:00.000Z",
+  },
+  {
+    id: "executive-scheme",
+    slug: "a1-executive-home-scheme-plots",
+    category: "schemes",
+    title: "A-1 Executive Home Scheme (VVIP Plots)",
+    location: "Phase 3 Central, A-1 City, Quetta",
+    city: "Quetta",
+    area: "Phase 3 Central",
+    price: "PKR 5.8 Crore",
+    numericPrice: 58000000,
+    currency: "PKR",
+    size: "500 Sq. Yds",
+    coveredAreaUnit: "Sq. Yds",
+    tag: "100% File Ready",
+    status: "Ready for Construction",
+    availability: "Available",
+    published: true,
+    featured: true,
+    description: "Bohot hi shandaar plots jin ke sath immediate safe water, clean electricity, aur premium wide roads connect hain. Direct registry file available without tax disputes.",
+    highlights: [
+      "100% clear legal paper registry checked and approved",
+      "Continuous water supply, secure electricity, and direct internet lines",
+      "Strong society compound wall with guard checkpoints",
+      "Fast road connectivity directly leading into Quetta City commercial hub"
+    ],
+    specs: [
+      { label: "Registry", value: "Immediate Registry" },
+      { label: "Water Sourcing", value: "Sweet Water Well" },
+      { label: "Road Width", value: "60 Ft. Wide Carpet" },
+      { label: "Possession", value: "Instant Handover" }
+    ],
+    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1200&q=80"
+    ],
+    createdAt: "2026-01-20T10:00:00.000Z",
+    updatedAt: "2026-03-22T12:00:00.000Z",
+  },
+  {
+    id: "quetta-valley-suites",
+    slug: "quetta-valley-suites-sundar-flats",
+    category: "apartments",
+    title: "Quetta Valley Suites (Sundar Flats)",
+    location: "Sector A-2 Central, Quetta",
+    city: "Quetta",
+    area: "Sector A-2 Central",
+    price: "PKR 2.1 Crore",
+    numericPrice: 21000000,
+    currency: "PKR",
+    size: "2,600 Sq. Ft.",
+    coveredAreaUnit: "Sq. Ft.",
+    tag: "Modern Flat",
+    status: "100% Registry Ready",
+    availability: "Available",
+    published: true,
+    featured: false,
+    bedrooms: 3,
+    bathrooms: 3,
+    floorNumber: "4th Floor",
+    totalFloors: "8 Floors",
+    furnishingStatus: "Unfurnished",
+    description: "Modern architectural luxury flat designed with double-glazed weather seals, panoramic glass balcony, and uninterrupted utilities.",
+    highlights: [
+      "Beautiful glass windows with secure locks and family safety",
+      "Cozy central heating to stay safe from dry cold winds",
+      "Pre-installed premium solar system for continuous power backup",
+      "Dedicated basement parking with round-the-clock security surveillance"
+    ],
+    specs: [
+      { label: "Bedrooms", value: "3 Bed Attached" },
+      { label: "Terrace Layout", value: "L-Shape Wrap" },
+      { label: "Power Backup", value: "Solar Installed" },
+      { label: "Registry", value: "Direct Transfer Ready" }
+    ],
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80"
+    ],
+    createdAt: "2026-02-01T10:00:00.000Z",
+    updatedAt: "2026-04-01T12:00:00.000Z",
+  },
+  {
+    id: "boulevard-commercial",
+    slug: "double-road-commercial-frontage-quetta",
+    category: "commercial",
+    title: "Double Road Commercial Frontage (Corner Dukaan & Plaza)",
+    location: "Sector B Market, A-1 City, Quetta",
+    city: "Quetta",
+    area: "Sector B Market",
+    price: "PKR 9.2 Crore",
+    numericPrice: 92000000,
+    currency: "PKR",
+    size: "300 Sq. Yds",
+    coveredAreaUnit: "Sq. Yds",
+    tag: "VVIP Commercial",
+    status: "100% Verified Title Deed",
+    availability: "Available",
+    published: true,
+    featured: true,
+    description: "Dukaan ya shandaar commercial building ke liye double road corner plot. Prime commercial footfall zone with high appreciation potential.",
+    highlights: [
+      "Direct double road commercial main boulevard access",
+      "Approved for multi-story commercial plaza construction",
+      "Underground three-phase industrial grade electrical connection",
+      "100% verified mutation deed and title transfer"
+    ],
+    specs: [
+      { label: "Frontage", value: "Double Road Corner" },
+      { label: "Zoning", value: "Commercial Commercial Plaza" },
+      { label: "Electricity", value: "3-Phase Ready" },
+      { label: "Handover", value: "Immediate" }
+    ],
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1464938050520-ef2270bb8ce8?auto=format&fit=crop&w=1200&q=80"
+    ],
+    createdAt: "2026-02-15T10:00:00.000Z",
+    updatedAt: "2026-04-15T12:00:00.000Z",
+  },
+];
+
+const DEFAULT_MEDIA: MediaItem[] = [
+  {
+    id: "med-1",
+    fileName: "mansion_elevation.jpg",
+    originalName: "mansion_elevation.jpg",
+    url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+    mimeType: "image/jpeg",
+    sizeBytes: 420000,
+    category: "Estates",
+    title: "Obsidian Pavilion Stone Mansion",
+    altText: "Grand Stone Bungalow with Quetta mountain view",
+    caption: "Featured front courtyard elevation",
+    uploadedAt: "2026-01-10T00:00:00.000Z",
+  },
+  {
+    id: "med-2",
+    fileName: "zehri_penthouse.jpg",
+    originalName: "zehri_penthouse.jpg",
+    url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+    mimeType: "image/jpeg",
+    sizeBytes: 380000,
+    category: "Apartments",
+    title: "Zehri Heights Duplex Foyer",
+    altText: "Luxury interior penthouse in Quetta",
+    caption: "Italian marble flooring and open mountain view balcony",
+    uploadedAt: "2026-01-12T00:00:00.000Z",
+  },
+];
+
+const DEFAULT_PAGES: PageContent[] = [
+  {
+    id: "page-privacy",
+    slug: "privacy-policy",
+    title: "Privacy & Data Protection Policy",
+    metaTitle: "Privacy Policy | Bismillah Real Estate Quetta",
+    metaDescription: "How Bismillah Real Estate secures client contact records, title filings, and property verification documents.",
+    bodyContent: "Bismillah Real Estate is committed to safeguarding the privacy and confidentiality of our esteemed clients. All contact details, financial valuations, and property inquiries are protected under strict confidential standards. We do not sell or disclose client records to third parties.",
+    published: true,
+    showInNav: false,
+    navOrder: 1,
+    updatedAt: "2026-01-01T00:00:00.000Z",
+  },
+  {
+    id: "page-terms",
+    slug: "terms-and-conditions",
+    title: "Terms of Registry & Property Transfers",
+    metaTitle: "Terms & Conditions | Bismillah Real Estate",
+    metaDescription: "Legal terms, revenue deed certifications, and booking guarantees.",
+    bodyContent: "All property transfers, title deeds, and registry files processed through Bismillah Real Estate comply with the Balochistan Land Revenue Act. Token deposits guarantee property holding for 15 working days while formal revenue verification is performed.",
+    published: true,
+    showInNav: false,
+    navOrder: 2,
+    updatedAt: "2026-01-01T00:00:00.000Z",
+  },
+];
+
+const DEFAULT_ENQUIRIES: EnquiryLead[] = [
+  {
+    id: "enq-1",
+    token: "BME-786101",
+    clientName: "Sardar Aurangzeb Zehri",
+    phone: "+92 334 1122334",
+    email: "aurangzeb.zehri@gmail.com",
+    propertyInterest: "The Zehri Heights Penthouses (Shandaar Residence)",
+    preferredDate: "2026-05-10",
+    meetingType: "office",
+    clientNote: "Interested in top floor duplex penthouse. Please keep title deeds ready for private review.",
+    status: "In Review",
+    internalNotes: [
+      "Initial phone briefing completed on May 2. Client confirmed attendance for private meeting.",
+      "Title verification portfolio prepared under Haji Saud Zehri desk."
+    ],
+    createdAt: "2026-05-01T10:30:00.000Z",
+    updatedAt: "2026-05-02T15:00:00.000Z",
+  },
+];
+
+const DEFAULT_AUDIT_LOGS: AuditLog[] = [
+  {
+    id: "log-1",
+    action: "SYSTEM_INITIALIZE",
+    entity: "System",
+    details: "Bismillah Real Estate CMS initialized with persistent database storage.",
+    timestamp: new Date().toISOString(),
+    performedBy: "Haji Saud Zehri (Admin)",
+  },
+];
+
+class DatabaseManager {
+  private db: DatabaseSchema | null = null;
+
+  constructor() {
+    this.ensureDatabase();
+  }
+
+  private ensureDatabase(): void {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+
+    if (!fs.existsSync(DB_FILE)) {
+      const initial: DatabaseSchema = {
+        settings: DEFAULT_SETTINGS,
+        homepage: DEFAULT_HOMEPAGE,
+        properties: DEFAULT_PROPERTIES,
+        media: DEFAULT_MEDIA,
+        pages: DEFAULT_PAGES,
+        enquiries: DEFAULT_ENQUIRIES,
+        auditLogs: DEFAULT_AUDIT_LOGS,
+      };
+      this.writeDatabase(initial);
+      this.db = initial;
+    } else {
+      try {
+        const raw = fs.readFileSync(DB_FILE, "utf-8");
+        this.db = JSON.parse(raw);
+      } catch (err) {
+        console.error("Failed to read database, restoring defaults", err);
+        const fallback: DatabaseSchema = {
+          settings: DEFAULT_SETTINGS,
+          homepage: DEFAULT_HOMEPAGE,
+          properties: DEFAULT_PROPERTIES,
+          media: DEFAULT_MEDIA,
+          pages: DEFAULT_PAGES,
+          enquiries: DEFAULT_ENQUIRIES,
+          auditLogs: DEFAULT_AUDIT_LOGS,
+        };
+        this.writeDatabase(fallback);
+        this.db = fallback;
+      }
+    }
+  }
+
+  private writeDatabase(data: DatabaseSchema): void {
+    const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
+    fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), "utf-8");
+    fs.renameSync(tempFile, DB_FILE);
+  }
+
+  public getDb(): DatabaseSchema {
+    if (!this.db) {
+      this.ensureDatabase();
+    }
+    return this.db!;
+  }
+
+  public saveDb(data: DatabaseSchema): void {
+    this.db = data;
+    this.writeDatabase(data);
+  }
+
+  public addAuditLog(action: string, entity: string, details: string, entityId?: string, performedBy: string = "Admin"): void {
+    const db = this.getDb();
+    const log: AuditLog = {
+      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      action,
+      entity,
+      entityId,
+      details,
+      timestamp: new Date().toISOString(),
+      performedBy,
+    };
+    db.auditLogs.unshift(log);
+    // Keep max 500 audit logs
+    if (db.auditLogs.length > 500) {
+      db.auditLogs = db.auditLogs.slice(0, 500);
+    }
+    this.saveDb(db);
+  }
+
+  public resetPropertiesToDefault(): void {
+    const db = this.getDb();
+    db.properties = DEFAULT_PROPERTIES;
+    this.saveDb(db);
+    this.addAuditLog("RESET_PROPERTIES", "Properties", "Reset property catalog to default listings");
+  }
+}
+
+export const dbManager = new DatabaseManager();

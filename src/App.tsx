@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { CMSProvider, useCMS } from "./utils/cmsContext";
 import { Navbar } from "./components/ui/Navbar";
+import { AnnouncementBanner } from "./components/ui/AnnouncementBanner";
+import { WhatsAppButton } from "./components/ui/WhatsAppButton";
+import { MaintenanceOverlay } from "./components/ui/MaintenanceOverlay";
 import { Hero } from "./components/sections/Hero";
+import { StatsSection } from "./components/sections/StatsSection";
 import { Catalog } from "./components/sections/Catalog";
+import { AmenitiesSection } from "./components/sections/AmenitiesSection";
+import { TestimonialsSection } from "./components/sections/TestimonialsSection";
+import { FAQSection } from "./components/sections/FAQSection";
 import { CTASection } from "./components/sections/CTASection";
 import { Footer } from "./components/sections/Footer";
 import { ApartmentsPage } from "./components/pages/ApartmentsPage";
@@ -12,20 +20,11 @@ import { AdminDashboard } from "./components/admin/AdminDashboard";
 import { AdminAuthModal } from "./components/admin/AdminAuthModal";
 import { Helmet } from "./components/ui/Helmet";
 
-export default function App() {
+function MainAppContent() {
+  const { settings, isDarkMode, toggleDarkMode } = useCMS();
   const [currentPage, setCurrentPage] = useState<string>("home");
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
-
-  // Sync dark class on document element so Tailwind works optimally across all components
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   // Universal Navigation Routing handler
   const handleNavigation = (targetId: string) => {
@@ -34,7 +33,6 @@ export default function App() {
       return;
     }
 
-    // If navigating to home section blocks
     if (targetId === "home-private-office") {
       setCurrentPage("home");
       setTimeout(() => {
@@ -43,7 +41,7 @@ export default function App() {
           const elementPosition = element.getBoundingClientRect().top + window.scrollY;
           window.scrollTo({
             top: elementPosition - 90,
-            behavior: "smooth"
+            behavior: "smooth",
           });
         }
       }, 100);
@@ -76,7 +74,7 @@ export default function App() {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -89,9 +87,9 @@ export default function App() {
         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({
           top: elementPosition - 90,
-          behavior: "smooth"
+          behavior: "smooth",
         });
-        
+
         // Auto populate inquiry form
         const msgField = document.getElementById("client-note") as HTMLTextAreaElement;
         if (msgField) {
@@ -100,10 +98,6 @@ export default function App() {
         }
       }
     }, 150);
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
   };
 
   const handleOpenAdmin = () => {
@@ -122,18 +116,23 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const siteTitle = settings?.branding.browserTabTitle || "Bismillah Real Estate | Haji Saud Zehri - Quetta";
+  const siteDesc = settings?.branding.shortDescription || "Ultra-luxury, verified real estate curation for Bismillah Real Estate, Quetta, Balochistan, owned by Haji Saud Zehri.";
+
   return (
-    <div 
-      id="luxury-root" 
+    <div
+      id="luxury-root"
       className={`min-h-screen relative transition-colors duration-500 selection:bg-[#FF9E4A]/30 ${
         isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"
       }`}
     >
-      
+      {/* Top Announcement Banner */}
+      <AnnouncementBanner />
+
       {/* Floating Glassmorphic Navbar */}
-      <Navbar 
-        onNavigate={handleNavigation} 
-        activeSection={currentPage} 
+      <Navbar
+        onNavigate={handleNavigation}
+        activeSection={currentPage}
         isDarkMode={isDarkMode}
         toggleDarkMode={toggleDarkMode}
         onOpenAdmin={handleOpenAdmin}
@@ -150,20 +149,52 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <Helmet 
-                title="Bismillah Real Estate | Haji Saud Zehri - Premium Plots & Flats in Quetta"
-                description="Bismillah Real Estate under Haji Saud Zehri provides 100% verified registry plots, luxury apartments, and premium home schemes in Quetta, Balochistan. Secure your real estate future today."
-                ogTitle="Bismillah Real Estate | Haji Saud Zehri - Premium Quetta Real Estate"
-                ogDescription="Find 100% verified plots and premium apartments in Quetta under the trusted leadership of Haji Saud Zehri. Beautiful design, secure registry, top security."
+              <Helmet
+                title={siteTitle}
+                description={siteDesc}
+                ogTitle={settings?.branding.websiteName || "Bismillah Real Estate"}
+                ogDescription={siteDesc}
                 keywords="Bismillah Real Estate, Haji Saud Zehri, Quetta Real Estate, A-1 City Quetta, Plots in Quetta, Flats in Quetta, Balochistan properties, verified zameen, secure properties"
               />
-              <Hero 
-                onExploreClick={() => handleScrollToElement("curation")}
-                onBookingClick={() => handleScrollToElement("private-office")}
-                isDarkMode={isDarkMode}
-              />
-              <Catalog isDarkMode={isDarkMode} onInquireClick={handleContactInquiry} />
-              <CTASection isDarkMode={isDarkMode} />
+
+              {/* 1. Hero Section */}
+              {settings?.behavior.sectionToggles.hero !== false && (
+                <Hero
+                  onExploreClick={() => handleScrollToElement("curation")}
+                  onBookingClick={() => handleScrollToElement("private-office")}
+                  isDarkMode={isDarkMode}
+                />
+              )}
+
+              {/* 2. Key Statistics Section */}
+              {settings?.behavior.sectionToggles.statistics !== false && (
+                <StatsSection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 3. Live Property Catalog */}
+              {settings?.behavior.sectionToggles.propertiesCatalog !== false && (
+                <Catalog isDarkMode={isDarkMode} onInquireClick={handleContactInquiry} />
+              )}
+
+              {/* 4. Amenities & Utilities */}
+              {settings?.behavior.sectionToggles.amenities !== false && (
+                <AmenitiesSection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 5. Client Testimonials */}
+              {settings?.behavior.sectionToggles.testimonials !== false && (
+                <TestimonialsSection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 6. Frequently Asked Questions */}
+              {settings?.behavior.sectionToggles.faq !== false && (
+                <FAQSection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 7. CTA Office Contact */}
+              {settings?.behavior.sectionToggles.ctaBooking !== false && (
+                <CTASection isDarkMode={isDarkMode} />
+              )}
             </motion.div>
           )}
 
@@ -175,12 +206,9 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
             >
-              <Helmet 
-                title="Premium Apartments & Luxury Flats in Quetta | Bismillah Real Estate"
+              <Helmet
+                title={`Premium Apartments & Luxury Flats in Quetta | ${settings?.branding.websiteName || "Bismillah Real Estate"}`}
                 description="Discover premium vertical residential apartments & flats in Quetta under the trusted leadership of Haji Saud Zehri. High-security, modern solar backups, and registered titles."
-                ogTitle="Premium Apartments & Luxury Flats in Quetta"
-                ogDescription="Modern luxury apartments in Quetta featuring beautiful mountain views, sound winter insulation, pre-installed solar systems, and verified direct title registry."
-                keywords="Apartments in Quetta, Flats in Quetta, Zehri Heights, Quetta Valley Suites, Luxury Penthouse Quetta, Bismillah Apartments"
               />
               <ApartmentsPage onContactClick={handleContactInquiry} isDarkMode={isDarkMode} />
             </motion.div>
@@ -194,12 +222,9 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
             >
-              <Helmet 
-                title="Verified Plots, Estates & Home Schemes in Quetta | Bismillah Real Estate"
+              <Helmet
+                title={`Verified Plots, Estates & Home Schemes in Quetta | ${settings?.branding.websiteName || "Bismillah Real Estate"}`}
                 description="Browse verified residential plots, commercial shops, and high-yield properties in A-1 City, Quetta with clean ownership files and direct transfer deeds."
-                ogTitle="Verified Plots & Residential Schemes in Quetta"
-                ogDescription="Find residential plots, VVIP commercial roadside properties, and beautiful estates with 100% checked registry documents under direct advice of Haji Saud Zehri."
-                keywords="Plots in Quetta, Commercial Plots Quetta, Home Schemes Quetta, A-1 City Plots, Bismillah Real Estate, Haji Saud Zehri"
               />
               <PropertiesPage onInquireClick={handleContactInquiry} isDarkMode={isDarkMode} />
             </motion.div>
@@ -213,12 +238,9 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
             >
-              <Helmet 
-                title="About Haji Saud Zehri & Bismillah Real Estate Legacy | Quetta"
+              <Helmet
+                title={`About Haji Saud Zehri & Bismillah Real Estate Legacy | Quetta`}
                 description="Learn more about Bismillah Real Estate, the legacy of Haji Saud Zehri, and our 100% secure real estate verification standard in Quetta."
-                ogTitle="The Legacy of Haji Saud Zehri | Bismillah Real Estate"
-                ogDescription="Established by Haji Saud Zehri, Bismillah Real Estate is the hallmark of trust, security, and elite development across Quetta & Balochistan."
-                keywords="Haji Saud Zehri, Bismillah Real Estate Quetta history, Quetta property authority, Balochistan verified land registry"
               />
               <AboutPage isDarkMode={isDarkMode} />
             </motion.div>
@@ -232,14 +254,11 @@ export default function App() {
               exit={{ opacity: 0, y: -15 }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
             >
-              <Helmet 
+              <Helmet
                 title="Admin Property Management Portal | Bismillah Real Estate"
-                description="Exclusive management console for Haji Saud Zehri to create, edit, update, and manage property listings, image integrations, and registry statuses."
-                ogTitle="Admin CMS — Bismillah Real Estate"
-                ogDescription="Property directory CRUD console with image uploads and real-time synchronization."
-                keywords="Admin, Bismillah Real Estate CMS, Manage listings"
+                description="Exclusive management console for Haji Saud Zehri to manage website branding, homepage sections, listings, media assets, and leads."
               />
-              <AdminDashboard 
+              <AdminDashboard
                 onNavigateHome={() => handleNavigation("home")}
                 isDarkMode={isDarkMode}
               />
@@ -249,7 +268,18 @@ export default function App() {
       </main>
 
       {/* Footer Container */}
-      <Footer onNavigate={handleNavigation} isDarkMode={isDarkMode} />
+      {settings?.behavior.sectionToggles.footer !== false && (
+        <Footer onNavigate={handleNavigation} isDarkMode={isDarkMode} />
+      )}
+
+      {/* Floating WhatsApp Quick Action Button */}
+      <WhatsAppButton />
+
+      {/* Maintenance Mode Overlay (Allows admin bypass via PIN) */}
+      <MaintenanceOverlay
+        onOpenAdmin={handleOpenAdmin}
+        isDarkMode={isDarkMode}
+      />
 
       {/* Admin Authentication Gate Modal */}
       <AdminAuthModal
@@ -259,5 +289,13 @@ export default function App() {
         isDarkMode={isDarkMode}
       />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <CMSProvider>
+      <MainAppContent />
+    </CMSProvider>
   );
 }

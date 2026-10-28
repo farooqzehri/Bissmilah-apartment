@@ -1,5 +1,6 @@
 import React from "react";
 import { Compass, Landmark, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { useCMS } from "../../utils/cmsContext";
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -7,6 +8,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }) => {
+  const { settings } = useCMS();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -33,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
               </div>
               <div className="flex flex-col text-left">
                 <span className={`font-display font-bold text-sm tracking-widest ${isDarkMode ? "text-white" : "text-[#F7F7F5]"}`}>
-                  BISMILLAH
+                  {settings?.branding.footerBrandName || "BISMILLAH"}
                 </span>
                 <span className="font-mono text-[9px] tracking-[0.25em] text-[#FF9E4A] leading-none">
                   REAL ESTATE
@@ -42,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
             </div>
 
             <p className="text-xs text-stone-400 font-light leading-relaxed max-w-xs">
-              The premier real estate agency and title curation collective in Quetta, Balochistan. Specializing in high-density premium apartments, exclusive walled estates, and secured land schemes.
+              {settings?.branding.shortDescription || "The premier real estate agency and title curation collective in Quetta, Balochistan. Specializing in high-density premium apartments, exclusive walled estates, and secured land schemes."}
             </p>
 
             <div className={`flex items-center gap-2 bg-white/5 border px-3.5 py-2 rounded-xl w-fit ${
@@ -104,7 +106,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                   onClick={() => onNavigate("admin")}
                   className="text-xs text-[#FF9E4A] hover:text-white transition-colors cursor-pointer text-left block flex items-center gap-1.5"
                 >
-                  <span>Admin CRUD Console</span>
+                  <span>Admin CMS Console</span>
                 </button>
               </li>
             </ul>
@@ -118,10 +120,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
             <div className="space-y-3">
               <div className="flex flex-col">
                 <span className={`text-xs font-medium leading-normal ${isDarkMode ? "text-stone-200" : "text-[#F7F7F5]"}`}>
-                  Haji Saud Zehri
+                  {settings?.branding.ownerName || "Haji Saud Zehri"}
                 </span>
                 <span className="font-mono text-[9px] text-[#FF9E4A] uppercase tracking-wider block mt-0.5">
-                  Managing Director / Founder
+                  {settings?.branding.ownerTitle || "Managing Director / Founder"}
                 </span>
               </div>
               <p className="text-[11px] text-stone-400 font-light leading-relaxed">
@@ -139,19 +141,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
               <li className="flex items-start gap-2.5">
                 <MapPin size={13} className="text-[#FF9E4A] mt-0.5 shrink-0" />
                 <span className="leading-snug text-stone-400">
-                  Block C, A-1 City,<br /> Main Double Road, Quetta
+                  {settings?.contact.officeAddress || "Block C, A-1 City, Main Double Road, Quetta"}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={13} className="text-[#FF9E4A] shrink-0" />
-                <a href="tel:+923337827725" className="hover:text-[#FF9E4A] transition-colors">
-                  +92 333 7827725
+                <a 
+                  href={`tel:${settings?.contact.primaryPhone || "+923337861928"}`} 
+                  className="hover:text-[#FF9E4A] transition-colors"
+                >
+                  {settings?.contact.primaryPhone || "+92 333 786 1928"}
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail size={13} className="text-[#FF9E4A] shrink-0" />
-                <a href="mailto:info@bismillahsaud.com" className="hover:text-[#FF9E4A] transition-colors break-all">
-                  info@bismillahsaud.com
+                <a 
+                  href={`mailto:${settings?.contact.emailAddress || "hajisaud@bismillahrealestate.pk"}`} 
+                  className="hover:text-[#FF9E4A] transition-colors break-all"
+                >
+                  {settings?.contact.emailAddress || "hajisaud@bismillahrealestate.pk"}
                 </a>
               </li>
             </ul>
@@ -163,15 +171,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2 font-mono text-[10px] text-stone-500">
             <ShieldCheck size={12} className="text-[#FF9E4A]" />
-            <span>Regulated Balochistan Development Code #QE-9002</span>
+            <span>Regulated Balochistan Revenue & Land Authority</span>
           </div>
 
           <div className="text-center sm:text-right space-y-1">
             <p className="font-mono text-[9px] text-stone-500 tracking-wide">
-              © {currentYear} BISMILLAH REAL ESTATE PRIVATE CO. ALL RIGHTS RESERVED.
-            </p>
-            <p className="text-[9px] text-stone-600 font-light">
-              Designed under Swiss-style minimalist design mandates. Real estate investments are subject to regional property regulations.
+              {settings?.branding.copyrightText || `© ${currentYear} BISMILLAH REAL ESTATE PRIVATE CO. ALL RIGHTS RESERVED.`}
             </p>
           </div>
         </div>

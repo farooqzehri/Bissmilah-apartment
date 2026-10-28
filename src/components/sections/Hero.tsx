@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Hero3D } from "../ui/Hero3D";
 import { Button } from "../ui/Button";
 import { ArrowDown, CornerDownRight, ShieldCheck, Sparkles, Trophy } from "lucide-react";
+import { useCMS } from "../../utils/cmsContext";
 
 interface HeroProps {
   onExploreClick: () => void;
@@ -11,6 +12,9 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDarkMode }) => {
+  const { homepage } = useCMS();
+  const heroData = homepage?.hero;
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,8 +61,8 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
           {/* Elegant background image with "little blur" and high-contrast overlay */}
           <div className="absolute inset-0 -z-10 overflow-hidden">
             <img 
-              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" 
-              alt="Bismillah Real Estate Mansion Background"
+              src={heroData?.backgroundImage || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"} 
+              alt="Bismillah Real Estate Background"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover scale-115 blur-[8px] brightness-[0.85] dark:brightness-[0.35] transition-all duration-500"
             />
@@ -76,10 +80,10 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
             className="mb-3 sm:mb-4 inline-block pointer-events-auto"
           >
             <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-[#FF9E4A] font-bold border-[#FF9E4A] pb-0.5 block">
-              APNA GHAR, APNI ZAMEEN
+              {heroData?.subheadingBadge || "APNA GHAR, APNI ZAMEEN"}
             </span>
             <span className={`text-[8px] sm:text-[9px] font-mono tracking-widest uppercase mt-1 block ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-              Haji Saud Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat
+              {heroData?.subheadingText || "Haji Saud Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat"}
             </span>
           </motion.div>
 
@@ -90,9 +94,11 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
               isDarkMode ? "text-white" : "text-[#1A1A1A]"
             }`}
           >
-            Bismillah
+            {heroData?.headingLine1 || "Bismillah"}
             <br />
-            <span className={`italic font-serif font-normal ${isDarkMode ? "text-[#FF9E4A]" : "text-[#1A1A1A]"}`}>Real Estate.</span>
+            <span className={`italic font-serif font-normal ${isDarkMode ? "text-[#FF9E4A]" : "text-[#1A1A1A]"}`}>
+              {heroData?.headingLine2 || "Real Estate."}
+            </span>
           </motion.h1>
 
           {/* Subtitle / Paragraph */}
@@ -102,7 +108,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
               isDarkMode ? "text-stone-300" : "text-[#1A1A1A]/80"
             }`}
           >
-            Quetta ke sab se qabil-e-etemaad idaray se premium plots, apartments, aur exclusive plots. Hum aap ko mukammal legal registry verification aur modern sahuliyat ke sath zameen faraham karte hain.
+            {heroData?.description || "Quetta ke sab se qabil-e-etemaad idaray se premium plots, apartments, aur exclusive plots. Hum aap ko mukammal legal registry verification aur modern sahuliyat ke sath zameen faraham karte hain."}
           </motion.p>
 
           {/* Elegant Staggered Buttons */}
@@ -111,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center w-full sm:w-auto"
           >
             <Button variant="primary" size="lg" onClick={onExploreClick} className="w-full sm:w-auto justify-center">
-              Explore Plots & Flats
+              {heroData?.primaryButtonText || "Explore Plots & Flats"}
             </Button>
             <Button 
               variant="outline" 
@@ -123,7 +129,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onBookingClick, isDa
                   : "border-stone-300 text-stone-800 hover:bg-stone-900 hover:text-white"
               }`}
             >
-              Private Office
+              {heroData?.secondaryButtonText || "Private Office"}
             </Button>
           </motion.div>
         </motion.div>

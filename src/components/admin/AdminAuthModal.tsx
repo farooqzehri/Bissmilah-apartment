@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Lock, KeyRound, ArrowRight, ShieldCheck, X, Sparkles } from "lucide-react";
+import { Lock, KeyRound, ArrowRight, X, Sparkles, RefreshCw } from "lucide-react";
+import { cmsAuth } from "../../utils/cmsApi";
 
 interface AdminAuthModalProps {
   isOpen: boolean;
@@ -17,23 +18,42 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
 }) => {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleVerify = (e?: React.FormEvent) => {
+  const handleVerify = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    // Default PIN: 786 or admin
-    if (pin.trim() === "786" || pin.trim().toLowerCase() === "admin" || pin.trim() === "1234") {
-      setError("");
+    const tokenInput = pin.trim();
+    if (!tokenInput) {
+      setError("Please enter staff authorization PIN (e.g. 786).");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await cmsAuth.login(tokenInput);
       onSuccess();
-    } else {
-      setError("Incorrect authorization PIN. Try '786' or click Demo Access below.");
+    } catch (err: any) {
+      setError(err.message || "Invalid staff passcode. Try '786' or 1-Click access below.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleQuickDemoAccess = () => {
+  const handleQuickDemoAccess = async () => {
+    setIsLoading(true);
     setError("");
-    onSuccess();
+    try {
+      await cmsAuth.login("786", "Haji Saud Staff");
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message || "Demo login failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,7 +88,7 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
             Haji Saud Zehri Staff Login
           </h2>
           <p className={`text-xs mt-1 leading-relaxed ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
-            Enter staff passcode to access the Property Catalog CRUD management dashboard.
+            Enter staff passcode to unlock full website content and property management CMS.
           </p>
 
           <form onSubmit={handleVerify} className="mt-6 space-y-4">
@@ -97,10 +117,11 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
 
             <button
               type="submit"
-              className="w-full py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all"
+              disabled={isLoading}
+              className="w-full py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
             >
-              <span>Unlock Admin Panel</span>
-              <ArrowRight size={14} />
+              {isLoading ? <RefreshCw size={14} className="animate-spin" /> : <span>Unlock Admin Panel</span>}
+              {!isLoading && <ArrowRight size={14} />}
             </button>
           </form>
 
@@ -109,6 +130,7 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
             <button
               type="button"
               onClick={handleQuickDemoAccess}
+              disabled={isLoading}
               className={`w-full py-2.5 rounded-full text-xs font-display flex items-center justify-center gap-2 border transition-all cursor-pointer ${
                 isDarkMode 
                   ? "border-stone-800 hover:bg-stone-900 text-stone-300 hover:text-white" 

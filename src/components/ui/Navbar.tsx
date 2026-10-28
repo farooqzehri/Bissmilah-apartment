@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Phone, ArrowRight, Menu, X, Landmark, Sun, Moon, ShieldCheck, Lock, Sparkles } from "lucide-react";
+import { useCMS } from "../../utils/cmsContext";
 
 interface NavbarProps {
   onNavigate: (pageId: string) => void;
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   toggleDarkMode,
   onOpenAdmin
 }) => {
+  const { settings } = useCMS();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

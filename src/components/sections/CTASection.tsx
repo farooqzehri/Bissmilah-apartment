@@ -4,12 +4,15 @@ import {
   Building2, Calendar, ClipboardCheck, Clock, Contact, MapPin, 
   PhoneCall, ShieldAlert, Sparkles, UserCheck, Compass 
 } from "lucide-react";
+import { cmsEnquiries } from "../../utils/cmsApi";
+import { useCMS } from "../../utils/cmsContext";
 
 interface CTASectionProps {
   isDarkMode?: boolean;
 }
 
 export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) => {
+  const { settings, homepage } = useCMS();
   // Form submission states
   const [formData, setFormData] = useState({
     name: "",
@@ -31,7 +34,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
     setValidationError("");
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple luxury inputs validation
@@ -50,14 +53,23 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
 
     setIsLoading(true);
 
-    // Mimic secure server submission duration
-    setTimeout(() => {
-      // Generate unique token
-      const randomToken = "BME-" + Math.floor(100000 + Math.random() * 900000).toString();
-      setAppointmentId(randomToken);
+    try {
+      const res = await cmsEnquiries.submit({
+        name: formData.name,
+        phone: formData.phone,
+        interest: formData.interest,
+        preferredDate: formData.preferredDate,
+        meetingType: formData.meetingType,
+        message: formData.message,
+      });
+
+      setAppointmentId(res.token || "BME-" + Math.floor(100000 + Math.random() * 900000).toString());
       setIsLoading(false);
       setIsSubmitted(true);
-    }, 1500);
+    } catch (err: any) {
+      setIsLoading(false);
+      setValidationError(err.message || "Failed to submit appointment. Please call our office directly.");
+    }
   };
 
   const resetForm = () => {
