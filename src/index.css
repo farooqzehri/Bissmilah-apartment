@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-luxury-bg: #F7F7F5;
+  --color-luxury-text: #1A1A1A;
+  --color-luxury-accent: #FF9E4A;
+  --color-luxury-muted: #E2E8F0;
+}
+
+body {
+  background-color: #F7F7F5;
+  color: #1A1A1A;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.dark body {
+  background-color: #111110;
+  color: #F7F7F5;
+}
+
+/* Custom smooth glass backdrop elements */
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Custom selection styling */
+::selection {
+  background-color: rgba(255, 158, 74, 0.25);
+  color: #1A1A1A;
+}

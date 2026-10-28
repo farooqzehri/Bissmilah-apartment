@@ -1,0 +1,6 @@
+{
+  "name": "Bismillah Real Estate",
+  "description": "Ultra-luxury, minimalist real estate curation showcase for Bismillah Real Estate, Quetta, Balochistan, owned by Haji Saud Zehri.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
