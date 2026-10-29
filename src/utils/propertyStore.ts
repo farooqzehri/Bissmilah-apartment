@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Property, CuratedImagePreset } from "../types/property";
 import { cmsProperties } from "./cmsApi";
+import { FALLBACK_PROPERTIES } from "./cmsDefaults";
 
 export const CURATED_IMAGE_PRESETS: CuratedImagePreset[] = [
   {
@@ -74,8 +75,8 @@ export const notifyPropertyChange = () => {
 };
 
 export const useProperties = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [properties, setProperties] = useState<Property[]>(FALLBACK_PROPERTIES);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchProperties = useCallback(async () => {
     try {

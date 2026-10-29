@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { GlobalSettings, HomepageSections, Property } from "../types/cms";
 import { cmsSettings, cmsHomepage, cmsProperties } from "./cmsApi";
-import { FALLBACK_SETTINGS } from "./cmsDefaults";
+import { FALLBACK_SETTINGS, FALLBACK_HOMEPAGE, FALLBACK_PROPERTIES } from "./cmsDefaults";
 
 interface CMSContextType {
   settings: GlobalSettings | null;
-  homepage: HomepageSections | null;
+  homepage: HomepageSections;
   properties: Property[];
   isLoading: boolean;
   isDarkMode: boolean;
@@ -24,8 +24,8 @@ const CMSContext = createContext<CMSContextType | undefined>(undefined);
 
 export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<GlobalSettings | null>(FALLBACK_SETTINGS);
-  const [homepage, setHomepage] = useState<HomepageSections | null>(null);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [homepage, setHomepage] = useState<HomepageSections>(FALLBACK_HOMEPAGE);
+  const [properties, setProperties] = useState<Property[]>(FALLBACK_PROPERTIES);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
@@ -106,7 +106,11 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateHomepageSection = async (section: string, data: any): Promise<any> => {
     const updated = await cmsHomepage.updateSection(section, data);
-    await refreshHomepage();
+    setHomepage((prev) => ({
+      ...prev,
+      [section]: updated !== undefined ? updated : data,
+      updatedAt: new Date().toISOString(),
+    }));
     return updated;
   };
 

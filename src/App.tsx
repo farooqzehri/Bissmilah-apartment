@@ -8,7 +8,9 @@ import { MaintenanceOverlay } from "./components/ui/MaintenanceOverlay";
 import { Hero } from "./components/sections/Hero";
 import { StatsSection } from "./components/sections/StatsSection";
 import { Catalog } from "./components/sections/Catalog";
+import { AboutLegacySection } from "./components/sections/AboutLegacySection";
 import { AmenitiesSection } from "./components/sections/AmenitiesSection";
+import { GallerySection } from "./components/sections/GallerySection";
 import { TestimonialsSection } from "./components/sections/TestimonialsSection";
 import { FAQSection } from "./components/sections/FAQSection";
 import { CTASection } from "./components/sections/CTASection";
@@ -44,6 +46,7 @@ function MainAppContent() {
   });
 
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
+  const [catalogCategoryFilter, setCatalogCategoryFilter] = useState<string>("all");
 
   // Sync hash changes dynamically
   React.useEffect(() => {
@@ -211,41 +214,59 @@ function MainAppContent() {
                 keywords="Bismillah Real Estate, Haji Saud Zehri, Quetta Real Estate, A-1 City Quetta, Plots in Quetta, Flats in Quetta, Balochistan properties, verified zameen, secure properties"
               />
 
-              {/* 1. Hero Section */}
+              {/* 1. California Luxury Hero Section */}
               {settings?.behavior.sectionToggles.hero !== false && (
                 <Hero
                   onExploreClick={() => handleScrollToElement("curation")}
                   onBookingClick={() => handleScrollToElement("private-office")}
                   isDarkMode={isDarkMode}
+                  onSelectCategory={(cat) => setCatalogCategoryFilter(cat)}
                 />
               )}
 
-              {/* 2. Key Statistics Section */}
+              {/* 2. Key Verified Benchmarks */}
               {settings?.behavior.sectionToggles.statistics !== false && (
                 <StatsSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 3. Live Property Catalog */}
+              {/* 3. Curated Estates & Residences Portfolio */}
               {settings?.behavior.sectionToggles.propertiesCatalog !== false && (
-                <Catalog isDarkMode={isDarkMode} onInquireClick={handleContactInquiry} />
+                <Catalog 
+                  isDarkMode={isDarkMode} 
+                  onInquireClick={handleContactInquiry} 
+                  selectedCategoryFilter={catalogCategoryFilter}
+                />
               )}
 
-              {/* 4. Amenities & Utilities */}
+              {/* 4. The Foundation of Trust — Founder & Legacy */}
+              {settings?.behavior.sectionToggles.about !== false && (
+                <AboutLegacySection
+                  isDarkMode={isDarkMode}
+                  onBookingClick={() => handleScrollToElement("private-office")}
+                />
+              )}
+
+              {/* 5. The California Living Standard — Amenities & Utilities */}
               {settings?.behavior.sectionToggles.amenities !== false && (
                 <AmenitiesSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 5. Client Testimonials */}
+              {/* 6. Visual Monograph — Architectural Perspectives Gallery */}
+              {settings?.behavior.sectionToggles.gallery !== false && (
+                <GallerySection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 7. Client Acclaim & Testimonials */}
               {settings?.behavior.sectionToggles.testimonials !== false && (
                 <TestimonialsSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 6. Frequently Asked Questions */}
+              {/* 8. Title & Registry Disclosures FAQ */}
               {settings?.behavior.sectionToggles.faq !== false && (
                 <FAQSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 7. CTA Office Contact */}
+              {/* 9. Private Showing Concierge & Executive Suite */}
               {settings?.behavior.sectionToggles.ctaBooking !== false && (
                 <CTASection isDarkMode={isDarkMode} />
               )}
