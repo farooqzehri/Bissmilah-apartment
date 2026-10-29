@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { GlobalSettings, HomepageSections, Property } from "../types/cms";
 import { cmsSettings, cmsHomepage, cmsProperties } from "./cmsApi";
+import { FALLBACK_SETTINGS } from "./cmsDefaults";
 
 interface CMSContextType {
   settings: GlobalSettings | null;
@@ -22,7 +23,7 @@ interface CMSContextType {
 const CMSContext = createContext<CMSContextType | undefined>(undefined);
 
 export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [settings, setSettings] = useState<GlobalSettings | null>(null);
+  const [settings, setSettings] = useState<GlobalSettings | null>(FALLBACK_SETTINGS);
   const [homepage, setHomepage] = useState<HomepageSections | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

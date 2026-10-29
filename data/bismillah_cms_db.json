@@ -660,6 +660,14 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1793258838013-928",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-29T07:27:18.013Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
       "id": "log-1793186195748-367",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",

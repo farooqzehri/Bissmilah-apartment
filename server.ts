@@ -57,6 +57,23 @@ async function startServer() {
     res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: /sitemap.xml\n`);
   });
 
+  // Fallback 404 handler for any unmatched /api routes (Always return JSON, never HTML)
+  app.all("/api/*", (req, res) => {
+    res.status(404).json({
+      success: false,
+      error: `API endpoint not found: ${req.method} ${req.originalUrl}`,
+    });
+  });
+
+  // Global API error handler (Always return JSON, never HTML)
+  app.use("/api", (err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error("[API Error]", err);
+    res.status(err.status || 500).json({
+      success: false,
+      error: err.message || "Internal server error occurred",
+    });
+  });
+
   // Mount Vite development middlewares or production static serving
   if (!isProd) {
     const vite = await createViteServer({

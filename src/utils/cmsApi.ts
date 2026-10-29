@@ -33,17 +33,68 @@ const getHeaders = (requireAuth = false): HeadersInit => {
   return headers;
 };
 
+/**
+ * Robust JSON fetch wrapper that avoids "Unexpected token 'T', The page c... is not valid JSON"
+ * errors by safely checking text before parsing, stripping HTML error traces, and returning clean errors.
+ */
+async function requestJson<T = any>(
+  url: string,
+  options: RequestInit = {},
+  fallbackError = "Request failed"
+): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(url, options);
+  } catch (netErr: any) {
+    throw new Error(`Connection issue: ${netErr.message || "Failed to reach server. Please check internet connection."}`);
+  }
+
+  const rawText = await res.text();
+  let data: any = null;
+
+  if (rawText && rawText.trim().length > 0) {
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      // Clean HTML or plain text error returned by reverse proxy or server
+      const cleanSnippet = rawText
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 140);
+
+      throw new Error(
+        cleanSnippet || `${fallbackError} (Server returned non-JSON HTTP ${res.status})`
+      );
+    }
+  }
+
+  if (!res.ok) {
+    const errorMsg = data?.error || data?.message || `${fallbackError} (HTTP ${res.status})`;
+    const err: any = new Error(errorMsg);
+    if (data?.inUse) err.inUse = data.inUse;
+    if (data?.places) err.places = data.places;
+    throw err;
+  }
+
+  return (data || {}) as T;
+}
+
 // 1. Authentication
 export const cmsAuth = {
   login: async (pin: string, username?: string) => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pin, username }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Login failed");
-    if (data.token) {
+    const data = await requestJson(
+      "/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin, username }),
+      },
+      "Authentication failed"
+    );
+    if (data && data.token) {
       setAuthToken(data.token);
     }
     return data;
@@ -51,40 +102,50 @@ export const cmsAuth = {
 
   logout: async () => {
     try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: getHeaders(),
-      });
+      await requestJson(
+        "/api/auth/logout",
+        {
+          method: "POST",
+          headers: getHeaders(),
+        },
+        "Logout"
+      );
+    } catch (e) {
+      console.warn("Logout request skipped:", e);
     } finally {
       clearAuthToken();
     }
   },
 
   checkSession: async () => {
-    const res = await fetch("/api/auth/me", {
-      headers: getHeaders(true),
-    });
-    return res.ok;
+    try {
+      const data = await requestJson("/api/auth/me", {
+        headers: getHeaders(true),
+      });
+      return Boolean(data && data.authenticated);
+    } catch {
+      return false;
+    }
   },
 };
 
 // 2. Global Settings
 export const cmsSettings = {
   get: async (): Promise<GlobalSettings> => {
-    const res = await fetch("/api/settings");
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch settings");
+    const data = await requestJson("/api/settings", {}, "Failed to fetch settings");
     return data.data;
   },
 
   update: async (updates: Partial<GlobalSettings>): Promise<GlobalSettings> => {
-    const res = await fetch("/api/settings", {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(updates),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update settings");
+    const data = await requestJson(
+      "/api/settings",
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updates),
+      },
+      "Failed to update settings"
+    );
     return data.data;
   },
 };
@@ -92,31 +153,33 @@ export const cmsSettings = {
 // 3. Homepage CMS
 export const cmsHomepage = {
   get: async (): Promise<HomepageSections> => {
-    const res = await fetch("/api/homepage");
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch homepage content");
+    const data = await requestJson("/api/homepage", {}, "Failed to fetch homepage content");
     return data.data;
   },
 
   update: async (updates: Partial<HomepageSections>): Promise<HomepageSections> => {
-    const res = await fetch("/api/homepage", {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(updates),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update homepage");
+    const data = await requestJson(
+      "/api/homepage",
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updates),
+      },
+      "Failed to update homepage"
+    );
     return data.data;
   },
 
   updateSection: async (section: string, sectionData: any): Promise<any> => {
-    const res = await fetch(`/api/homepage/${section}`, {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(sectionData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `Failed to update ${section}`);
+    const data = await requestJson(
+      `/api/homepage/${section}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(sectionData),
+      },
+      `Failed to update ${section}`
+    );
     return data.data;
   },
 };
@@ -143,60 +206,68 @@ export const cmsProperties = {
     if (params.limit) searchParams.set("limit", String(params.limit));
     if (params.includeUnpublished) searchParams.set("includeUnpublished", "true");
 
-    const res = await fetch(`/api/properties?${searchParams.toString()}`, {
-      headers: getHeaders(),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch properties");
-    return { data: data.data, meta: data.meta };
+    const data = await requestJson(
+      `/api/properties?${searchParams.toString()}`,
+      {
+        headers: getHeaders(),
+      },
+      "Failed to fetch properties"
+    );
+    return { data: data.data || [], meta: data.meta || { total: 0, page: 1, limit: 100, totalPages: 1 } };
   },
 
   getBySlug: async (slugOrId: string): Promise<Property> => {
-    const res = await fetch(`/api/properties/${slugOrId}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Property not found");
+    const data = await requestJson(`/api/properties/${slugOrId}`, {}, "Property not found");
     return data.data;
   },
 
   create: async (propData: Partial<Property>): Promise<Property> => {
-    const res = await fetch("/api/properties", {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(propData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to create property");
+    const data = await requestJson(
+      "/api/properties",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(propData),
+      },
+      "Failed to create property"
+    );
     return data.data;
   },
 
   update: async (id: string, propData: Partial<Property>): Promise<Property> => {
-    const res = await fetch(`/api/properties/${id}`, {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(propData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update property");
+    const data = await requestJson(
+      `/api/properties/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(propData),
+      },
+      "Failed to update property"
+    );
     return data.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    const res = await fetch(`/api/properties/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to delete property");
+    await requestJson(
+      `/api/properties/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete property"
+    );
   },
 
   resetDefaults: async (): Promise<Property[]> => {
-    const res = await fetch("/api/properties/reset-defaults", {
-      method: "POST",
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to reset properties");
-    return data.data;
+    const data = await requestJson(
+      "/api/properties/reset-defaults",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+      },
+      "Failed to reset properties"
+    );
+    return data.data || [];
   },
 };
 
@@ -207,10 +278,8 @@ export const cmsMedia = {
     if (params.search) searchParams.set("search", params.search);
     if (params.category) searchParams.set("category", params.category);
 
-    const res = await fetch(`/api/media?${searchParams.toString()}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch media");
-    return data.data;
+    const data = await requestJson(`/api/media?${searchParams.toString()}`, {}, "Failed to fetch media");
+    return data.data || [];
   },
 
   upload: async (uploadData: {
@@ -221,87 +290,90 @@ export const cmsMedia = {
     caption?: string;
     category?: string;
   }): Promise<MediaItem> => {
-    const res = await fetch("/api/media/upload", {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(uploadData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to upload image");
+    const data = await requestJson(
+      "/api/media/upload",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(uploadData),
+      },
+      "Failed to upload image"
+    );
     return data.data;
   },
 
   updateMetadata: async (id: string, metadata: { title?: string; altText?: string; caption?: string; category?: string }): Promise<MediaItem> => {
-    const res = await fetch(`/api/media/${id}`, {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(metadata),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update media");
+    const data = await requestJson(
+      `/api/media/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(metadata),
+      },
+      "Failed to update media"
+    );
     return data.data;
   },
 
   delete: async (id: string, force = false): Promise<void> => {
-    const res = await fetch(`/api/media/${id}?force=${force ? "true" : "false"}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const err: any = new Error(data.error || "Failed to delete image");
-      err.inUse = data.inUse;
-      err.places = data.places;
-      throw err;
-    }
+    await requestJson(
+      `/api/media/${id}?force=${force ? "true" : "false"}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete image"
+    );
   },
 };
 
 // 6. Pages CMS
 export const cmsPages = {
   list: async (): Promise<PageContent[]> => {
-    const res = await fetch("/api/pages");
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch pages");
-    return data.data;
+    const data = await requestJson("/api/pages", {}, "Failed to fetch pages");
+    return data.data || [];
   },
 
   getBySlug: async (slug: string): Promise<PageContent> => {
-    const res = await fetch(`/api/pages/${slug}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Page not found");
+    const data = await requestJson(`/api/pages/${slug}`, {}, "Page not found");
     return data.data;
   },
 
   create: async (pageData: Partial<PageContent>): Promise<PageContent> => {
-    const res = await fetch("/api/pages", {
-      method: "POST",
-      headers: getHeaders(true),
-      body: JSON.stringify(pageData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to create page");
+    const data = await requestJson(
+      "/api/pages",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(pageData),
+      },
+      "Failed to create page"
+    );
     return data.data;
   },
 
   update: async (id: string, pageData: Partial<PageContent>): Promise<PageContent> => {
-    const res = await fetch(`/api/pages/${id}`, {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(pageData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update page");
+    const data = await requestJson(
+      `/api/pages/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(pageData),
+      },
+      "Failed to update page"
+    );
     return data.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    const res = await fetch(`/api/pages/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to delete page");
+    await requestJson(
+      `/api/pages/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete page"
+    );
   },
 };
 
@@ -316,13 +388,15 @@ export const cmsEnquiries = {
     meetingType?: string;
     message?: string;
   }): Promise<{ success: boolean; token: string; message: string }> => {
-    const res = await fetch("/api/enquiries", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Submission failed");
+    const data = await requestJson(
+      "/api/enquiries",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      },
+      "Submission failed"
+    );
     return data;
   },
 
@@ -331,43 +405,51 @@ export const cmsEnquiries = {
     if (params.status) searchParams.set("status", params.status);
     if (params.search) searchParams.set("search", params.search);
 
-    const res = await fetch(`/api/enquiries?${searchParams.toString()}`, {
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch enquiries");
-    return data.data;
+    const data = await requestJson(
+      `/api/enquiries?${searchParams.toString()}`,
+      {
+        headers: getHeaders(true),
+      },
+      "Failed to fetch enquiries"
+    );
+    return data.data || [];
   },
 
   update: async (id: string, updateData: { status?: string; note?: string }): Promise<EnquiryLead> => {
-    const res = await fetch(`/api/enquiries/${id}`, {
-      method: "PUT",
-      headers: getHeaders(true),
-      body: JSON.stringify(updateData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to update lead");
+    const data = await requestJson(
+      `/api/enquiries/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updateData),
+      },
+      "Failed to update lead"
+    );
     return data.data;
   },
 
   delete: async (id: string): Promise<void> => {
-    const res = await fetch(`/api/enquiries/${id}`, {
-      method: "DELETE",
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to delete lead");
+    await requestJson(
+      `/api/enquiries/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete lead"
+    );
   },
 };
 
 // 8. Audit Logs
 export const cmsAudit = {
   list: async (): Promise<AuditLog[]> => {
-    const res = await fetch("/api/audit-logs", {
-      headers: getHeaders(true),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to fetch audit logs");
-    return data.data;
+    const data = await requestJson(
+      "/api/audit-logs",
+      {
+        headers: getHeaders(true),
+      },
+      "Failed to fetch audit logs"
+    );
+    return data.data || [];
   },
 };
