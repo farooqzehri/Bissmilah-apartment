@@ -12,6 +12,8 @@ import mediaRouter from "./server/routes/media";
 import pagesRouter from "./server/routes/pages";
 import enquiriesRouter from "./server/routes/enquiries";
 import auditRouter from "./server/routes/audit";
+import { connectToMongoAtlas, getMongoStatus } from "./server/db/mongodb";
+import { getCloudinaryStatus } from "./server/utils/cloudinary";
 
 dotenv.config();
 
@@ -20,6 +22,9 @@ const isProd = process.env.NODE_ENV === "production";
 
 async function startServer() {
   const app = express();
+
+  // Connect to MongoDB Atlas (or graceful local fallback)
+  await connectToMongoAtlas();
 
   // Middleware for large base64 image uploads & JSON payloads
   app.use(express.json({ limit: "25mb" }));
@@ -42,12 +47,14 @@ async function startServer() {
   app.use("/api/enquiries", enquiriesRouter);
   app.use("/api/audit-logs", auditRouter);
 
-  // Health check endpoint
+  // Health & System Status check endpoint
   app.get("/api/health", (_req, res) => {
     res.json({
       status: "ok",
       timestamp: new Date().toISOString(),
       service: "Bismillah Real Estate CMS Backend",
+      database: getMongoStatus(),
+      cloudinary: getCloudinaryStatus(),
     });
   });
 

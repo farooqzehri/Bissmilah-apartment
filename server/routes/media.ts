@@ -5,6 +5,14 @@ import crypto from "crypto";
 import { dbManager } from "../db";
 import { requireAdminAuth } from "./auth";
 import { MediaItem } from "../types";
+import { isMongoConnected, getMongoStatus, connectToMongoAtlas } from "../db/mongodb";
+import { MediaAssetModel } from "../models/MediaAsset";
+import { 
+  isCloudinaryConfigured, 
+  uploadToCloudinary, 
+  deleteFromCloudinary, 
+  getCloudinaryStatus 
+} from "../utils/cloudinary";
 
 const router = Router();
 const UPLOADS_DIR = path.resolve(process.cwd(), "uploads");
@@ -30,18 +38,18 @@ export const checkImageUsage = (imageUrl: string): { inUse: boolean; count: numb
   });
 
   // Check homepage
-  if (db.homepage.hero.backgroundImage === imageUrl) {
+  if (db.homepage?.hero?.backgroundImage === imageUrl) {
     places.push("Homepage Hero background");
   }
-  if (db.homepage.about.ownerImage === imageUrl) {
+  if (db.homepage?.about?.ownerImage === imageUrl) {
     places.push("Homepage About Haji Saud portrait");
   }
-  if (db.homepage.gallery.some((g) => g.url === imageUrl)) {
+  if (db.homepage?.gallery?.some((g) => g.url === imageUrl)) {
     places.push("Homepage Curated Gallery");
   }
 
   // Check branding
-  if (db.settings.branding.mainLogo === imageUrl) {
+  if (db.settings?.branding?.mainLogo === imageUrl) {
     places.push("Global Website Logo");
   }
 
@@ -52,45 +60,106 @@ export const checkImageUsage = (imageUrl: string): { inUse: boolean; count: numb
   };
 };
 
-// GET /api/media - Get media library items
-router.get("/", (req: Request, res: Response) => {
-  const { search, category } = req.query;
-  const db = dbManager.getDb();
-  let list = [...db.media];
-
-  if (category && category !== "all") {
-    list = list.filter((m) => m.category.toLowerCase() === (category as string).toLowerCase());
-  }
-
-  if (search && typeof search === "string" && search.trim() !== "") {
-    const q = search.toLowerCase();
-    list = list.filter(
-      (m) =>
-        m.title.toLowerCase().includes(q) ||
-        m.fileName.toLowerCase().includes(q) ||
-        m.altText.toLowerCase().includes(q) ||
-        m.category.toLowerCase().includes(q)
-    );
-  }
-
-  // Enrich with active usage counts
-  const enriched = list.map((item) => {
-    const usage = checkImageUsage(item.url);
-    return {
-      ...item,
-      usageCount: usage.count,
-    };
-  });
-
+// GET /api/media/status - Cloudinary and database storage status
+router.get("/status", (_req: Request, res: Response) => {
   res.json({
     success: true,
-    data: enriched,
-    total: enriched.length,
+    cloudinary: getCloudinaryStatus(),
+    database: getMongoStatus(),
   });
 });
 
-// POST /api/media/upload - Upload new image (base64 or URL import)
-router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
+// POST /api/media/retry-mongo - Attempt reconnecting to MongoDB Atlas
+router.post("/retry-mongo", async (_req: Request, res: Response) => {
+  const success = await connectToMongoAtlas(true);
+  res.json({
+    success,
+    database: getMongoStatus(),
+  });
+});
+
+// GET /api/media - Get media library items
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const { search, category } = req.query;
+
+    if (isMongoConnected()) {
+      const query: any = {};
+      if (category && category !== "all") {
+        query.category = category;
+      }
+      if (search && typeof search === "string" && search.trim() !== "") {
+        const q = search.trim();
+        query.$or = [
+          { title: { $regex: q, $options: "i" } },
+          { fileName: { $regex: q, $options: "i" } },
+          { altText: { $regex: q, $options: "i" } },
+          { category: { $regex: q, $options: "i" } },
+        ];
+      }
+
+      const mongoItems = await MediaAssetModel.find(query).sort({ createdAt: -1 }).lean();
+      if (mongoItems && mongoItems.length > 0) {
+        const enriched = mongoItems.map((item: any) => {
+          const usage = checkImageUsage(item.url || item.secureUrl);
+          return {
+            ...item,
+            id: item.id || String(item._id),
+            url: item.secureUrl || item.url,
+            usageCount: usage.count,
+          };
+        });
+
+        res.json({
+          success: true,
+          source: "MongoDB Atlas",
+          data: enriched,
+          total: enriched.length,
+        });
+        return;
+      }
+    }
+
+    // Fallback: Local database
+    const db = dbManager.getDb();
+    let list = [...db.media];
+
+    if (category && category !== "all") {
+      list = list.filter((m) => m.category.toLowerCase() === (category as string).toLowerCase());
+    }
+
+    if (search && typeof search === "string" && search.trim() !== "") {
+      const q = search.toLowerCase();
+      list = list.filter(
+        (m) =>
+          m.title.toLowerCase().includes(q) ||
+          m.fileName.toLowerCase().includes(q) ||
+          m.altText.toLowerCase().includes(q) ||
+          m.category.toLowerCase().includes(q)
+      );
+    }
+
+    const enriched = list.map((item) => {
+      const usage = checkImageUsage(item.url);
+      return {
+        ...item,
+        usageCount: usage.count,
+      };
+    });
+
+    res.json({
+      success: true,
+      source: "Local Storage",
+      data: enriched,
+      total: enriched.length,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: "Failed to list media: " + err.message });
+  }
+});
+
+// POST /api/media/upload - Upload new image (Cloudinary or local storage)
+router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => {
   try {
     const { base64Data, fileName, title, altText, caption, category } = req.body;
 
@@ -99,7 +168,7 @@ router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
       return;
     }
 
-    // Match MIME type from data URL
+    // Validate MIME type
     const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     let mimeType = "image/jpeg";
     let buffer: Buffer;
@@ -109,7 +178,6 @@ router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
       mimeType = matches[1];
       buffer = Buffer.from(matches[2], "base64");
 
-      // Validate allowed mime types
       const allowed = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif", "image/svg+xml"];
       if (!allowed.includes(mimeType)) {
         res.status(400).json({ error: `Unsupported image format (${mimeType}). Supported: JPEG, PNG, WebP, AVIF, SVG.` });
@@ -122,32 +190,55 @@ router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
       else if (mimeType === "image/gif") ext = "gif";
       else if (mimeType === "image/svg+xml") ext = "svg";
     } else {
-      // Raw buffer or direct base64
       buffer = Buffer.from(base64Data, "base64");
     }
 
-    // File size validation (max 10MB)
-    if (buffer.length > 10 * 1024 * 1024) {
-      res.status(400).json({ error: "Image size exceeds 10MB limit." });
+    // Max 15MB file size limit
+    if (buffer.length > 15 * 1024 * 1024) {
+      res.status(400).json({ error: "Image size exceeds 15MB limit." });
       return;
     }
 
-    // Generate unique storage filename
     const uniqueId = crypto.randomBytes(8).toString("hex");
     const sanitizedName = (fileName || "image").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 30);
-    const storageFileName = `${sanitizedName}_${Date.now()}_${uniqueId}.${ext}`;
-    const filePath = path.join(UPLOADS_DIR, storageFileName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    const publicUrl = `/uploads/${storageFileName}`;
     const now = new Date().toISOString();
+
+    let publicUrl = "";
+    let cloudinaryPublicId = "";
+    let storageProvider: "cloudinary" | "local" = "local";
+
+    // 1. Try Cloudinary if configured
+    if (isCloudinaryConfigured()) {
+      try {
+        console.log(`[Cloudinary] Uploading ${sanitizedName} to Cloudinary...`);
+        const cloudResult = await uploadToCloudinary(base64Data, {
+          folder: "bismillah_apartments",
+          category: category || "General",
+        });
+
+        publicUrl = cloudResult.secureUrl;
+        cloudinaryPublicId = cloudResult.publicId;
+        storageProvider = "cloudinary";
+        console.log(`[Cloudinary] Successfully uploaded asset: ${cloudinaryPublicId}`);
+      } catch (cloudErr: any) {
+        console.warn("[Cloudinary] Upload error, falling back to server disk storage:", cloudErr.message);
+      }
+    }
+
+    // 2. Fallback to server local disk storage
+    if (!publicUrl) {
+      const storageFileName = `${sanitizedName}_${Date.now()}_${uniqueId}.${ext}`;
+      const filePath = path.join(UPLOADS_DIR, storageFileName);
+      fs.writeFileSync(filePath, buffer);
+      publicUrl = `/uploads/${storageFileName}`;
+    }
 
     const mediaRecord: MediaItem = {
       id: `med-${Date.now()}-${uniqueId}`,
-      fileName: storageFileName,
-      originalName: fileName || storageFileName,
+      fileName: fileName || `${sanitizedName}.${ext}`,
+      originalName: fileName || `${sanitizedName}.${ext}`,
       url: publicUrl,
+      cloudinaryPublicId,
       mimeType,
       sizeBytes: buffer.length,
       category: category || "General",
@@ -158,15 +249,38 @@ router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
       usageCount: 0,
     };
 
+    // Save to MongoDB if connected
+    if (isMongoConnected()) {
+      await MediaAssetModel.create({
+        id: mediaRecord.id,
+        url: publicUrl,
+        secureUrl: publicUrl,
+        publicId: cloudinaryPublicId,
+        fileName: mediaRecord.fileName,
+        originalName: mediaRecord.originalName,
+        mimeType,
+        sizeBytes: buffer.length,
+        category: mediaRecord.category,
+        title: mediaRecord.title,
+        altText: mediaRecord.altText,
+        caption: mediaRecord.caption,
+        uploadedAt: now,
+        usageCount: 0,
+        storageProvider,
+      });
+    }
+
+    // Always mirror to local DB for resilience
     const db = dbManager.getDb();
     db.media.unshift(mediaRecord);
     dbManager.saveDb(db);
-    dbManager.addAuditLog("UPLOAD_IMAGE", "MediaLibrary", `Uploaded image "${mediaRecord.fileName}"`, mediaRecord.id);
+    dbManager.addAuditLog("UPLOAD_IMAGE", "MediaLibrary", `Uploaded image "${mediaRecord.fileName}" via ${storageProvider}`, mediaRecord.id);
 
     res.status(201).json({
       success: true,
       data: mediaRecord,
-      message: "Image uploaded and stored successfully",
+      storageProvider,
+      message: `Image uploaded successfully via ${storageProvider === "cloudinary" ? "Cloudinary CDN" : "Server Storage"}`,
     });
   } catch (err: any) {
     console.error("Upload error", err);
@@ -175,11 +289,18 @@ router.post("/upload", requireAdminAuth, (req: Request, res: Response) => {
 });
 
 // PUT /api/media/:id - Edit image metadata
-router.put("/:id", requireAdminAuth, (req: Request, res: Response) => {
+router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, altText, caption, category } = req.body;
-  const db = dbManager.getDb();
 
+  if (isMongoConnected()) {
+    await MediaAssetModel.updateOne(
+      { id },
+      { $set: { title, altText, caption, category } }
+    );
+  }
+
+  const db = dbManager.getDb();
   const item = db.media.find((m) => m.id === id);
   if (!item) {
     res.status(404).json({ error: "Media item not found" });
@@ -201,52 +322,92 @@ router.put("/:id", requireAdminAuth, (req: Request, res: Response) => {
   });
 });
 
-// DELETE /api/media/:id - Delete image with in-use safety verification
-router.delete("/:id", requireAdminAuth, (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { force } = req.query;
-  const db = dbManager.getDb();
+// DELETE /api/media/:id - Delete image with Cloudinary cleanup and in-use check
+router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { force } = req.query;
 
-  const index = db.media.findIndex((m) => m.id === id);
-  if (index === -1) {
-    res.status(404).json({ error: "Media item not found" });
-    return;
-  }
+    const db = dbManager.getDb();
+    const index = db.media.findIndex((m) => m.id === id);
 
-  const item = db.media[index];
-  const usage = checkImageUsage(item.url);
+    let item = index !== -1 ? db.media[index] : null;
+    let cloudinaryPublicId: string | undefined;
 
-  // If in use and not forced, prevent accidental removal
-  if (usage.inUse && force !== "true") {
-    res.status(409).json({
-      error: `Cannot delete image because it is actively used in ${usage.count} location(s).`,
-      inUse: true,
-      places: usage.places,
-      message: "Pass ?force=true to override and delete anyway.",
-    });
-    return;
-  }
-
-  // Remove physical file if in uploads directory
-  if (item.url.startsWith("/uploads/")) {
-    const localPath = path.join(process.cwd(), item.url);
-    if (fs.existsSync(localPath)) {
-      try {
-        fs.unlinkSync(localPath);
-      } catch (err) {
-        console.warn("Could not delete physical file:", localPath, err);
+    if (isMongoConnected()) {
+      const doc = await MediaAssetModel.findOne({ id });
+      if (doc) {
+        if (!item) {
+          item = {
+            id: doc.id,
+            fileName: doc.fileName,
+            originalName: doc.originalName,
+            url: doc.secureUrl || doc.url,
+            mimeType: doc.mimeType,
+            sizeBytes: doc.sizeBytes,
+            category: doc.category,
+            title: doc.title,
+            altText: doc.altText,
+            caption: doc.caption,
+            uploadedAt: doc.uploadedAt,
+          };
+        }
+        cloudinaryPublicId = doc.publicId;
+        await MediaAssetModel.deleteOne({ id });
       }
     }
+
+    if (!item) {
+      res.status(404).json({ error: "Media item not found" });
+      return;
+    }
+
+    const usage = checkImageUsage(item.url);
+
+    // If in use and not forced, prevent accidental removal
+    if (usage.inUse && force !== "true") {
+      res.status(409).json({
+        error: `Cannot delete image because it is actively used in ${usage.count} location(s).`,
+        inUse: true,
+        places: usage.places,
+        message: "Pass ?force=true to override and delete anyway.",
+      });
+      return;
+    }
+
+    // 1. Delete from Cloudinary if public ID exists
+    const publicIdToDelete = cloudinaryPublicId || item.cloudinaryPublicId;
+    if (publicIdToDelete) {
+      console.log(`[Cloudinary] Deleting asset ${publicIdToDelete}...`);
+      await deleteFromCloudinary(publicIdToDelete);
+    }
+
+    // 2. Remove physical file if in local uploads directory
+    if (item.url.startsWith("/uploads/")) {
+      const localPath = path.join(process.cwd(), item.url);
+      if (fs.existsSync(localPath)) {
+        try {
+          fs.unlinkSync(localPath);
+        } catch (err) {
+          console.warn("Could not delete physical file:", localPath, err);
+        }
+      }
+    }
+
+    if (index !== -1) {
+      db.media.splice(index, 1);
+      dbManager.saveDb(db);
+    }
+
+    dbManager.addAuditLog("DELETE_MEDIA", "MediaLibrary", `Deleted image "${item.fileName}"`, id);
+
+    res.json({
+      success: true,
+      message: `Image "${item.fileName}" removed from media library and storage service`,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: "Failed to delete media: " + err.message });
   }
-
-  db.media.splice(index, 1);
-  dbManager.saveDb(db);
-  dbManager.addAuditLog("DELETE_MEDIA", "MediaLibrary", `Deleted image "${item.fileName}"`, id);
-
-  res.json({
-    success: true,
-    message: `Image "${item.fileName}" removed from media library`,
-  });
 });
 
 export default router;

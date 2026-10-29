@@ -34,8 +34,49 @@ export const MediaTab: React.FC<MediaTabProps> = ({
   // Delete modal
   const [deleteItem, setDeleteItem] = useState<MediaItem | null>(null);
   const [deleteError, setDeleteError] = useState<{ message: string; inUse?: boolean; places?: string[] } | null>(null);
+  const [storageStatus, setStorageStatus] = useState<{
+    cloudinary?: { configured: boolean; cloudName: string; folder: string };
+    database?: { provider: string; connected: boolean; hasUri?: boolean; error?: string; advice?: string };
+  } | null>(null);
+  const [isRetryingDb, setIsRetryingDb] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const fetchStatus = () => {
+    fetch("/api/media/status")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setStorageStatus({
+            cloudinary: data.cloudinary,
+            database: data.database,
+          });
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchStatus();
+  }, []);
+
+  const handleRetryMongo = async () => {
+    setIsRetryingDb(true);
+    try {
+      const res = await fetch("/api/media/retry-mongo", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        onShowToast("Connected to MongoDB Atlas successfully!");
+      } else {
+        onShowToast(data.database?.advice || "Could not connect to MongoDB Atlas. Ensure 0.0.0.0/0 is whitelisted in Atlas Network Access.");
+      }
+      fetchStatus();
+    } catch {
+      onShowToast("Failed to test MongoDB connection.");
+    } finally {
+      setIsRetryingDb(false);
+    }
+  };
 
   const categories = ["all", "Apartments", "Estates", "Schemes", "Commercial", "General"];
 
@@ -179,12 +220,86 @@ export const MediaTab: React.FC<MediaTabProps> = ({
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="px-6 py-2.5 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+            className="px-6 py-2.5 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#DF9B43] hover:bg-[#c88532] text-black shadow-lg flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
           >
             <Upload size={14} className="stroke-[2.5]" />
-            <span>{isUploading ? "Uploading..." : "Upload Images"}</span>
+            <span>{isUploading ? "Uploading..." : "Upload to Cloudinary / Storage"}</span>
           </button>
         </div>
+      </div>
+
+      {/* Cloudinary & MongoDB Atlas Live Status Indicator */}
+      <div className={`p-4 rounded-2xl border space-y-3 text-xs font-mono ${
+        isDarkMode ? "bg-[#141412] border-stone-800" : "bg-stone-50 border-stone-200"
+      }`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-4 flex-wrap">
+            {/* Cloudinary Status */}
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${
+                storageStatus?.cloudinary?.configured ? "bg-sky-400 animate-pulse" : "bg-amber-400"
+              }`} />
+              <span className="font-semibold text-sky-500">
+                {storageStatus?.cloudinary?.configured ? "Cloudinary CDN Active" : "Cloudinary Storage Ready"}
+              </span>
+              <span className={isDarkMode ? "text-stone-400" : "text-stone-500"}>
+                ({storageStatus?.cloudinary?.configured ? `Folder: ${storageStatus.cloudinary.folder}` : "Credentials in .env"})
+              </span>
+            </div>
+
+            <span aria-hidden="true" className="text-stone-500">·</span>
+
+            {/* Database Status */}
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${
+                storageStatus?.database?.connected 
+                  ? "bg-emerald-500 animate-pulse" 
+                  : (storageStatus?.database?.hasUri ? "bg-amber-400 animate-pulse" : "bg-emerald-400")
+              }`} />
+              <span className={`font-semibold ${
+                storageStatus?.database?.connected 
+                  ? "text-emerald-500" 
+                  : (storageStatus?.database?.hasUri ? "text-amber-500" : "text-emerald-500")
+              }`}>
+                Database: {storageStatus?.database?.provider || "Local Resilient"}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {storageStatus?.database?.hasUri && !storageStatus?.database?.connected && (
+              <button
+                type="button"
+                onClick={handleRetryMongo}
+                disabled={isRetryingDb}
+                className="px-3 py-1 rounded-lg text-[11px] font-sans font-semibold bg-[#FF9E4A] hover:bg-[#e88a35] text-black cursor-pointer transition-all disabled:opacity-50"
+              >
+                {isRetryingDb ? "Testing Connection..." : "Retry Atlas Connection"}
+              </button>
+            )}
+            <span className="text-[11px] text-stone-400">
+              Max 15MB · Auto WebP/AVIF Optimization
+            </span>
+          </div>
+        </div>
+
+        {/* Database IP Whitelist Alert Note if needed */}
+        {storageStatus?.database?.hasUri && !storageStatus?.database?.connected && (
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-stone-300 text-[11px] font-sans flex items-start gap-2.5">
+            <AlertTriangle size={15} className="text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div className="font-semibold text-amber-400">
+                Action Required: Whitelist IP in MongoDB Atlas
+              </div>
+              <div className={isDarkMode ? "text-stone-300" : "text-stone-600"}>
+                {storageStatus?.database?.advice || "Cloud deployment containers require 0.0.0.0/0 in Atlas Network Access. Log in to MongoDB Atlas Console → Security → Network Access → Add IP Address → Allow Access from Anywhere (0.0.0.0/0)."}
+              </div>
+              <div className="text-[10px] text-stone-400 font-mono">
+                System is running smoothly on local storage with zero downtime. Click &ldquo;Retry Atlas Connection&rdquo; after whitelisting.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {uploadProgress && (

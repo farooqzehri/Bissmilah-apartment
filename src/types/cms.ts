@@ -213,6 +213,8 @@ export interface Property {
   highlights: string[];
   specs: PropertySpec[];
   amenities?: string[];
+  imagePublicId?: string;
+  galleryPublicIds?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -230,6 +232,7 @@ export interface MediaItem {
   caption: string;
   uploadedAt: string;
   usageCount?: number;
+  cloudinaryPublicId?: string;
 }
 
 export interface PageContent {
