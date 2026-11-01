@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProperty extends Document {
   id: string;
+  propertyId?: string;
   slug: string;
   title: string;
   category: "apartments" | "estates" | "schemes" | "commercial";
@@ -41,6 +42,7 @@ export interface IProperty extends Document {
 const PropertySchema = new Schema<IProperty>(
   {
     id: { type: String, required: true, unique: true, index: true },
+    propertyId: { type: String },
     slug: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true, trim: true },
     category: {

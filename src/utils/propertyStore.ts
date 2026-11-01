@@ -75,14 +75,27 @@ export const notifyPropertyChange = () => {
 };
 
 export const useProperties = () => {
-  const [properties, setProperties] = useState<Property[]>(FALLBACK_PROPERTIES);
+  const [properties, setProperties] = useState<Property[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cached = localStorage.getItem("bismillah_cms_properties");
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch {}
+    }
+    return FALLBACK_PROPERTIES;
+  });
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchProperties = useCallback(async () => {
     try {
       setLoading(true);
       const res = await cmsProperties.list({ limit: 100, includeUnpublished: true });
-      setProperties(res.data);
+      if (res && Array.isArray(res.data)) {
+        setProperties(res.data);
+      }
     } catch (err) {
       console.error("Failed to fetch properties from server", err);
     } finally {

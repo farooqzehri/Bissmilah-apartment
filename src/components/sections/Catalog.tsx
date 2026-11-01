@@ -35,9 +35,10 @@ export const Catalog: React.FC<CatalogProps> = ({
     { label: "Masterplanned Schemes", value: "schemes" },
   ] as const;
 
+  const publishedProperties = properties.filter((p) => p.published !== false);
   const filteredProperties = activeCategory === "all"
-    ? properties
-    : properties.filter((p) => p.category === activeCategory);
+    ? publishedProperties
+    : publishedProperties.filter((p) => p.category === activeCategory);
 
   const openPropertyModal = (p: PropertyItem) => {
     setSelectedProperty(p);

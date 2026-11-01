@@ -466,7 +466,11 @@ export const cmsProperties = {
         },
         "Failed to create property"
       );
-      if (res && res.data) return res.data;
+      if (res && res.data) {
+        const freshList = [res.data, ...items.filter((p) => p.id !== newProp.id && p.id !== res.data.id)];
+        writeCache(CACHE_KEYS.properties, freshList);
+        return res.data;
+      }
     } catch (err) {
       console.warn("Backend property create sync pending:", err);
     }

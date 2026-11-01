@@ -91,7 +91,21 @@ export const connectToMongoAtlas = async (forceRetry = false): Promise<boolean> 
     isConnecting = false;
     console.log("[MongoDB Atlas] Successfully connected to MongoDB Atlas database!");
 
-    // Seed default data if collections are empty
+    // Safely remove any legacy unique indexes that could block document creation
+    try {
+      const coll = mongoose.connection.db?.collection("properties");
+      if (coll) {
+        const indexes = await coll.indexes();
+        if (indexes.some((idx: any) => idx.name === "propertyId_1")) {
+          await coll.dropIndex("propertyId_1").catch(() => {});
+          console.log("[MongoDB Atlas] Removed legacy propertyId_1 index constraint.");
+        }
+      }
+    } catch {
+      // Safe ignore
+    }
+
+    // Seed default data if collections are empty or missing records
     await seedDefaultDataIfEmpty();
 
     return true;
@@ -109,50 +123,56 @@ export const connectToMongoAtlas = async (forceRetry = false): Promise<boolean> 
 };
 
 /**
- * Seed initial data from local DB seeds into MongoDB Atlas if collections are empty.
+ * Seed initial data from local DB seeds into MongoDB Atlas if collections are empty or missing records.
  */
 async function seedDefaultDataIfEmpty() {
   try {
     const localDb = dbManager.getDb();
 
-    // 1. Seed Properties
-    const propCount = await PropertyModel.countDocuments();
-    if (propCount === 0 && localDb.properties.length > 0) {
-      console.log(`[MongoDB Atlas] Seeding ${localDb.properties.length} initial properties...`);
+    // 1. Seed Properties (ensure all initial catalog items exist in Atlas)
+    if (localDb.properties && localDb.properties.length > 0) {
       for (const p of localDb.properties) {
-        await PropertyModel.create({
-          id: p.id,
-          slug: p.slug,
-          title: p.title,
-          category: p.category,
-          purpose: "sale",
-          price: p.price,
-          numericPrice: p.numericPrice,
-          currency: p.currency,
-          location: p.location,
-          city: p.city,
-          area: p.area,
-          googleMapsUrl: p.googleMapsUrl,
-          size: p.size,
-          coveredAreaUnit: p.coveredAreaUnit,
-          tag: p.tag,
-          status: p.status,
-          availability: p.availability,
-          published: p.published,
-          featured: p.featured,
-          bedrooms: p.bedrooms,
-          bathrooms: p.bathrooms,
-          floorNumber: p.floorNumber,
-          totalFloors: p.totalFloors,
-          furnishingStatus: p.furnishingStatus,
-          description: p.description,
-          fullOverview: p.fullOverview,
-          image: p.image,
-          gallery: p.gallery,
-          highlights: p.highlights,
-          specs: p.specs,
-          amenities: p.amenities,
+        const existing = await PropertyModel.findOne({
+          $or: [{ id: p.id }, { slug: p.slug }, { title: p.title }],
         });
+
+        if (!existing) {
+          console.log(`[MongoDB Atlas] Syncing catalog property "${p.title}"...`);
+          await PropertyModel.create({
+            id: p.id,
+            propertyId: p.id,
+            slug: p.slug,
+            title: p.title,
+            category: p.category,
+            purpose: "sale",
+            price: p.price,
+            numericPrice: p.numericPrice,
+            currency: p.currency,
+            location: p.location,
+            city: p.city,
+            area: p.area,
+            googleMapsUrl: p.googleMapsUrl,
+            size: p.size,
+            coveredAreaUnit: p.coveredAreaUnit,
+            tag: p.tag,
+            status: p.status,
+            availability: p.availability,
+            published: p.published !== false,
+            featured: Boolean(p.featured),
+            bedrooms: p.bedrooms,
+            bathrooms: p.bathrooms,
+            floorNumber: p.floorNumber,
+            totalFloors: p.totalFloors,
+            furnishingStatus: p.furnishingStatus,
+            description: p.description,
+            fullOverview: p.fullOverview,
+            image: p.image,
+            gallery: p.gallery || [],
+            highlights: p.highlights || [],
+            specs: p.specs || [],
+            amenities: p.amenities || [],
+          });
+        }
       }
     }
 

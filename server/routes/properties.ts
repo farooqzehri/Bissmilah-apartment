@@ -282,7 +282,10 @@ router.post("/", requireAdminAuth, async (req: Request, res: Response) => {
 
     // Save to MongoDB if connected
     if (isMongoConnected()) {
-      await PropertyModel.create(newProperty);
+      await PropertyModel.create({
+        ...newProperty,
+        propertyId: id,
+      });
     }
 
     // Always mirror to local DB for resilience

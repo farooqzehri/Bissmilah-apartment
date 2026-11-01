@@ -25,7 +25,7 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
       prop.tag.toLowerCase().includes(q);
 
     const matchesType = selectedType === "all" || prop.category === selectedType;
-    return matchesSearch && matchesType;
+    return matchesSearch && matchesType && prop.published !== false;
   });
 
   return (

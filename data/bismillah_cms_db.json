@@ -660,6 +660,87 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1793544354363-203",
+      "action": "DELETE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793544350628-791",
+      "details": "Deleted lead ID: enq-1793544350628-791",
+      "timestamp": "2026-11-01T14:45:54.363Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544350770-35",
+      "action": "NEW_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793544350628-791",
+      "details": "New booking inquiry received from Mir Aslam Khan (BME-638899)",
+      "timestamp": "2026-11-01T14:45:50.770Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544333663-799",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Deleted property: \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:33.663Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544333389-225",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Updated property \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:33.389Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544332820-463",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Created property: \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:32.820Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544066749-613",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544058844-335",
+      "details": "Deleted property: \"Chiltan View Luxury Residency\"",
+      "timestamp": "2026-11-01T14:41:06.749Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544059138-956",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544058844-335",
+      "details": "Created property: \"Chiltan View Luxury Residency\"",
+      "timestamp": "2026-11-01T14:40:59.138Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793543982804-368",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793543978652-283",
+      "details": "Deleted property: \"Test Penthouse in Quetta\"",
+      "timestamp": "2026-11-01T14:39:42.804Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793543978932-275",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793543978652-283",
+      "details": "Created property: \"Test Penthouse in Quetta\"",
+      "timestamp": "2026-11-01T14:39:38.932Z",
+      "performedBy": "Admin"
+    },
+    {
       "id": "log-1793258838013-928",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
