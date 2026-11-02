@@ -65,7 +65,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   }, []);
 
   const handleLogout = async () => {
-    await cmsAuth.logout();
+    try {
+      await cmsAuth.logout();
+    } catch (e) {
+      console.warn("Logout error:", e);
+    }
+    localStorage.removeItem("bismillah_current_page");
+    window.location.hash = "";
     onNavigateHome();
   };
 

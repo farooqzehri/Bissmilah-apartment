@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install, lint, and build",
+			"type": "shell",
+			"command": "cmd.exe",
+			"args": [
+				"/c",
+				"npm install --package-lock=false & npm run lint & npm run build"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

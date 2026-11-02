@@ -72,29 +72,30 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </span>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="space-y-1.5">
+        {/* Navigation Items (Responsive Grid on Mobile/Tablet, Vertical on Desktop) */}
+        <nav className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-1 gap-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => onSelectTab(item.id)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-display tracking-wide transition-all cursor-pointer ${
+                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-display tracking-wide transition-all cursor-pointer ${
                   isActive
                     ? "bg-[#FF9E4A] text-black font-semibold shadow-md"
                     : isDarkMode
-                    ? "text-stone-300 hover:bg-stone-900 hover:text-white"
-                    : "text-stone-700 hover:bg-stone-100 hover:text-black"
+                    ? "text-stone-300 hover:bg-stone-900 hover:text-white bg-stone-900/30 lg:bg-transparent"
+                    : "text-stone-700 hover:bg-stone-100 hover:text-black bg-stone-100/60 lg:bg-transparent"
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <Icon size={16} className={isActive ? "text-black" : "text-[#FF9E4A]"} />
-                  <span>{item.label}</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Icon size={15} className={`shrink-0 ${isActive ? "text-black" : "text-[#FF9E4A]"}`} />
+                  <span className="truncate">{item.label}</span>
                 </div>
                 {item.badge && item.badge > 0 ? (
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  <span className={`ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${
                     isActive ? "bg-black text-[#FF9E4A]" : "bg-[#FF9E4A] text-black"
                   }`}>
                     {item.badge}
@@ -107,10 +108,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       </div>
 
       {/* Footer Actions */}
-      <div className="pt-6 mt-6 border-t dark:border-stone-800 border-stone-200 space-y-2">
+      <div className="pt-4 lg:pt-6 mt-4 lg:mt-6 border-t dark:border-stone-800 border-stone-200 flex lg:flex-col items-center justify-between gap-2">
         <button
+          type="button"
           onClick={onLogout}
-          className={`w-full flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-display transition-colors cursor-pointer text-rose-500 hover:bg-rose-500/10`}
+          className="w-full flex items-center justify-center lg:justify-start gap-2 px-3.5 py-2 rounded-xl text-xs font-display transition-colors cursor-pointer text-rose-500 hover:bg-rose-500/10 border lg:border-transparent border-rose-500/20"
         >
           <LogOut size={14} />
           <span>Lock Admin Session</span>

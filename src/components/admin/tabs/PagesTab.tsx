@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Edit3, Trash2, FileText, Check, Eye, X, RefreshCw } from "lucide-react";
 import { PageContent } from "../../../types/cms";
 import { cmsPages } from "../../../utils/cmsApi";
+import { FALLBACK_PAGES } from "../../../utils/cmsDefaults";
 
 interface PagesTabProps {
   isDarkMode: boolean;
@@ -9,18 +10,26 @@ interface PagesTabProps {
 }
 
 export const PagesTab: React.FC<PagesTabProps> = ({ isDarkMode, onShowToast }) => {
-  const [pages, setPages] = useState<PageContent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [pages, setPages] = useState<PageContent[]>(FALLBACK_PAGES);
+  const [loading, setLoading] = useState(false);
   const [editingPage, setEditingPage] = useState<Partial<PageContent> | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  const fetchPages = async () => {
+  const fetchPages = async (isManual = false) => {
     try {
       setLoading(true);
       const data = await cmsPages.list();
-      setPages(data);
+      if (data && data.length > 0) {
+        setPages(data);
+      }
+      if (isManual) {
+        onShowToast("CMS pages refreshed.");
+      }
     } catch (err: any) {
-      onShowToast("Failed to fetch pages: " + (err.message || String(err)));
+      console.warn("Pages load notice:", err);
+      if (isManual) {
+        onShowToast("Notice: Using local cached pages.");
+      }
     } finally {
       setLoading(false);
     }

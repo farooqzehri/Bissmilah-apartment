@@ -27,9 +27,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   onOpenUploadMedia,
   isDarkMode,
 }) => {
-  const activeListings = properties.filter((p) => p.published !== false).length;
-  const newLeads = enquiries.filter((e) => e.status === "New").length;
-  const verifiedRegistry = properties.filter((p) => p.status.includes("Registry") || p.status.includes("Verified")).length;
+  const activeListings = properties.filter((p) => p && p.published !== false).length;
+  const newLeads = enquiries.filter((e) => e && e.status === "New").length;
+  const verifiedRegistry = properties.filter((p) => p && typeof p.status === "string" && (p.status.includes("Registry") || p.status.includes("Verified"))).length;
 
   return (
     <div className="space-y-8 text-left">

@@ -69,21 +69,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
               isDarkMode 
-                ? "bg-[#FF9E4A] text-[#111110]" 
-                : "bg-[#1A1A1A] text-[#F7F7F5] group-hover:bg-[#FF9E4A] group-hover:text-[#1A1A1A]"
+                ? "bg-[#DF9B43] text-[#0D0D0C]" 
+                : "bg-[#141413] text-white group-hover:bg-[#DF9B43] group-hover:text-black"
             }`}>
               <Landmark size={17} className="stroke-[1.5]" />
             </div>
             <div className="flex flex-col text-left">
               <span className={`font-display font-bold text-xs sm:text-sm tracking-widest leading-none ${
-                isDarkMode ? "text-white" : "text-[#1A1A1A]"
+                isDarkMode ? "text-white" : "text-[#141413]"
               }`}>
-                BISMILLAH
+                {settings?.branding.websiteName?.split(" ")[0] || "BISMILLAH"}
               </span>
               <span className={`font-mono text-[8px] sm:text-[9px] tracking-[0.25em] leading-none mt-1 ${
-                isDarkMode ? "text-[#FF9E4A]" : "text-[#1A1A1A]/70"
+                isDarkMode ? "text-[#DF9B43]" : "text-stone-500"
               }`}>
-                REAL ESTATE
+                ESTATE COLLECTIVE
               </span>
             </div>
           </div>
@@ -96,17 +96,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => onNavigate(link.id)}
-                  className={`font-display text-xs tracking-wider uppercase transition-colors duration-300 relative py-1 cursor-pointer ${
+                  className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 cursor-pointer ${
                     isActive
-                      ? isDarkMode ? "text-[#FF9E4A] font-semibold" : "text-[#1A1A1A] font-semibold"
-                      : isDarkMode ? "text-stone-400 hover:text-white" : "text-[#1A1A1A]/70 hover:text-[#1A1A1A]"
+                      ? isDarkMode ? "text-[#DF9B43] font-semibold" : "text-[#141413] font-semibold"
+                      : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-600 hover:text-black"
                   }`}
                 >
                   {link.label}
                   {isActive && (
                     <motion.span
                       layoutId="navUnderline"
-                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#FF9E4A]"
+                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#DF9B43]"
                       transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
                     />
                   )}
@@ -117,18 +117,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Admin CMS link */}
             <button
               onClick={onOpenAdmin}
-              className={`font-display text-xs tracking-wider uppercase transition-colors duration-300 relative py-1 flex items-center gap-1.5 cursor-pointer ${
+              className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 flex items-center gap-1.5 cursor-pointer ${
                 activeSection === "admin"
-                  ? "text-[#FF9E4A] font-semibold"
-                  : isDarkMode ? "text-stone-400 hover:text-[#FF9E4A]" : "text-[#1A1A1A]/70 hover:text-[#FF9E4A]"
+                  ? "text-[#DF9B43] font-semibold"
+                  : isDarkMode ? "text-stone-400 hover:text-[#DF9B43]" : "text-stone-600 hover:text-[#DF9B43]"
               }`}
             >
-              <Lock size={12} className="text-[#FF9E4A]" />
+              <Lock size={12} className="text-[#DF9B43]" />
               <span>Admin CMS</span>
               {activeSection === "admin" && (
                 <motion.span
                   layoutId="navUnderline"
-                  className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#FF9E4A]"
+                  className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#DF9B43]"
                   transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
                 />
               )}
@@ -142,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={toggleDarkMode}
               className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
                 isDarkMode
-                  ? "bg-[#1A1A1A] text-[#FF9E4A] border-stone-800 hover:text-white"
+                  ? "bg-[#181816] text-[#DF9B43] border-stone-800 hover:text-white"
                   : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
               }`}
               title={isDarkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
@@ -153,22 +153,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border font-mono text-[10px] ${
               isDarkMode 
                 ? "bg-stone-900 border-stone-800 text-stone-300" 
-                : "bg-white/60 border-[#E2E8F0] text-[#1A1A1A]/75"
+                : "bg-white/80 border-stone-200 text-stone-700"
             }`}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>A-1 City, Quetta</span>
+              <span>100% REGISTRY READY</span>
             </div>
             
             <button
               onClick={() => onNavigate("home-private-office")}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-display text-xs font-light tracking-wider uppercase transition-all duration-500 cursor-pointer ${
-                isDarkMode
-                  ? "bg-white text-black hover:bg-[#FF9E4A] hover:text-black"
-                  : "bg-[#1A1A1A] text-[#F7F7F5] hover:bg-[#FF9E4A] hover:text-[#1A1A1A]"
-              }`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-display text-xs font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer bg-[#DF9B43] hover:bg-[#c88532] text-black shadow-md hover:shadow-lg"
             >
-              <span>Private Booking</span>
-              <ArrowRight size={12} className="stroke-[1.5]" />
+              <span>Private Showing</span>
+              <ArrowRight size={12} />
             </button>
           </div>
 

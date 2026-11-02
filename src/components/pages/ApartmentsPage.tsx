@@ -14,7 +14,7 @@ export const ApartmentsPage: React.FC<ApartmentsPageProps> = ({ onContactClick, 
   const { properties } = useProperties();
   const [selectedApartment, setSelectedApartment] = useState<PropertyItem | null>(null);
 
-  const apartments = properties.filter((p) => p.category === "apartments");
+  const apartments = properties.filter((p) => p.category === "apartments" && p.published !== false);
 
   return (
     <div className={`pt-28 sm:pt-36 pb-24 px-4 md:px-8 ${isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"} min-h-screen text-left transition-colors duration-500`}>

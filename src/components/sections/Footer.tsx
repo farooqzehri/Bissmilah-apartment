@@ -30,15 +30,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
           {/* Logo Frame */}
           <div className="md:col-span-4 space-y-6 text-left">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#FF9E4A] text-[#1A1A1A] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#DF9B43] text-black flex items-center justify-center">
                 <Landmark size={18} className="stroke-[1.5]" />
               </div>
               <div className="flex flex-col text-left">
                 <span className={`font-display font-bold text-sm tracking-widest ${isDarkMode ? "text-white" : "text-[#F7F7F5]"}`}>
                   {settings?.branding.footerBrandName || "BISMILLAH"}
                 </span>
-                <span className="font-mono text-[9px] tracking-[0.25em] text-[#FF9E4A] leading-none">
-                  REAL ESTATE
+                <span className="font-mono text-[9px] tracking-[0.25em] text-[#DF9B43] leading-none">
+                  ESTATE COLLECTIVE
                 </span>
               </div>
             </div>
@@ -50,7 +50,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
             <div className={`flex items-center gap-2 bg-white/5 border px-3.5 py-2 rounded-xl w-fit ${
               isDarkMode ? "border-stone-800 bg-stone-900" : "border-white/10"
             }`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF9E4A] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DF9B43] animate-pulse" />
               <span className="font-mono text-[10px] text-stone-300">Quetta Site Operations Active</span>
             </div>
           </div>

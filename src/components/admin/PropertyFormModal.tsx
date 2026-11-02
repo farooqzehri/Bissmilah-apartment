@@ -41,6 +41,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
     { label: "Bathrooms", value: "4 Baths" },
   ]);
   const [featured, setFeatured] = useState(false);
+  const [published, setPublished] = useState(true);
 
   // Image tab mode: "preset" | "url" | "upload"
   const [imageMode, setImageMode] = useState<"preset" | "url" | "upload">("preset");
@@ -61,6 +62,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       setHighlights(propertyToEdit.highlights?.length ? propertyToEdit.highlights : [""]);
       setSpecs(propertyToEdit.specs?.length ? propertyToEdit.specs : [{ label: "", value: "" }]);
       setFeatured(!!propertyToEdit.featured);
+      setPublished(propertyToEdit.published !== false);
     } else {
       // Default new listing pre-fill
       setTitle("");
@@ -84,6 +86,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
         { label: "Possession", value: "Immediate" }
       ]);
       setFeatured(false);
+      setPublished(true);
     }
     setErrors({});
   }, [propertyToEdit, isOpen]);
@@ -148,8 +151,11 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.SyntheticEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     // Validation
     const newErrors: Record<string, string> = {};
@@ -181,6 +187,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       highlights: cleanedHighlights.length > 0 ? cleanedHighlights : ["Verified legal documents under Haji Saud Zehri supervision."],
       specs: cleanedSpecs.length > 0 ? cleanedSpecs : [{ label: "Registry", value: "Verified Deed" }],
       featured,
+      published,
     });
   };
 
@@ -664,22 +671,41 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
               </div>
             </div>
 
-            {/* Section 5: Featured Toggle */}
-            <div className="flex items-center justify-between p-4 rounded-xl border border-stone-200/50 dark:border-stone-800/80">
-              <div>
-                <span className="font-display text-xs font-medium block">
-                  Showcase on Home Featured Catalog
-                </span>
-                <span className={`text-[11px] ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
-                  Feature this estate directly in the initial home portfolio showcase.
-                </span>
+            {/* Section 5: Visibility & Showcase Toggles */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-stone-200/50 dark:border-stone-800/80">
+                <div>
+                  <span className="font-display text-xs font-medium block">
+                    Listing Status (Live on Website)
+                  </span>
+                  <span className={`text-[11px] ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
+                    Publish immediately to front page catalog.
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={published}
+                  onChange={(e) => setPublished(e.target.checked)}
+                  className="w-5 h-5 rounded accent-[#10B981] cursor-pointer"
+                />
               </div>
-              <input
-                type="checkbox"
-                checked={featured}
-                onChange={(e) => setFeatured(e.target.checked)}
-                className="w-5 h-5 rounded accent-[#FF9E4A] cursor-pointer"
-              />
+
+              <div className="flex items-center justify-between p-4 rounded-xl border border-stone-200/50 dark:border-stone-800/80">
+                <div>
+                  <span className="font-display text-xs font-medium block">
+                    Showcase on Home Featured
+                  </span>
+                  <span className={`text-[11px] ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
+                    Feature directly in highlighted home portfolio.
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={featured}
+                  onChange={(e) => setFeatured(e.target.checked)}
+                  className="w-5 h-5 rounded accent-[#FF9E4A] cursor-pointer"
+                />
+              </div>
             </div>
 
             {/* Actions Bar inside scrollable */}
@@ -696,7 +722,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                 Cancel
               </button>
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 className="w-full sm:w-auto px-8 py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2"
               >
                 <Check size={14} className="stroke-[2.5]" />

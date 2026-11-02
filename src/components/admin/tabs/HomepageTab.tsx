@@ -5,6 +5,8 @@ import {
 } from "lucide-react";
 import { HomepageSections, AmenityItem, StatisticItem, GalleryItem, TestimonialItem, FAQItem } from "../../../types/cms";
 
+import { FALLBACK_HOMEPAGE } from "../../../utils/cmsDefaults";
+
 interface HomepageTabProps {
   homepage: HomepageSections | null;
   onSave: (updates: Partial<HomepageSections>) => Promise<any>;
@@ -24,7 +26,9 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
     "hero" | "about" | "amenities" | "stats" | "gallery" | "testimonials" | "faqs" | "cta"
   >("hero");
 
-  const [formData, setFormData] = useState<HomepageSections | null>(null);
+  const [formData, setFormData] = useState<HomepageSections>(() => {
+    return homepage ? JSON.parse(JSON.stringify(homepage)) : FALLBACK_HOMEPAGE;
+  });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -32,10 +36,6 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
       setFormData(JSON.parse(JSON.stringify(homepage)));
     }
   }, [homepage]);
-
-  if (!formData) {
-    return <div className="p-8 text-center text-xs font-mono">Loading homepage CMS...</div>;
-  }
 
   const handleSaveAll = async () => {
     setIsSaving(true);

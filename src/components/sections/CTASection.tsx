@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Building2, Calendar, ClipboardCheck, Clock, Contact, MapPin, 
-  PhoneCall, ShieldAlert, Sparkles, UserCheck, Compass 
+  PhoneCall, ShieldAlert, Sparkles, UserCheck, Compass, CheckCircle2, 
+  ArrowUpRight, Phone, MessageSquare
 } from "lucide-react";
 import { cmsEnquiries } from "../../utils/cmsApi";
 import { useCMS } from "../../utils/cmsContext";
@@ -13,13 +14,12 @@ interface CTASectionProps {
 
 export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) => {
   const { settings, homepage } = useCMS();
-  // Form submission states
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    interest: "apartments",
+    interest: "The Zehri Heights Penthouses (Shandaar Residence)",
     preferredDate: "",
-    meetingType: "office", // 'office' | 'advisor'
+    meetingType: "office", // 'office' | 'onsite' | 'phone'
     message: ""
   });
 
@@ -37,17 +37,16 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple luxury inputs validation
     if (!formData.name.trim()) {
-      setValidationError("Please specify your name for the invitation.");
+      setValidationError("Please specify your full name for the showing dossier.");
       return;
     }
     if (!formData.phone.trim()) {
-      setValidationError("A direct contact phone number is required.");
+      setValidationError("A direct phone number is required for VIP escort confirmation.");
       return;
     }
     if (!formData.preferredDate) {
-      setValidationError("Please select your preferred private meeting date.");
+      setValidationError("Please select your preferred private showing date.");
       return;
     }
 
@@ -68,7 +67,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
       setIsSubmitted(true);
     } catch (err: any) {
       setIsLoading(false);
-      setValidationError(err.message || "Failed to submit appointment. Please call our office directly.");
+      setValidationError(err.message || "Failed to submit showing request. Please call our office directly.");
     }
   };
 
@@ -76,7 +75,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
     setFormData({
       name: "",
       phone: "",
-      interest: "apartments",
+      interest: "The Zehri Heights Penthouses (Shandaar Residence)",
       preferredDate: "",
       meetingType: "office",
       message: ""
@@ -85,379 +84,313 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
     setAppointmentId("");
   };
 
+  const whatsappUrl = `https://wa.me/${(settings?.contact.whatsappNumber || "923337861928").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+    "Assalamu Alaikum Haji Saud Zehri Sahab, I would like to schedule a private walkthrough and title deed review for Bismillah Real Estate properties."
+  )}`;
+
   return (
     <section 
       id="private-office" 
-      className={`py-24 md:py-32 border-t relative overflow-hidden transition-colors duration-500 ${
-        isDarkMode ? "bg-[#111110] border-stone-850 text-[#F7F7F5]" : "bg-[#F7F7F5] border-[#E2E8F0]/40 text-[#1A1A1A]"
+      className={`py-20 sm:py-28 md:py-36 border-t relative overflow-hidden transition-colors duration-500 ${
+        isDarkMode 
+          ? "bg-[#0D0D0C] border-stone-850 text-[#F7F6F2]" 
+          : "bg-[#FAF8F5] border-stone-200/80 text-[#141413]"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 relative z-10">
         
         {/* Main Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
-          {/* Left Panel: High End Editorial Invite */}
-          <div className="lg:col-span-5 text-left space-y-8 lg:sticky lg:top-32">
+          {/* Left Column: California Private Showing Office Profile */}
+          <div className="lg:col-span-5 text-left space-y-8 lg:sticky lg:top-36">
             
             <div className="flex flex-col items-start gap-3">
-              <span className="font-mono text-[10px] tracking-widest text-[#FF9E4A] font-bold uppercase flex items-center gap-1.5">
-                <Building2 size={12} /> PRIVATE OFFICE — MEHFOOZ RABTA
-              </span>
-              <h2 className="text-3xl md:text-5xl font-light tracking-tight leading-[1.12]">
-                Khush-Aamdeed.
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#DF9B43] animate-pulse" />
+                <span className="font-mono text-[10px] tracking-[0.25em] text-[#DF9B43] font-bold uppercase">
+                  08 / PRIVATE SHOWING CONCIERGE
+                </span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.08]">
+                Schedule a <span className="font-serif italic font-normal text-[#DF9B43]">Private Showing</span>
               </h2>
             </div>
 
-            <p className={`font-light text-sm md:text-base leading-relaxed ${isDarkMode ? "text-stone-300" : "text-[#1A1A1A]/70"}`}>
-              Hum aap ko aur aap ki family ko apnay Quetta office mein khush-aamdeed kehte hain. Experience luxury real estate with 100% verified registry files and clear ownership guide.
+            <p className={`font-light text-xs sm:text-sm md:text-base leading-relaxed ${
+              isDarkMode ? "text-stone-300" : "text-stone-700"
+            }`}>
+              We welcome you and your family to our executive office at A-1 City. Experience direct portfolio briefing with Haji Saud Zehri, complete legal revenue mutation papers, and accompanied on-site tours.
             </p>
 
-            {/* Local Geography Details Card */}
-            <div className={`p-6 border space-y-4 shadow-[0_4px_30px_rgba(0,0,0,0.01)] ${
-              isDarkMode ? "bg-stone-900 border-stone-800" : "bg-white border-[#E2E8F0]/40"
+            {/* Address & Timings Pavilion Card */}
+            <div className={`p-6 sm:p-7 rounded-3xl border space-y-5 ${
+              isDarkMode ? "bg-[#141412] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-sm"
             }`}>
               <div className="flex items-start gap-3.5">
-                <Compass className="text-[#FF9E4A] mt-1 shrink-0" size={18} />
+                <MapPin className="text-[#DF9B43] mt-1 shrink-0" size={18} />
                 <div>
-                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/40"}`}>
-                    OFFICE ADDRESS (SUITE ADDRESS)
+                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${
+                    isDarkMode ? "text-stone-400" : "text-stone-500"
+                  }`}>
+                    EXECUTIVE SUITE
                   </span>
-                  <span className={`font-display font-medium text-sm ${isDarkMode ? "text-white" : "text-[#1A1A1A]"}`}>
-                    A-1 City, Block C, Main Double Road
+                  <span className="font-display font-medium text-sm block">
+                    {settings?.contact.officeAddress || "Bismillah Executive Plaza, Sector A-1 Commercial Double Road, Quetta"}
                   </span>
-                  <span className={`font-display text-xs block mt-0.5 ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/60"}`}>
+                  <span className={`text-xs font-light block mt-0.5 ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
                     Quetta, Balochistan, Pakistan
                   </span>
                 </div>
               </div>
 
-              <div className={`flex items-start gap-3.5 pt-4 border-t ${isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/25"}`}>
-                <Clock className="text-[#FF9E4A] mt-1 shrink-0" size={18} />
+              <div className="flex items-start gap-3.5 pt-4 border-t dark:border-stone-850 border-stone-100">
+                <Clock className="text-[#DF9B43] mt-1 shrink-0" size={18} />
                 <div>
-                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/40"}`}>
-                    OFFICE TIMINGS (MULAQAT KA WAQT)
+                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${
+                    isDarkMode ? "text-stone-400" : "text-stone-500"
+                  }`}>
+                    OFFICE HOURS
                   </span>
-                  <span className={`font-display font-medium text-xs ${isDarkMode ? "text-stone-200" : "text-[#1A1A1A]"}`}>
-                    Monday – Friday: 10:00 AM – 4:00 PM
-                  </span>
-                  <span className={`font-display text-[11px] block mt-0.5 ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/55"}`}>
-                    Saturdays are reserved for big property bookings.
+                  <span className="font-display font-medium text-xs sm:text-sm block">
+                    {settings?.contact.businessHours || "Saturday - Thursday: 9:00 AM - 9:00 PM (Friday Closed)"}
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* Visionary Leadership Signature block */}
-            <div className={`pt-4 border-t flex flex-col items-start gap-2.5 ${isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/30"}`}>
-              <span className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/40"}`}>
-                AUTHORITY & GOVERNANCE
-              </span>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center font-serif text-sm italic border border-white">
-                  SZ
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className={`font-serif italic font-normal text-sm ${isDarkMode ? "text-white" : "text-[#1A1A1A]"}`}>
-                    Haji Saud Zehri
-                  </span>
-                  <span className={`font-mono text-[9px] tracking-wider uppercase ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/60"}`}>
-                    Managing Partner & Founder
-                  </span>
-                </div>
+              {/* Direct Instant Action Links */}
+              <div className="pt-4 border-t dark:border-stone-850 border-stone-100 flex flex-wrap gap-3">
+                <a
+                  href={`tel:${settings?.contact.primaryPhone || "+923337861928"}`}
+                  className={`px-4 py-2 rounded-full border text-xs font-mono flex items-center gap-2 transition-colors ${
+                    isDarkMode ? "border-stone-800 hover:border-white text-stone-200" : "border-stone-300 hover:border-black text-stone-800"
+                  }`}
+                >
+                  <Phone size={12} className="text-[#DF9B43]" />
+                  <span>Call Office</span>
+                </a>
+
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono flex items-center gap-2 transition-colors"
+                >
+                  <MessageSquare size={12} />
+                  <span>Direct WhatsApp</span>
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Right Panel: Interactive Conversion Form */}
-          <div className={`lg:col-span-7 p-6 md:p-10 shadow-[0_15px_40px_rgba(0,0,0,0.015)] relative min-h-[480px] flex flex-col justify-center border ${
-            isDarkMode ? "bg-stone-900 border-stone-800" : "bg-white border-[#E2E8F0]/40"
-          }`}>
-            
-            <AnimatePresence mode="wait">
+          {/* Right Column: California Concierge Booking Form */}
+          <div className="lg:col-span-7">
+            <div className={`p-6 sm:p-10 rounded-3xl border text-left shadow-2xl transition-all duration-300 ${
+              isDarkMode 
+                ? "bg-[#141412] border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.5)]" 
+                : "bg-white border-stone-200 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
+            }`}>
               
-              {/* Form loader spinner */}
-              {isLoading && (
-                <motion.div
-                  key="form-loader"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className={`absolute inset-0 rounded-3xl z-20 flex flex-col items-center justify-center gap-4 ${
-                    isDarkMode ? "bg-stone-950/90 text-white" : "bg-white/80 backdrop-blur-sm text-[#1A1A1A]"
-                  }`}
-                >
-                  <div className="w-12 h-12 rounded-full border-2 border-t-[#FF9E4A] border-r-transparent border-b-[#1A1A1A] border-l-transparent animate-spin" />
-                  <span className="font-mono text-xs tracking-widest uppercase">
-                    Securing private slot...
-                  </span>
-                </motion.div>
-              )}
-
-              {/* SUCCESS STATE */}
               {isSubmitted ? (
-                <motion.div
-                  key="success-card"
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -15 }}
-                  transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.6 }}
-                  className="space-y-6 text-left"
-                >
-                  <div className="w-12 h-12 rounded-full bg-[#FF9E4A]/15 text-[#FF9E4A] flex items-center justify-center mb-4">
-                    <ClipboardCheck size={24} className="stroke-[1.5]" />
+                <div className="py-12 text-center space-y-6">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500">
+                    <CheckCircle2 size={32} />
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className={`text-2xl font-light tracking-tight ${isDarkMode ? "text-white" : "text-[#1A1A1A]"}`}>
-                      Invitation Secured Successfully
+                  <div>
+                    <span className="font-mono text-xs uppercase tracking-widest text-[#DF9B43] font-bold block mb-1">
+                      INVITATION CONFIRMED
+                    </span>
+                    <h3 className="text-2xl sm:text-3xl font-display font-medium">
+                      Showing Dossier Created
                     </h3>
-                    <p className={`text-xs md:text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-[#1A1A1A]/60"}`}>
-                      Thank you, <span className="font-semibold text-[#FF9E4A]">{formData.name}</span>. Your private consultation request has been cataloged under our priority folder. An advisor will contact you within 2 business hours.
+                    <p className={`text-xs sm:text-sm font-light mt-2 max-w-md mx-auto ${
+                      isDarkMode ? "text-stone-300" : "text-stone-600"
+                    }`}>
+                      Shukriya, <span className="font-semibold text-[#DF9B43]">{formData.name}</span>. Your showing file has been registered with priority code:
                     </p>
                   </div>
 
-                  {/* Booking Receipt card */}
-                  <div className={`p-6 border space-y-3 font-mono text-[11px] ${
-                    isDarkMode ? "bg-stone-950 border-stone-850 text-stone-200" : "bg-[#F7F7F5] border-[#E2E8F0]/50 text-[#1A1A1A]/80"
+                  <div className={`inline-block px-6 py-3 rounded-2xl border font-mono text-lg font-bold tracking-widest ${
+                    isDarkMode ? "bg-stone-900 border-[#DF9B43]/40 text-[#DF9B43]" : "bg-stone-50 border-[#DF9B43]/40 text-stone-900"
                   }`}>
-                    <div className={`flex justify-between border-b pb-2 ${isDarkMode ? "border-stone-850" : "border-[#E2E8F0]/40"}`}>
-                      <span className="opacity-50 uppercase font-medium">Invitation Code</span>
-                      <span className="font-bold text-[#FF9E4A]">{appointmentId}</span>
-                    </div>
-
-                    <div className={`flex justify-between border-b pb-2 ${isDarkMode ? "border-stone-850" : "border-[#E2E8F0]/40"}`}>
-                      <span className="opacity-50 uppercase">Desired Category</span>
-                      <span className="font-semibold uppercase">{formData.interest}</span>
-                    </div>
-
-                    <div className={`flex justify-between border-b pb-2 ${isDarkMode ? "border-stone-850" : "border-[#E2E8F0]/40"}`}>
-                      <span className="opacity-50 uppercase">Scheduled Date</span>
-                      <span>{formData.preferredDate}</span>
-                    </div>
-
-                    <div className="flex justify-between pt-1">
-                      <span className="opacity-50 uppercase">Meeting Format</span>
-                      <span className="uppercase">
-                        {formData.meetingType === "office" ? "Office Suite (Quetta)" : "Digital Advisor Video"}
-                      </span>
-                    </div>
+                    {appointmentId}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-3 pt-4">
-                    <button
-                      onClick={resetForm}
-                      className={`px-6 py-2.5 rounded-full border transition-all text-xs font-display uppercase tracking-wider cursor-pointer w-full sm:w-auto text-center ${
-                        isDarkMode 
-                          ? "border-stone-700 text-stone-300 hover:border-stone-500" 
-                          : "border-[#E2E8F0]/80 text-[#1A1A1A]/70 hover:border-[#1A1A1A]/20"
-                      }`}
-                    >
-                      Book Another Slot
-                    </button>
-                    <a
-                      href="tel:+923337827725"
-                      className="px-6 py-2.5 rounded-full bg-[#FF9E4A] text-black hover:bg-white hover:text-black transition-all text-xs font-display font-medium uppercase tracking-wider cursor-pointer w-full sm:w-auto text-center inline-flex items-center justify-center gap-1.5"
-                    >
-                      <PhoneCall size={12} /> Call Direct Advisor
-                    </a>
-                  </div>
-                </motion.div>
+                  <p className={`text-xs font-light max-w-sm mx-auto ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
+                    Our executive secretary will contact your phone ({formData.phone}) to confirm directions and gate access credentials.
+                  </p>
+
+                  <button
+                    onClick={resetForm}
+                    className="px-8 py-3 rounded-full text-xs font-display tracking-widest uppercase font-semibold bg-[#DF9B43] hover:bg-[#c88532] text-black cursor-pointer transition-colors"
+                  >
+                    Schedule Another Showing
+                  </button>
+                </div>
               ) : (
-                /* INTAKE FORM STATE */
-                <motion.form
-                  key="intake-form"
-                  onSubmit={handleFormSubmit}
-                  className="space-y-6 text-left"
-                >
-                  <div className="space-y-1">
-                    <span className={`font-mono text-[9px] tracking-widest uppercase ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/40"}`}>
-                      RABTA FORUM — EASY CONTACT
+                <form onSubmit={handleFormSubmit} className="space-y-6">
+                  <div>
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-[#DF9B43] font-bold block mb-1">
+                      CONFIDENTIAL SHOWING REQUEST
                     </span>
-                    <h3 className={`text-xl md:text-2xl font-light tracking-tight ${isDarkMode ? "text-white" : "text-[#1A1A1A]"}`}>
-                      Meeting Book Karen
+                    <h3 className="text-xl sm:text-2xl font-display font-medium tracking-tight">
+                      Private Appointment Form
                     </h3>
+                    <p className={`text-xs font-light mt-1 ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
+                      All requests are handled under strict confidentiality.
+                    </p>
                   </div>
 
-                  {/* Form validation alert banner */}
                   {validationError && (
-                    <div className="p-3.5 rounded-xl bg-orange-50/10 border border-[#FF9E4A]/30 text-xs text-orange-200 flex items-center gap-2 font-display">
-                      <ShieldAlert size={14} className="text-[#FF9E4A] shrink-0" />
-                      <span>{validationError}</span>
+                    <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-mono">
+                      {validationError}
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Full Name Input */}
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="name-input" className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                        Aap Ka Name * (Full Name)
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Full Name */}
+                    <div className="space-y-1.5">
+                      <label className="font-mono text-[10px] uppercase tracking-wider block">
+                        Full Name *
                       </label>
                       <input
-                        id="name-input"
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder="e.g. Farooq Ahmed"
-                        className={`w-full px-4 py-3 border text-xs font-display placeholder:text-stone-400 focus:outline-none focus:border-[#FF9E4A] transition-all ${
-                          isDarkMode 
-                            ? "bg-[#111110] border-stone-800 text-white focus:bg-stone-950" 
-                            : "bg-[#F7F7F5]/40 border-[#E2E8F0] text-[#1A1A1A] focus:bg-white"
+                        placeholder="e.g. Sardar Aurangzeb Zehri"
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
+                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
                         }`}
                       />
                     </div>
 
-                    {/* Direct Contact Phone */}
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="phone-input" className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                        Mobile Number * (Phone)
+                    {/* Phone Number */}
+                    <div className="space-y-1.5">
+                      <label className="font-mono text-[10px] uppercase tracking-wider block">
+                        Direct Phone / WhatsApp *
                       </label>
                       <input
-                        id="phone-input"
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="e.g. 0333 7827725"
-                        className={`w-full px-4 py-3 border text-xs font-display placeholder:text-stone-400 focus:outline-none focus:border-[#FF9E4A] transition-all ${
-                          isDarkMode 
-                            ? "bg-[#111110] border-stone-800 text-white focus:bg-stone-950" 
-                            : "bg-[#F7F7F5]/40 border-[#E2E8F0] text-[#1A1A1A] focus:bg-white"
+                        placeholder="+92 333 1234567"
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
+                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
                         }`}
                       />
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Property Curation Category Selection */}
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="interest-select" className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                        Kis Cheez Mein Interest Hai? (Property Choice)
+                    {/* Property Interest */}
+                    <div className="space-y-1.5">
+                      <label className="font-mono text-[10px] uppercase tracking-wider block">
+                        Property of Interest
                       </label>
                       <select
-                        id="interest-select"
                         name="interest"
                         value={formData.interest}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border text-xs font-display focus:outline-none focus:border-[#FF9E4A] transition-all cursor-pointer appearance-none ${
-                          isDarkMode 
-                            ? "bg-[#111110] border-stone-800 text-white focus:bg-stone-950" 
-                            : "bg-[#F7F7F5]/40 border-[#E2E8F0] text-[#1A1A1A] focus:bg-white"
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${
+                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
                         }`}
                       >
-                        <option value="apartments">Premium Apartments / Flats</option>
-                        <option value="estates">Elite Estates (Bungalow Plots)</option>
-                        <option value="schemes">Luxury Home Schemes (Family Plots)</option>
-                        <option value="commercial">Commercial Roadside Plots (Dukaan)</option>
+                        <option value="The Zehri Heights Penthouses (Shandaar Residence)">
+                          The Zehri Heights Duplex Penthouse
+                        </option>
+                        <option value="The Obsidian Pavilion (Sunehri Bungalow)">
+                          The Obsidian Pavilion Walled Estate
+                        </option>
+                        <option value="Double Road Commercial Frontage (Corner Dukaan & Plaza)">
+                          Double Road Commercial Corner Frontage
+                        </option>
+                        <option value="Bismillah Dream Gardens Masterplan">
+                          Bismillah Dream Gardens Plots
+                        </option>
+                        <option value="General Portfolio Discussion">
+                          General Portfolio Discussion
+                        </option>
                       </select>
                     </div>
 
-                    {/* Meeting Format Picker */}
-                    <div className="flex flex-col gap-1.5">
-                      <label htmlFor="preferredDate" className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                        Mulaqat ki Date * (Meeting Date)
+                    {/* Preferred Date */}
+                    <div className="space-y-1.5">
+                      <label className="font-mono text-[10px] uppercase tracking-wider block">
+                        Preferred Date *
                       </label>
                       <input
-                        id="preferredDate"
                         type="date"
                         name="preferredDate"
                         value={formData.preferredDate}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 border text-xs font-display focus:outline-none focus:border-[#FF9E4A] transition-all cursor-pointer ${
-                          isDarkMode 
-                            ? "bg-[#111110] border-stone-800 text-white focus:bg-stone-950" 
-                            : "bg-[#F7F7F5]/40 border-[#E2E8F0] text-[#1A1A1A] focus:bg-white"
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${
+                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
                         }`}
                       />
                     </div>
                   </div>
 
-                  {/* Dual CTA Path Picker */}
-                  <div className="flex flex-col gap-1.5">
-                    <span className={`font-mono text-[8px] uppercase tracking-widest mb-1.5 block ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                      Mulaqat Ka Tariqa (Select Format)
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Office Meeting Path */}
-                      <div
-                        id="format-office"
-                        onClick={() => setFormData(prev => ({ ...prev, meetingType: "office" }))}
-                        className={`p-4 cursor-pointer transition-all flex items-start gap-3 border ${
-                          formData.meetingType === "office"
-                            ? "border-[#FF9E4A] bg-[#FF9E4A]/5 text-[#FF9E4A]"
-                            : isDarkMode
-                              ? "border-stone-800 bg-stone-900/45 text-stone-300 hover:border-stone-700"
-                              : "border-[#E2E8F0] bg-[#F7F7F5]/20 hover:border-black/20 text-[#1A1A1A]"
-                        }`}
-                      >
-                        <Building2 size={16} className="mt-0.5" />
-                        <div className="flex flex-col text-left">
-                          <span className="font-display font-medium text-xs leading-none">Quetta Office Mulaqat</span>
-                          <span className={`font-display text-[10px] mt-1 leading-snug ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                            Office aakar milen aur physical papers check karen.
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Call Advisor Path */}
-                      <div
-                        id="format-advisor"
-                        onClick={() => setFormData(prev => ({ ...prev, meetingType: "advisor" }))}
-                        className={`p-4 cursor-pointer transition-all flex items-start gap-3 border ${
-                          formData.meetingType === "advisor"
-                            ? "border-[#FF9E4A] bg-[#FF9E4A]/5 text-[#FF9E4A]"
-                            : isDarkMode
-                              ? "border-stone-800 bg-stone-900/45 text-stone-300 hover:border-stone-700"
-                              : "border-[#E2E8F0] bg-[#F7F7F5]/20 hover:border-black/20 text-[#1A1A1A]"
-                        }`}
-                      >
-                        <UserCheck size={16} className="mt-0.5" />
-                        <div className="flex flex-col text-left">
-                          <span className="font-display font-medium text-xs leading-none">Phone Par Rabta</span>
-                          <span className={`font-display text-[10px] mt-1 leading-snug ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                            Phone call par advice aur details maloom karen.
-                          </span>
-                        </div>
-                      </div>
+                  {/* Meeting Format */}
+                  <div className="space-y-2">
+                    <label className="font-mono text-[10px] uppercase tracking-wider block">
+                      Showing Preference Format
+                    </label>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {[
+                        { id: "office", label: "Executive VIP Suite" },
+                        { id: "onsite", label: "On-Site Escorted Tour" },
+                        { id: "phone", label: "Direct Phone Briefing" },
+                      ].map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setFormData((prev) => ({ ...prev, meetingType: item.id }))}
+                          className={`p-3 rounded-xl border text-xs font-display text-center transition-all cursor-pointer ${
+                            formData.meetingType === item.id
+                              ? "bg-[#DF9B43] text-black font-semibold border-[#DF9B43] shadow-sm"
+                              : isDarkMode 
+                                ? "bg-stone-900 border-stone-800 text-stone-400 hover:text-white" 
+                                : "bg-stone-50 border-stone-200 text-stone-600 hover:text-black"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Private message context */}
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="client-note" className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/50"}`}>
-                      Extra Requirements (Koi Khaas Baat?)
+                  {/* Message Note */}
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[10px] uppercase tracking-wider block">
+                      Specific Requirements / Notes
                     </label>
                     <textarea
                       id="client-note"
                       name="message"
-                      rows={2}
+                      rows={3}
                       value={formData.message}
                       onChange={handleInputChange}
-                      placeholder="e.g. Mukammal boundary wall, corner plot ya road-frontage chahiye..."
-                      className={`w-full px-4 py-3 border text-xs font-display placeholder:text-stone-400 focus:outline-none focus:border-[#FF9E4A] transition-all resize-none ${
-                        isDarkMode 
-                          ? "bg-[#111110] border-stone-800 text-white focus:bg-stone-950" 
-                          : "bg-[#F7F7F5]/40 border-[#E2E8F0] text-[#1A1A1A] focus:bg-white"
+                      placeholder="Please mention any specific title deed or mutation verification files you would like prepared for review."
+                      className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
+                        isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
                       }`}
                     />
                   </div>
 
-                  {/* Primary CTA Submit Anchor */}
+                  {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full py-4 bg-[#FF9E4A] text-black hover:bg-white hover:text-black font-display font-semibold text-xs tracking-wider uppercase transition-all duration-500 cursor-pointer flex items-center justify-center gap-2 shadow-sm mt-2 focus:outline-none focus:ring-1 focus:ring-[#FF9E4A]"
+                    disabled={isLoading}
+                    className="w-full py-4 rounded-full bg-[#DF9B43] hover:bg-[#c88532] text-black font-display font-semibold text-xs tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-xl disabled:opacity-50"
                   >
-                    <span>
-                      {formData.meetingType === "office" 
-                        ? "Book My Private Meeting (Office)" 
-                        : "Call Advisor Now (Phone)"}
-                    </span>
-                    <Sparkles size={13} />
+                    <span>{isLoading ? "Generating Showing Dossier..." : "Confirm Private Showing"}</span>
+                    <ArrowUpRight size={15} />
                   </button>
-                </motion.form>
+                </form>
               )}
-            </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>

@@ -8,7 +8,9 @@ import { MaintenanceOverlay } from "./components/ui/MaintenanceOverlay";
 import { Hero } from "./components/sections/Hero";
 import { StatsSection } from "./components/sections/StatsSection";
 import { Catalog } from "./components/sections/Catalog";
+import { AboutLegacySection } from "./components/sections/AboutLegacySection";
 import { AmenitiesSection } from "./components/sections/AmenitiesSection";
+import { GallerySection } from "./components/sections/GallerySection";
 import { TestimonialsSection } from "./components/sections/TestimonialsSection";
 import { FAQSection } from "./components/sections/FAQSection";
 import { CTASection } from "./components/sections/CTASection";
@@ -22,9 +24,53 @@ import { Helmet } from "./components/ui/Helmet";
 
 function MainAppContent() {
   const { settings, isDarkMode, toggleDarkMode } = useCMS();
-  const [currentPage, setCurrentPage] = useState<string>("home");
+
+  // Persist authentication state across page reloads
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return Boolean(localStorage.getItem("bismillah_admin_token"));
+  });
+
+  // Persist current page & respect direct hash URLs (e.g. #admin, #properties)
+  const [currentPage, setCurrentPage] = useState<string>(() => {
+    if (typeof window === "undefined") return "home";
+    const hash = window.location.hash.replace("#", "").trim();
+    if (["admin", "apartments", "properties", "about", "home"].includes(hash)) {
+      return hash;
+    }
+    const saved = localStorage.getItem("bismillah_current_page");
+    if (saved && ["admin", "apartments", "properties", "about", "home"].includes(saved)) {
+      return saved;
+    }
+    return "home";
+  });
+  // admuby
+
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
+  const [catalogCategoryFilter, setCatalogCategoryFilter] = useState<string>("all");
+
+  // Sync hash changes dynamically
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "").trim();
+      if (hash === "admin") {
+        const token = localStorage.getItem("bismillah_admin_token");
+        if (token) {
+          setIsAdminAuthenticated(true);
+          setCurrentPage("admin");
+          localStorage.setItem("bismillah_current_page", "admin");
+        } else {
+          setIsAdminAuthModalOpen(true);
+        }
+      } else if (["home", "apartments", "properties", "about"].includes(hash)) {
+        setCurrentPage(hash);
+        localStorage.setItem("bismillah_current_page", hash);
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   // Universal Navigation Routing handler
   const handleNavigation = (targetId: string) => {
@@ -35,6 +81,8 @@ function MainAppContent() {
 
     if (targetId === "home-private-office") {
       setCurrentPage("home");
+      localStorage.setItem("bismillah_current_page", "home");
+      window.location.hash = "home";
       setTimeout(() => {
         const element = document.getElementById("private-office");
         if (element) {
@@ -50,6 +98,8 @@ function MainAppContent() {
 
     if (["home", "apartments", "properties", "about"].includes(targetId)) {
       setCurrentPage(targetId);
+      localStorage.setItem("bismillah_current_page", targetId);
+      window.location.hash = targetId === "home" ? "" : targetId;
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -57,6 +107,7 @@ function MainAppContent() {
     // Scroll handling within home views
     if (currentPage !== "home") {
       setCurrentPage("home");
+      localStorage.setItem("bismillah_current_page", "home");
       setTimeout(() => {
         handleScrollToElement(targetId);
       }, 150);
@@ -81,6 +132,7 @@ function MainAppContent() {
 
   const handleContactInquiry = (propertyTitle: string = "") => {
     setCurrentPage("home");
+    localStorage.setItem("bismillah_current_page", "home");
     setTimeout(() => {
       const element = document.getElementById("private-office");
       if (element) {
@@ -101,8 +153,12 @@ function MainAppContent() {
   };
 
   const handleOpenAdmin = () => {
-    if (isAdminAuthenticated) {
+    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("bismillah_admin_token"));
+    if (isAdminAuthenticated || hasToken) {
+      setIsAdminAuthenticated(true);
       setCurrentPage("admin");
+      localStorage.setItem("bismillah_current_page", "admin");
+      window.location.hash = "admin";
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       setIsAdminAuthModalOpen(true);
@@ -113,6 +169,8 @@ function MainAppContent() {
     setIsAdminAuthenticated(true);
     setIsAdminAuthModalOpen(false);
     setCurrentPage("admin");
+    localStorage.setItem("bismillah_current_page", "admin");
+    window.location.hash = "admin";
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -157,41 +215,59 @@ function MainAppContent() {
                 keywords="Bismillah Real Estate, Haji Saud Zehri, Quetta Real Estate, A-1 City Quetta, Plots in Quetta, Flats in Quetta, Balochistan properties, verified zameen, secure properties"
               />
 
-              {/* 1. Hero Section */}
+              {/* 1. California Luxury Hero Section */}
               {settings?.behavior.sectionToggles.hero !== false && (
                 <Hero
                   onExploreClick={() => handleScrollToElement("curation")}
                   onBookingClick={() => handleScrollToElement("private-office")}
                   isDarkMode={isDarkMode}
+                  onSelectCategory={(cat) => setCatalogCategoryFilter(cat)}
                 />
               )}
 
-              {/* 2. Key Statistics Section */}
+              {/* 2. Key Verified Benchmarks */}
               {settings?.behavior.sectionToggles.statistics !== false && (
                 <StatsSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 3. Live Property Catalog */}
+              {/* 3. Curated Estates & Residences Portfolio */}
               {settings?.behavior.sectionToggles.propertiesCatalog !== false && (
-                <Catalog isDarkMode={isDarkMode} onInquireClick={handleContactInquiry} />
+                <Catalog 
+                  isDarkMode={isDarkMode} 
+                  onInquireClick={handleContactInquiry} 
+                  selectedCategoryFilter={catalogCategoryFilter}
+                />
               )}
 
-              {/* 4. Amenities & Utilities */}
+              {/* 4. The Foundation of Trust — Founder & Legacy */}
+              {settings?.behavior.sectionToggles.about !== false && (
+                <AboutLegacySection
+                  isDarkMode={isDarkMode}
+                  onBookingClick={() => handleScrollToElement("private-office")}
+                />
+              )}
+
+              {/* 5. The California Living Standard — Amenities & Utilities */}
               {settings?.behavior.sectionToggles.amenities !== false && (
                 <AmenitiesSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 5. Client Testimonials */}
+              {/* 6. Visual Monograph — Architectural Perspectives Gallery */}
+              {settings?.behavior.sectionToggles.gallery !== false && (
+                <GallerySection isDarkMode={isDarkMode} />
+              )}
+
+              {/* 7. Client Acclaim & Testimonials */}
               {settings?.behavior.sectionToggles.testimonials !== false && (
                 <TestimonialsSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 6. Frequently Asked Questions */}
+              {/* 8. Title & Registry Disclosures FAQ */}
               {settings?.behavior.sectionToggles.faq !== false && (
                 <FAQSection isDarkMode={isDarkMode} />
               )}
 
-              {/* 7. CTA Office Contact */}
+              {/* 9. Private Showing Concierge & Executive Suite */}
               {settings?.behavior.sectionToggles.ctaBooking !== false && (
                 <CTASection isDarkMode={isDarkMode} />
               )}
@@ -279,6 +355,7 @@ function MainAppContent() {
       <MaintenanceOverlay
         onOpenAdmin={handleOpenAdmin}
         isDarkMode={isDarkMode}
+        isAdminAuthenticated={isAdminAuthenticated}
       />
 
       {/* Admin Authentication Gate Modal */}
