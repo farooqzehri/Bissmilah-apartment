@@ -660,6 +660,198 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1793185796670-993",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:09:56.670Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793185753384-814",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:09:13.384Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793185710202-513",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:08:30.202Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793184585389-849",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T10:49:45.389Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793184552814-472",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T10:49:12.814Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179530335-818",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:25:30.335Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179520969-199",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:25:20.969Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179432259-835",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:23:52.259Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179412734-65",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:23:32.734Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179351590-553",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:22:31.590Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179341110-615",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:22:21.110Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793179172646-394",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:19:32.646Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178454428-612",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:07:34.428Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178438228-120",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:07:18.228Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178318735-398",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:05:18.735Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178243724-357",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:04:03.724Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178201981-622",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:03:21.981Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178183725-610",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:03:03.725Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178143191-850",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:02:23.191Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793178059147-468",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T09:00:59.147Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793177915088-916",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T08:58:35.088Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793177870529-771",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T08:57:50.529Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793177865102-811",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T08:57:45.102Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793177846422-349",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T08:57:26.422Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
       "id": "log-1793177327118-932",
       "action": "NEW_LEAD",
       "entity": "Enquiry",
