@@ -7,17 +7,31 @@ import { AdminUserModel } from "../models/AdminUser";
 import { dbManager } from "../db";
 
 let isConnected = false;
-let isConnecting = false;
 let lastError: string | null = null;
+let connectionPromise: Promise<boolean> | null = null;
+let retryTimer: ReturnType<typeof setTimeout> | null = null;
+let retryAttempt = 0;
 
-// Prevent unhandled error events from crashing or emitting alerts
+const RETRY_BASE_DELAY_MS = 5_000;
+const RETRY_MAX_DELAY_MS = 60_000;
+
 mongoose.connection.on("error", (err) => {
   lastError = err?.message || String(err);
-  isConnected = false;
 });
 
 mongoose.connection.on("disconnected", () => {
   isConnected = false;
+});
+
+mongoose.connection.on("connected", () => {
+  isConnected = true;
+  lastError = null;
+  retryAttempt = 0;
+
+  if (retryTimer) {
+    clearTimeout(retryTimer);
+    retryTimer = null;
+  }
 });
 
 export const isMongoConnected = (): boolean => isConnected && mongoose.connection.readyState === 1;
@@ -32,94 +46,145 @@ export interface MongoStatusInfo {
 
 export const getMongoStatus = (): MongoStatusInfo => {
   const mongoUri = process.env.MONGODB_URI;
-  const hasUri = Boolean(mongoUri && mongoUri.trim() !== "" && !mongoUri.includes("<username>"));
+  const hasUri = Boolean(
+    mongoUri &&
+      mongoUri.trim() !== "" &&
+      !mongoUri.includes("<username>") &&
+      !mongoUri.includes("<password>")
+  );
   const connected = isMongoConnected();
 
   let advice: string | undefined;
   if (!connected && hasUri && lastError) {
     const errLow = lastError.toLowerCase();
-    if (errLow.includes("whitelist") || errLow.includes("could not connect") || errLow.includes("timed out") || errLow.includes("serverselectionerror")) {
-      advice = "MongoDB Atlas requires IP whitelisting for Cloud deployments. In your MongoDB Atlas Console under Security > Network Access, add IP 0.0.0.0/0 (Allow from Anywhere).";
-    } else if (errLow.includes("auth") || errLow.includes("password")) {
+    if (errLow.includes("auth") || errLow.includes("password")) {
       advice = "Database credentials incorrect. Please verify your Atlas database username & password in MONGODB_URI (ensure special characters are URL encoded).";
+    } else if (errLow.includes("mongoparseerror") || errLow.includes("invalid scheme") || errLow.includes("invalid uri")) {
+      advice = "MONGODB_URI is malformed. Copy the Atlas Node.js driver URI, include a database name, and URL-encode special characters in the username or password.";
+    } else if (errLow.includes("whitelist") || errLow.includes("could not connect") || errLow.includes("timed out") || errLow.includes("serverselectionerror")) {
+      advice = "MongoDB Atlas could not be reached. Check the cluster status, network access list, DNS/network connectivity, and the deployment's outbound IP address.";
     }
   }
 
   return {
     connected,
-    provider: connected ? "MongoDB Atlas (Connected)" : (hasUri ? "MongoDB Atlas (IP Whitelist Required)" : "Local Storage (Persistent)"),
+    provider: connected ? "MongoDB Atlas (Connected)" : (hasUri ? "MongoDB Atlas (Disconnected)" : "Local Storage (Persistent)"),
     hasUri,
     error: lastError || undefined,
     advice,
   };
 };
 
-export const connectToMongoAtlas = async (forceRetry = false): Promise<boolean> => {
-  const mongoUri = process.env.MONGODB_URI;
+function scheduleMongoRetry(): void {
+  if (retryTimer || !process.env.MONGODB_URI?.trim()) {
+    return;
+  }
 
-  if (!mongoUri || mongoUri.trim() === "" || mongoUri.includes("<username>") || mongoUri.includes("<password>")) {
+  const delay = Math.min(RETRY_BASE_DELAY_MS * 2 ** retryAttempt, RETRY_MAX_DELAY_MS);
+  retryAttempt = Math.min(retryAttempt + 1, 4);
+  retryTimer = setTimeout(() => {
+    retryTimer = null;
+    void connectToMongoAtlas();
+  }, delay);
+  retryTimer.unref();
+}
+
+function isPermanentConnectionError(err: unknown): boolean {
+  const error = err as { name?: string; message?: string };
+  const name = error?.name?.toLowerCase() || "";
+  const message = error?.message?.toLowerCase() || "";
+
+  return (
+    name.includes("mongoparseerror") ||
+    name.includes("mongoinvalidargumenterror") ||
+    message.includes("authentication failed") ||
+    message.includes("bad auth")
+  );
+}
+
+export const connectToMongoAtlas = (): Promise<boolean> => {
+  const mongoUri = process.env.MONGODB_URI?.trim();
+
+  if (!mongoUri || mongoUri.includes("<username>") || mongoUri.includes("<password>")) {
     console.log("[MongoDB Atlas] MONGODB_URI not configured in .env. Operating in resilient local storage mode.");
     lastError = null;
-    return false;
+    return Promise.resolve(false);
   }
 
-  if (isConnected && !forceRetry && mongoose.connection.readyState === 1) {
-    return true;
+  if (isMongoConnected()) {
+    return Promise.resolve(true);
   }
 
-  if (isConnecting) {
-    return false;
+  if (connectionPromise) {
+    return connectionPromise;
   }
 
-  isConnecting = true;
+  if (retryTimer) {
+    clearTimeout(retryTimer);
+    retryTimer = null;
+  }
 
-  try {
-    // If previously in a connecting or half-open state, disconnect cleanly first
-    if (mongoose.connection.readyState !== 0) {
-      await mongoose.disconnect().catch(() => {});
-    }
-
-    console.log("[MongoDB Atlas] Attempting connection to MongoDB Atlas cluster...");
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 3500,
-      connectTimeoutMS: 4000,
-      autoIndex: true,
-    });
-
-    isConnected = true;
-    lastError = null;
-    isConnecting = false;
-    console.log("[MongoDB Atlas] Successfully connected to MongoDB Atlas database!");
-
-    // Safely remove any legacy unique indexes that could block document creation
+  connectionPromise = (async () => {
     try {
-      const coll = mongoose.connection.db?.collection("properties");
-      if (coll) {
-        const indexes = await coll.indexes();
-        if (indexes.some((idx: any) => idx.name === "propertyId_1")) {
-          await coll.dropIndex("propertyId_1").catch(() => {});
-          console.log("[MongoDB Atlas] Removed legacy propertyId_1 index constraint.");
-        }
+      if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
       }
-    } catch {
-      // Safe ignore
+
+      console.log("[MongoDB Atlas] Attempting connection to MongoDB Atlas cluster...");
+      await mongoose.connect(mongoUri, {
+        serverSelectionTimeoutMS: 10_000,
+        connectTimeoutMS: 10_000,
+        autoIndex: true,
+      });
+
+      isConnected = true;
+      lastError = null;
+      retryAttempt = 0;
+      console.log("[MongoDB Atlas] Successfully connected to MongoDB Atlas database!");
+
+      // Safely remove any legacy unique indexes that could block document creation
+      try {
+        const coll = mongoose.connection.db?.collection("properties");
+        if (coll) {
+          const indexes = await coll.indexes();
+          if (indexes.some((idx: any) => idx.name === "propertyId_1")) {
+            await coll.dropIndex("propertyId_1").catch(() => {});
+            console.log("[MongoDB Atlas] Removed legacy propertyId_1 index constraint.");
+          }
+        }
+      } catch {
+        // Safe ignore
+      }
+
+      // Seed default data if collections are empty or missing records
+      await seedDefaultDataIfEmpty();
+
+      return true;
+    } catch (err: any) {
+      isConnected = false;
+      lastError = `${err?.name || "Error"}: ${err?.message || String(err)}`;
+
+      await mongoose.disconnect().catch(() => {});
+
+      if (!isPermanentConnectionError(err)) {
+        scheduleMongoRetry();
+      }
+
+      console.warn(
+        "[MongoDB Atlas Notice] Connection failed (" +
+          (err?.name || "Error") +
+          "). " +
+          (isPermanentConnectionError(err)
+            ? "Check MONGODB_URI credentials and format."
+            : "Operating in local storage mode; a background retry has been scheduled.")
+      );
+      return false;
     }
+  })().finally(() => {
+    connectionPromise = null;
+  });
 
-    // Seed default data if collections are empty or missing records
-    await seedDefaultDataIfEmpty();
-
-    return true;
-  } catch (err: any) {
-    isConnected = false;
-    isConnecting = false;
-    lastError = err?.message || String(err);
-
-    // Disconnect cleanly so no lingering sockets or reconnect loops remain
-    await mongoose.disconnect().catch(() => {});
-
-    console.log("[MongoDB Atlas Notice] Atlas connection unreachable (" + (err?.name || "Notice") + "). Safely operating in persistent local storage mode.");
-    return false;
-  }
+  return connectionPromise;
 };
 
 /**
