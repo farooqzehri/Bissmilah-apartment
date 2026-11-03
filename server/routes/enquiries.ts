@@ -4,14 +4,29 @@ import { requireAdminAuth } from "./auth";
 import { EnquiryLead } from "../types";
 import { isMongoConnected } from "../db/mongodb";
 import { CustomerInquiryModel } from "../models/CustomerInquiry";
+import { escapeRegex } from "../utils/search";
 
 const router = Router();
 const recentSubmissions = new Map<string, number>();
+const ENQUIRY_STATUSES: EnquiryLead["status"][] = [
+  "New",
+  "Contacted",
+  "In Review",
+  "Booked",
+  "Closed",
+  "Archived",
+];
+
+function isEnquiryStatus(value: unknown): value is EnquiryLead["status"] {
+  return typeof value === "string" && ENQUIRY_STATUSES.some((status) => status === value);
+}
 
 // POST /api/enquiries - Public lead / booking submission
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { name, phone, email, interest, preferredDate, meetingType, message } = req.body;
+    const body: Record<string, unknown> =
+      req.body && typeof req.body === "object" && !Array.isArray(req.body) ? req.body : {};
+    const { name, phone, email, interest, preferredDate, meetingType, message } = body;
 
     if (!name || typeof name !== "string" || name.trim().length < 2) {
       res.status(400).json({ error: "Please provide a valid client name (minimum 2 characters)" });
@@ -22,6 +37,29 @@ router.post("/", async (req: Request, res: Response) => {
       res.status(400).json({ error: "Please provide a valid contact telephone or WhatsApp number" });
       return;
     }
+
+    if (
+      (email !== undefined && typeof email !== "string") ||
+      (interest !== undefined && typeof interest !== "string") ||
+      (preferredDate !== undefined && typeof preferredDate !== "string") ||
+      (meetingType !== undefined && typeof meetingType !== "string") ||
+      (message !== undefined && typeof message !== "string")
+    ) {
+      res.status(400).json({ error: "Optional enquiry fields must be strings" });
+      return;
+    }
+
+    const normalizedEmail = typeof email === "string" && email.trim() ? email.trim() : undefined;
+    const propertyInterest =
+      typeof interest === "string" && interest.trim()
+        ? interest.trim()
+        : "The Zehri Heights Penthouses (Shandaar Residence)";
+    const normalizedPreferredDate =
+      typeof preferredDate === "string" && preferredDate.trim()
+        ? preferredDate.trim()
+        : new Date().toISOString().split("T")[0];
+    const normalizedMeetingType =
+      typeof meetingType === "string" && meetingType.trim() ? meetingType.trim() : "office";
 
     const clientIp = req.ip || req.socket.remoteAddress || "unknown";
     const now = Date.now();
@@ -40,11 +78,11 @@ router.post("/", async (req: Request, res: Response) => {
       token,
       clientName: name.trim(),
       phone: phone.trim(),
-      email: email && typeof email === "string" ? email.trim() : undefined,
-      propertyInterest: interest || "The Zehri Heights Penthouses (Shandaar Residence)",
-      preferredDate: preferredDate || new Date().toISOString().split("T")[0],
-      meetingType: meetingType || "office",
-      clientNote: message && typeof message === "string" ? message.trim() : "",
+      email: normalizedEmail,
+      propertyInterest,
+      preferredDate: normalizedPreferredDate,
+      meetingType: normalizedMeetingType,
+      clientNote: typeof message === "string" ? message.trim() : "",
       status: "New",
       internalNotes: [`Inquiry registered via California VIP Concierge form. IP: ${clientIp}`],
       createdAt: new Date().toISOString(),
@@ -82,7 +120,7 @@ router.get("/", requireAdminAuth, async (req: Request, res: Response) => {
         query.status = status;
       }
       if (search && typeof search === "string" && search.trim() !== "") {
-        const q = search.trim();
+        const q = escapeRegex(search.trim());
         query.$or = [
           { clientName: { $regex: q, $options: "i" } },
           { phone: { $regex: q, $options: "i" } },
@@ -137,19 +175,48 @@ router.get("/", requireAdminAuth, async (req: Request, res: Response) => {
 router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { status, note } = req.body;
+    const body: Record<string, unknown> =
+      req.body && typeof req.body === "object" && !Array.isArray(req.body) ? req.body : {};
+    const { status, note } = body;
+    const validStatus = isEnquiryStatus(status) ? status : undefined;
+    const noteText = typeof note === "string" ? note.trim() : "";
     const now = new Date().toISOString();
+
+    if (status !== undefined && !validStatus) {
+      res.status(400).json({ error: "Please provide a valid enquiry status" });
+      return;
+    }
+
+    if (note !== undefined && typeof note !== "string") {
+      res.status(400).json({ error: "Note must be a string" });
+      return;
+    }
 
     let updatedLead: EnquiryLead | null = null;
 
     if (isMongoConnected()) {
       const doc = await CustomerInquiryModel.findOne({ id });
       if (doc) {
-        if (status) doc.status = status;
-        if (note && note.trim()) doc.internalNotes = [...(doc.internalNotes || []), note.trim()];
+        if (validStatus) doc.status = validStatus;
+        if (noteText) doc.internalNotes = [...(doc.internalNotes || []), noteText];
         doc.updatedAt = new Date();
         await doc.save();
-        updatedLead = doc.toObject() as any;
+        const saved = doc.toObject();
+        updatedLead = {
+          id: saved.id,
+          token: saved.token,
+          clientName: saved.clientName,
+          phone: saved.phone,
+          email: saved.email,
+          propertyInterest: saved.propertyInterest || "",
+          preferredDate: saved.preferredDate || "",
+          meetingType: saved.meetingType,
+          clientNote: saved.clientNote,
+          status: saved.status,
+          internalNotes: saved.internalNotes || [],
+          createdAt: saved.createdAt.toISOString(),
+          updatedAt: saved.updatedAt.toISOString(),
+        };
       }
     }
 
@@ -157,11 +224,11 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     const index = db.enquiries.findIndex((e) => e.id === id);
 
     if (index !== -1) {
-      if (status) db.enquiries[index].status = status;
-      if (note && note.trim()) {
+      if (validStatus) db.enquiries[index].status = validStatus;
+      if (noteText) {
         db.enquiries[index].internalNotes = [
           ...(db.enquiries[index].internalNotes || []),
-          note.trim(),
+          noteText,
         ];
       }
       db.enquiries[index].updatedAt = now;
