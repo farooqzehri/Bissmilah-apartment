@@ -5,6 +5,7 @@ import { Property } from "../types";
 import { isMongoConnected } from "../db/mongodb";
 import { PropertyModel } from "../models/Property";
 import { deleteFromCloudinary } from "../utils/cloudinary";
+import { escapeRegex } from "../utils/search";
 
 const router = Router();
 
@@ -62,7 +63,7 @@ router.get("/", async (req: Request, res: Response) => {
       }
 
       if (search && typeof search === "string" && search.trim() !== "") {
-        const q = search.trim();
+        const q = escapeRegex(search.trim());
         query.$or = [
           { title: { $regex: q, $options: "i" } },
           { location: { $regex: q, $options: "i" } },
