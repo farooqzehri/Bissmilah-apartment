@@ -798,7 +798,7 @@ export const cmsEnquiries = {
     preferredDate?: string;
     meetingType?: string;
     message?: string;
-  }): Promise<{ success: boolean; token: string; message: string }> => {
+  }): Promise<{ success: boolean; token: string; message: string; data?: EnquiryLead }> => {
     const generatedToken = "BME-" + Math.floor(100000 + Math.random() * 900000);
     const newLead: EnquiryLead = {
       id: `enq-${Date.now()}`,
@@ -816,30 +816,30 @@ export const cmsEnquiries = {
       updatedAt: new Date().toISOString(),
     };
 
-    const items = readCache<EnquiryLead[]>(CACHE_KEYS.enquiries, FALLBACK_ENQUIRIES);
-    writeCache(CACHE_KEYS.enquiries, [newLead, ...items]);
-    recordLocalAudit("NEW_ENQUIRY", "Leads", `New inquiry received from ${formData.name}`);
+    const res = await requestJson<{
+      success: boolean;
+      token: string;
+      message: string;
+      data?: EnquiryLead;
+    }>(
+      "/api/enquiries",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      },
+      "Submission failed"
+    );
 
-    try {
-      const res = await requestJson(
-        "/api/enquiries",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        },
-        "Submission failed"
-      );
-      if (res && res.token) return res;
-    } catch (err) {
-      console.warn("Backend enquiry submission sync pending:", err);
+    if (!res.success || !res.token) {
+      throw new Error(res.message || "The inquiry could not be submitted. Please try again.");
     }
 
-    return {
-      success: true,
-      token: generatedToken,
-      message: `Shukriya! Inquiry token ${generatedToken} generated successfully under Haji Saud Zehri desk.`,
-    };
+    const savedLead = res.data || { ...newLead, token: res.token };
+    const items = readCache<EnquiryLead[]>(CACHE_KEYS.enquiries, FALLBACK_ENQUIRIES);
+    writeCache(CACHE_KEYS.enquiries, [savedLead, ...items]);
+    recordLocalAudit("NEW_ENQUIRY", "Leads", `New inquiry received from ${formData.name}`);
+    return res;
   },
 
   list: async (params: { status?: string; search?: string } = {}): Promise<EnquiryLead[]> => {
