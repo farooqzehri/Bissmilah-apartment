@@ -659,7 +659,7 @@ class DatabaseManager {
 
   public getDb(): DatabaseSchema {
     if (!this.db) {
-      this.ensureDatabase();
+      this.ensureDatabase()
     }
     return this.db!;
   }
