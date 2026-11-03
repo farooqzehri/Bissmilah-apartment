@@ -258,7 +258,7 @@ export interface EnquiryLead {
   preferredDate: string;
   meetingType: string;
   clientNote?: string;
-  status: "New" | "Contacted" | "In Review" | "Closed" | "Archived";
+  status: "New" | "Contacted" | "In Review" | "Booked" | "Closed" | "Archived";
   internalNotes: string[];
   createdAt: string;
   updatedAt: string;
