@@ -7,6 +7,7 @@ import { requireAdminAuth } from "./auth";
 import { MediaItem } from "../types";
 import { isMongoConnected, getMongoStatus, connectToMongoAtlas } from "../db/mongodb";
 import { MediaAssetModel } from "../models/MediaAsset";
+import { escapeRegex } from "../utils/search";
 import { 
   isCloudinaryConfigured, 
   uploadToCloudinary, 
@@ -71,7 +72,7 @@ router.get("/status", (_req: Request, res: Response) => {
 
 // POST /api/media/retry-mongo - Attempt reconnecting to MongoDB Atlas
 router.post("/retry-mongo", async (_req: Request, res: Response) => {
-  const success = await connectToMongoAtlas(true);
+  const success = await connectToMongoAtlas();
   res.json({
     success,
     database: getMongoStatus(),
@@ -89,7 +90,7 @@ router.get("/", async (req: Request, res: Response) => {
         query.category = category;
       }
       if (search && typeof search === "string" && search.trim() !== "") {
-        const q = search.trim();
+        const q = escapeRegex(search.trim());
         query.$or = [
           { title: { $regex: q, $options: "i" } },
           { fileName: { $regex: q, $options: "i" } },
