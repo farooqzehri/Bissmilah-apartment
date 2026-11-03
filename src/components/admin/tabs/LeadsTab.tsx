@@ -24,7 +24,7 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
   const [selectedLead, setSelectedLead] = useState<EnquiryLead | null>(null);
   const [newNote, setNewNote] = useState("");
 
-  const statuses = ["all", "New", "Contacted", "In Review", "Closed", "Archived"];
+  const statuses = ["all", "New", "Contacted", "In Review", "Booked", "Closed", "Archived"];
 
   const filtered = enquiries.filter((lead) => {
     const q = searchQuery.toLowerCase();
@@ -38,13 +38,13 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
     return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = async (id: string, newStatus: string) => {
+  const handleStatusChange = async (id: string, newStatus: EnquiryLead["status"]) => {
     try {
       await cmsEnquiries.update(id, { status: newStatus });
       await onRefreshLeads();
       onShowToast(`Lead status updated to "${newStatus}".`);
       if (selectedLead && selectedLead.id === id) {
-        setSelectedLead({ ...selectedLead, status: newStatus as any });
+        setSelectedLead({ ...selectedLead, status: newStatus });
       }
     } catch (err: any) {
       onShowToast("Failed to update status: " + (err.message || String(err)));
@@ -163,7 +163,7 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
                     <select
                       value={lead.status}
                       onClick={(e) => e.stopPropagation()}
-                      onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                      onChange={(e) => handleStatusChange(lead.id, e.target.value as EnquiryLead["status"])}
                       className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold uppercase tracking-wider border cursor-pointer ${
                         lead.status === "New"
                           ? "bg-rose-500/10 text-rose-500 border-rose-500/30"
@@ -175,6 +175,7 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
                       <option value="New">New</option>
                       <option value="Contacted">Contacted</option>
                       <option value="In Review">In Review</option>
+                      <option value="Booked">Booked</option>
                       <option value="Closed">Closed</option>
                       <option value="Archived">Archived</option>
                     </select>
