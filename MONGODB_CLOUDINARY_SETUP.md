@@ -33,8 +33,8 @@ MongoDB Atlas provides a free-tier (M0 Sandbox) hosted database that requires no
 ### Step 4: Configure Network Access (IP Whitelist)
 1. In the left navigation bar under **Security**, click **Network Access**.
 2. Click **Add IP Address**.
-3. To allow connections from any cloud deployment or local development environment, click **Allow Access from Anywhere** (this enters `0.0.0.0/0`).
-4. (Optional) Provide a comment such as `Allow Cloud Applet Deployment`.
+3. Add the public outbound IP address of your app host and your development IP address. Use **Allow Access from Anywhere** (`0.0.0.0/0`) only as a temporary development diagnostic; it permits connections from any IP.
+4. (Optional) Provide a comment such as `Bismillah app deployment`.
 5. Click **Confirm**. The status will change from *Pending* to *Active* within 10-30 seconds.
 
 ### Step 5: Copy the Connection String (SRV URI)
@@ -46,7 +46,7 @@ MongoDB Atlas provides a free-tier (M0 Sandbox) hosted database that requires no
    mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
    ```
 5. Replace `<username>` with your database username and `<password>` with the password created in Step 3.
-6. Specify the database name before the `?` query parameter:
+6. Specify the database name before the `?` query parameter. URL-encode reserved characters in the username or password (for example, `@` as `%40`):
    ```text
    mongodb+srv://bismillah_admin:SecurePass786!@cluster0.abcde.mongodb.net/bismillah_apartments?retryWrites=true&w=majority
    ```
@@ -111,7 +111,7 @@ JWT_SECRET=super_secret_jwt_key_bismillah_786_california_luxury
 The application is built with a dual-layer architecture:
 1. **With MongoDB Atlas**: When `MONGODB_URI` is supplied, Mongoose connects to your cluster. If the collections are empty, the backend automatically seeds initial properties, settings, customer inquiries, and the default admin profile (`username: admin`, staff PIN: `786`).
 2. **With Cloudinary**: Uploaded property images, logos, and favicons are delivered via Cloudinary's secure CDN. The database stores the high-res CDN `url` and `publicId`. Deleting a property or replacing an image automatically cleans up the remote asset on Cloudinary.
-3. **Resilience Fallback**: If either credential is not yet configured, the system gracefully operates on local disk storage and mock memory to prevent crashes or downtime during setup.
+3. **Resilience Fallback**: If MongoDB is temporarily unreachable, the system continues using local persistent storage and retries the connection with increasing delays (up to once per minute). Invalid URI syntax or authentication errors require correcting `MONGODB_URI`; inspect `/api/health` for the connection status and advice.
 
 ---
 
