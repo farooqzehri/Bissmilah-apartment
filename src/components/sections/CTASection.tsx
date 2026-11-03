@@ -34,9 +34,9 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
     setValidationError("");
   };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleFormSubmit = async () => {
+    if (isLoading) return;
+
     if (!formData.name.trim()) {
       setValidationError("Please specify your full name for the showing dossier.");
       return;
@@ -230,7 +230,13 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleFormSubmit} className="space-y-6">
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void handleFormSubmit();
+                  }}
+                  className="space-y-6"
+                >
                   <div>
                     <span className="font-mono text-[9px] uppercase tracking-widest text-[#DF9B43] font-bold block mb-1">
                       CONFIDENTIAL SHOWING REQUEST
