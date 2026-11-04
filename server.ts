@@ -1,75 +1,81 @@
-﻿import "dotenv/config";
+﻿import express, { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
 
-import express from "express";
-import path from "path";
-import { createServer as createViteServer } from "vite";
-import app from "./server/app";
+// Load environment variables
+dotenv.config();
 
-function getCliArg(flag: string): string | undefined {
-  const index = process.argv.indexOf(flag);
-  if (index !== -1 && index + 1 < process.argv.length) {
-    return process.argv[index + 1];
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// --- MONGODB CONNECTION CACHING FOR SERVERLESS ---
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  try {
+    if (mongoose.connections[0].readyState) {
+      isConnected = true;
+      return;
+    }
+    const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
+    if (!mongoUri) {
+      throw new Error("MONGO_URI is missing in environment variables!");
+    }
+    await mongoose.connect(mongoUri);
+    isConnected = true;
+    console.log("MongoDB Connected Successfully");
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
+    throw error;
   }
-  return undefined;
 }
 
-const cliPort = getCliArg("--port");
-const cliHost = getCliArg("--host");
-
-const PORT = parseInt(cliPort || process.env.PORT || "3000", 10);
-const HOST = cliHost || process.env.HOST || "0.0.0.0";
-
-async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: {
-        middlewareMode: true,
-        hmr: process.env.DISABLE_HMR !== "true",
-        watch: {
-          ignored: [
-            "**/data/**",
-            "**/uploads/**",
-            "**/dist/**",
-            "**/.git/**",
-            "**/server/data/**",
-          ],
-        },
-      },
-      appType: "spa",
-    });
-
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.resolve(process.cwd(), "dist");
-
-    app.use(express.static(distPath));
-
-    app.get("*", (_req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
+// Auto-connect DB for any API routes
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  if (req.path.startsWith('/api')) {
+    try {
+      await connectDB();
+    } catch (err) {
+      return res.status(500).json({ success: false, error: "Database connection failed" });
+    }
   }
-
-  const server = app.listen(PORT, HOST, () => {
-    console.log(`Bismillah CMS running at http://${HOST}:${PORT}`);
-  });
-
-  const shutdown = () => {
-    server.close(() => process.exit(0));
- http://${HOST}:${PORT}/`);
-    console.log(`  ➜  [Bismillah CMS] Server successfully running on port ${PORT}\n`);
-  });
-
-  const shutdown = () => {
-    server.close(() => {
-      process.exit(0);
-    });
-  };
-
-  process.on("SIGTERM", shutdown);
-  process.on("SIGINT", shutdown);
-}
-
-startServer().catch((err) => {
-  console.error("Failed to start server:", err);
-  process.exit(1);
+  next();
 });
+
+// ==========================================
+// APIS & ROUTES (Yahan apne baaki routes add karein)
+// ==========================================
+
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ success: true, message: "Backend is running smoothly on Vercel!" });
+});
+
+// Example: Agar aapke paas aur routes hain toh unhe yahan mount karein:
+// import authRoutes from './routes/auth';
+// import propertyRoutes from './routes/properties';
+// app.use('/api/auth', authRoutes);
+// app.use('/api/properties', propertyRoutes);
+
+// ==========================================
+
+// Global Error Handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error("Server Error:", err.stack);
+  res.status(500).json({ success: false, message: "Internal Server Error", error: err.message });
+});
+
+// Local Development ke liye listener (Vercel isko ignore karega)
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running locally on port ${PORT}`);
+  });
+}
+
+// VERCEL REQUIREMENT: Export the Express app as default
+export default app;
