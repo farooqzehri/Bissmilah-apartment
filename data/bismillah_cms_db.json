@@ -66,7 +66,7 @@
       "enableSocialIcons": true,
       "enableContactForm": true
     },
-    "updatedAt": "2026-11-03T09:05:11.352Z"
+    "updatedAt": "2026-10-28T08:48:34.893Z"
   },
   "homepage": {
     "hero": {
@@ -296,7 +296,7 @@
       "backgroundImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "published": true
     },
-    "updatedAt": "2026-11-03T09:05:11.354Z"
+    "updatedAt": "2026-10-28T08:48:34.893Z"
   },
   "properties": [
     {
@@ -624,116 +624,71 @@
   ],
   "enquiries": [
     {
-      "id": "enq-1793704120365-701",
-      "token": "BME-562665",
-      "clientName": "Farooq Ahmed baloch llllllllllllrrrrrrtttt",
-      "phone": "03366405855",
-      "propertyInterest": "The Zehri Heights Penthouses (Shandaar Residence)",
-      "preferredDate": "2027-02-04",
-      "meetingType": "onsite",
-      "clientNote": "daSDASdasr",
-      "status": "New",
-      "internalNotes": [
-        "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
-      ],
-      "createdAt": "2026-11-03T11:08:40.471Z",
-      "updatedAt": "2026-11-03T11:08:40.471Z"
-    },
-    {
-      "id": "enq-1793702351165-528",
-      "token": "BME-693662",
-      "clientName": "majeed khan satakzai",
-      "phone": "+9233665828",
-      "propertyInterest": "The Obsidian Pavilion (Sunehri Bungalow)",
-      "preferredDate": "2027-11-25",
-      "meetingType": "phone",
-      "clientNote": "sanga tkhan jan is a good nboy",
-      "status": "New",
-      "internalNotes": [
-        "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
-      ],
-      "createdAt": "2026-11-03T10:39:11.165Z",
-      "updatedAt": "2026-11-03T10:39:11.165Z"
-    },
-    {
-      "id": "enq-1793701822386-493",
-      "token": "BME-360755",
-      "clientName": "fasdfsadf",
-      "phone": "fasdfsdafsdf",
-      "propertyInterest": "The Obsidian Pavilion (Sunehri Bungalow)",
-      "preferredDate": "2028-10-10",
+      "id": "enq-1793786596305-463",
+      "token": "BME-471095",
+      "clientName": "Chaudhry Tariq",
+      "phone": "+92 333 7891234",
+      "email": "tariq@example.com",
+      "propertyInterest": "3-Bed Luxury Apartment",
+      "preferredDate": "2026-11-04",
       "meetingType": "office",
-      "clientNote": "1414",
+      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
       "status": "New",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
-      "createdAt": "2026-11-03T10:30:22.387Z",
-      "updatedAt": "2026-11-03T10:30:22.387Z"
+      "createdAt": "2026-11-04T10:03:16.305Z",
+      "updatedAt": "2026-11-04T10:03:16.305Z"
     },
     {
-      "id": "enq-1793701733025-455",
-      "token": "BME-196696",
-      "clientName": "farrrrroqqqqqqqqqiiiiiiiiiiii",
-      "phone": "+923366405855",
-      "propertyInterest": "Double Road Commercial Frontage (Corner Dukaan & Plaza)",
-      "preferredDate": "2027-10-15",
-      "meetingType": "onsite",
-      "clientNote": "hiihohi",
+      "id": "enq-1793786576648-543",
+      "token": "BME-614580",
+      "clientName": "Chaudhry Tariq",
+      "phone": "+92 333 7891234",
+      "email": "tariq@example.com",
+      "propertyInterest": "3-Bed Luxury Apartment",
+      "preferredDate": "2026-11-04",
+      "meetingType": "office",
+      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
       "status": "New",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
-      "createdAt": "2026-11-03T10:28:53.025Z",
-      "updatedAt": "2026-11-03T10:28:53.025Z"
+      "createdAt": "2026-11-04T10:02:56.649Z",
+      "updatedAt": "2026-11-04T10:02:56.649Z"
     },
     {
-      "id": "enq-1793700165871-366",
-      "token": "BME-967124",
-      "clientName": "majeed khan tareen",
-      "phone": "+926664858754",
-      "propertyInterest": "General Portfolio Discussion",
-      "preferredDate": "2026-12-24",
-      "meetingType": "onsite",
-      "clientNote": "i ahav e h atestting",
+      "id": "enq-1793786554813-451",
+      "token": "BME-749756",
+      "clientName": "Chaudhry Tariq",
+      "phone": "+92 333 7891234",
+      "email": "tariq@example.com",
+      "propertyInterest": "3-Bed Luxury Apartment",
+      "preferredDate": "2026-11-04",
+      "meetingType": "office",
+      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
       "status": "New",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
-      "createdAt": "2026-11-03T10:02:45.871Z",
-      "updatedAt": "2026-11-03T10:02:45.871Z"
+      "createdAt": "2026-11-04T10:02:34.813Z",
+      "updatedAt": "2026-11-04T10:02:34.813Z"
     },
     {
-      "id": "enq-1793698242642-709",
-      "token": "BME-216207",
-      "clientName": "manjeeed",
-      "phone": "+92335542155",
-      "propertyInterest": "Bismillah Dream Gardens Masterplan",
-      "preferredDate": "2004-10-15",
-      "meetingType": "onsite",
-      "clientNote": "hello testing tsetsting",
+      "id": "enq-1793177327118-458",
+      "token": "BME-495258",
+      "clientName": "Mir Tariq Bugti",
+      "phone": "+923001234567",
+      "propertyInterest": "Apartments",
+      "preferredDate": "2026-05-15",
+      "meetingType": "office",
+      "clientNote": "Please schedule briefing for duplex penthouse.",
       "status": "New",
       "internalNotes": [
-        "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
+        "Inquiry received online via website. IP: 127.0.0.1"
       ],
-      "createdAt": "2026-11-03T09:30:42.642Z",
-      "updatedAt": "2026-11-03T09:30:42.642Z"
-    },
-    {
-      "id": "enq-1793697942228-869",
-      "token": "BME-925286",
-      "clientName": "Farooq Ahmed baloch",
-      "phone": "03366405855",
-      "propertyInterest": "General Portfolio Discussion",
-      "preferredDate": "2005-12-10",
-      "meetingType": "onsite",
-      "clientNote": "checking",
-      "status": "New",
-      "internalNotes": [
-        "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
-      ],
-      "createdAt": "2026-11-03T09:25:42.228Z",
-      "updatedAt": "2026-11-03T09:25:42.228Z"
+      "createdAt": "2026-10-28T08:48:47.118Z",
+      "updatedAt": "2026-10-28T08:48:47.118Z"
     },
     {
       "id": "enq-1",
@@ -756,74 +711,340 @@
   ],
   "auditLogs": [
     {
-      "id": "log-1793704125270-185",
+      "id": "log-1793786596439-455",
       "action": "NEW_LEAD",
       "entity": "Enquiry",
-      "entityId": "enq-1793704120365-701",
-      "details": "New booking inquiry received from Farooq Ahmed baloch llllllllllllrrrrrrtttt (BME-562665)",
-      "timestamp": "2026-11-03T11:08:45.270Z",
+      "entityId": "enq-1793786596305-463",
+      "details": "New booking inquiry received from Chaudhry Tariq (BME-471095)",
+      "timestamp": "2026-11-04T10:03:16.439Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793702351249-226",
-      "action": "NEW_LEAD",
-      "entity": "Enquiry",
-      "entityId": "enq-1793702351165-528",
-      "details": "New booking inquiry received from majeed khan satakzai (BME-693662)",
-      "timestamp": "2026-11-03T10:39:11.249Z",
+      "id": "log-1793786596297-573",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786593432-855",
+      "details": "Deleted property: \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:03:16.297Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793701822458-99",
-      "action": "NEW_LEAD",
-      "entity": "Enquiry",
-      "entityId": "enq-1793701822386-493",
-      "details": "New booking inquiry received from fasdfsadf (BME-360755)",
-      "timestamp": "2026-11-03T10:30:22.458Z",
+      "id": "log-1793786596024-329",
+      "action": "DELETE_MEDIA",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786594706-cde998ebc67f057e",
+      "details": "Deleted image \"test_verification_asset.png\"",
+      "timestamp": "2026-11-04T10:03:16.024Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793701733165-174",
-      "action": "NEW_LEAD",
-      "entity": "Enquiry",
-      "entityId": "enq-1793701733025-455",
-      "details": "New booking inquiry received from farrrrroqqqqqqqqqiiiiiiiiiiii (BME-196696)",
-      "timestamp": "2026-11-03T10:28:53.165Z",
+      "id": "log-1793786595617-370",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786593432-855",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:03:15.617Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793700166036-581",
-      "action": "NEW_LEAD",
-      "entity": "Enquiry",
-      "entityId": "enq-1793700165871-366",
-      "details": "New booking inquiry received from majeed khan tareen (BME-967124)",
-      "timestamp": "2026-11-03T10:02:46.036Z",
+      "id": "log-1793786595339-630",
+      "action": "REPLACE_MEDIA_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786594706-cde998ebc67f057e",
+      "details": "Replaced image asset for ID: med-1793786594706-cde998ebc67f057e",
+      "timestamp": "2026-11-04T10:03:15.339Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793698242645-515",
-      "action": "NEW_LEAD",
-      "entity": "Enquiry",
-      "entityId": "enq-1793698242642-709",
-      "details": "New booking inquiry received from manjeeed (BME-216207)",
-      "timestamp": "2026-11-03T09:30:42.645Z",
+      "id": "log-1793786594839-107",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786594706-cde998ebc67f057e",
+      "details": "Uploaded image \"test_verification_asset.png\" via local",
+      "timestamp": "2026-11-04T10:03:14.839Z",
       "performedBy": "Admin"
     },
     {
-      "id": "log-1793697942332-238",
+      "id": "log-1793786594103-1",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786593432-855",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:03:14.103Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786593700-647",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786593432-855",
+      "details": "Created property: \"Test Automated Penthouse A-1 City\"",
+      "timestamp": "2026-11-04T10:03:13.700Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786576784-85",
       "action": "NEW_LEAD",
       "entity": "Enquiry",
-      "entityId": "enq-1793697942228-869",
-      "details": "New booking inquiry received from Farooq Ahmed baloch (BME-925286)",
-      "timestamp": "2026-11-03T09:25:42.332Z",
+      "entityId": "enq-1793786576648-543",
+      "details": "New booking inquiry received from Chaudhry Tariq (BME-614580)",
+      "timestamp": "2026-11-04T10:02:56.784Z",
       "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786576640-192",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786573618-89",
+      "details": "Deleted property: \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:56.640Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786576233-600",
+      "action": "DELETE_MEDIA",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786575042-12065e4a0eeeb945",
+      "details": "Deleted image \"test_verification_asset.png\"",
+      "timestamp": "2026-11-04T10:02:56.233Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786575962-518",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786573618-89",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:55.962Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786575692-862",
+      "action": "REPLACE_MEDIA_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786575042-12065e4a0eeeb945",
+      "details": "Replaced image asset for ID: med-1793786575042-12065e4a0eeeb945",
+      "timestamp": "2026-11-04T10:02:55.692Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786575177-826",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786575042-12065e4a0eeeb945",
+      "details": "Uploaded image \"test_verification_asset.png\" via local",
+      "timestamp": "2026-11-04T10:02:55.177Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786574344-859",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786573618-89",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:54.344Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786573903-972",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786573618-89",
+      "details": "Created property: \"Test Automated Penthouse A-1 City\"",
+      "timestamp": "2026-11-04T10:02:53.903Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786554956-84",
+      "action": "NEW_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793786554813-451",
+      "details": "New booking inquiry received from Chaudhry Tariq (BME-749756)",
+      "timestamp": "2026-11-04T10:02:34.956Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786554807-704",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786552247-591",
+      "details": "Deleted property: \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:34.807Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786554531-910",
+      "action": "DELETE_MEDIA",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786553689-fba88b3c664f23eb",
+      "details": "Deleted image \"test_verification_asset.png\"",
+      "timestamp": "2026-11-04T10:02:34.531Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786554116-100",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786552247-591",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:34.116Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786553831-176",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793786553689-fba88b3c664f23eb",
+      "details": "Uploaded image \"test_verification_asset.png\" via local",
+      "timestamp": "2026-11-04T10:02:33.831Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786553014-97",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786552247-591",
+      "details": "Updated property \"Test Automated Penthouse A-1 City (Updated Title)\"",
+      "timestamp": "2026-11-04T10:02:33.014Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793786552581-820",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793786552247-591",
+      "details": "Created property: \"Test Automated Penthouse A-1 City\"",
+      "timestamp": "2026-11-04T10:02:32.581Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544354363-203",
+      "action": "DELETE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793544350628-791",
+      "details": "Deleted lead ID: enq-1793544350628-791",
+      "timestamp": "2026-11-01T14:45:54.363Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544350770-35",
+      "action": "NEW_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793544350628-791",
+      "details": "New booking inquiry received from Mir Aslam Khan (BME-638899)",
+      "timestamp": "2026-11-01T14:45:50.770Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544333663-799",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Deleted property: \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:33.663Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544333389-225",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Updated property \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:33.389Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544332820-463",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544332523-933",
+      "details": "Created property: \"Royal Boulevard Penthouse 501\"",
+      "timestamp": "2026-11-01T14:45:32.820Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544066749-613",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544058844-335",
+      "details": "Deleted property: \"Chiltan View Luxury Residency\"",
+      "timestamp": "2026-11-01T14:41:06.749Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793544059138-956",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793544058844-335",
+      "details": "Created property: \"Chiltan View Luxury Residency\"",
+      "timestamp": "2026-11-01T14:40:59.138Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793543982804-368",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793543978652-283",
+      "details": "Deleted property: \"Test Penthouse in Quetta\"",
+      "timestamp": "2026-11-01T14:39:42.804Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793543978932-275",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793543978652-283",
+      "details": "Created property: \"Test Penthouse in Quetta\"",
+      "timestamp": "2026-11-01T14:39:38.932Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793258838013-928",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-29T07:27:18.013Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793186195748-367",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:16:35.748Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793185914074-183",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T11:11:54.074Z",
+      "performedBy": "Haji Saud Staff"
+    },
+    {
+      "id": "log-1793177327118-932",
+      "action": "NEW_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793177327118-458",
+      "details": "New booking inquiry received from Mir Tariq Bugti (BME-495258)",
+      "timestamp": "2026-10-28T08:48:47.118Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793177322381-731",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (Haji Saud Staff)",
+      "timestamp": "2026-10-28T08:48:42.381Z",
+      "performedBy": "Haji Saud Staff"
     },
     {
       "id": "log-1",
       "action": "SYSTEM_INITIALIZE",
       "entity": "System",
       "details": "Bismillah Real Estate CMS initialized with persistent database storage.",
-      "timestamp": "2026-11-03T09:05:11.354Z",
+      "timestamp": "2026-10-28T08:48:34.894Z",
       "performedBy": "Haji Saud Zehri (Admin)"
     }
   ]

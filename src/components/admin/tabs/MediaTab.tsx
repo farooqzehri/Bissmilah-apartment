@@ -30,6 +30,9 @@ export const MediaTab: React.FC<MediaTabProps> = ({
   const [editAltText, setEditAltText] = useState("");
   const [editCaption, setEditCaption] = useState("");
   const [editCategory, setEditCategory] = useState("");
+  const [replacementBase64, setReplacementBase64] = useState<string | null>(null);
+  const [replacementFileName, setReplacementFileName] = useState<string | null>(null);
+  const replaceInputRef = useRef<HTMLInputElement | null>(null);
 
   // Delete modal
   const [deleteItem, setDeleteItem] = useState<MediaItem | null>(null);
@@ -90,6 +93,8 @@ export const MediaTab: React.FC<MediaTabProps> = ({
   });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -101,8 +106,8 @@ export const MediaTab: React.FC<MediaTabProps> = ({
         const file = files[i];
         setUploadProgress(`Uploading ${file.name} (${i + 1}/${files.length})...`);
 
-        if (file.size > 10 * 1024 * 1024) {
-          throw new Error(`File "${file.name}" exceeds 10MB limit.`);
+        if (file.size > 15 * 1024 * 1024) {
+          throw new Error(`File "${file.name}" exceeds 15MB limit.`);
         }
 
         const base64Data = await readFileAsDataUrl(file);
@@ -141,11 +146,33 @@ export const MediaTab: React.FC<MediaTabProps> = ({
     setEditAltText(item.altText);
     setEditCaption(item.caption);
     setEditCategory(item.category);
+    setReplacementBase64(null);
+    setReplacementFileName(null);
+  };
+
+  const handleReplacementSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      onShowToast("Replacement image exceeds 15MB limit.");
+      return;
+    }
+    const base64 = await readFileAsDataUrl(file);
+    setReplacementBase64(base64);
+    setReplacementFileName(file.name);
+    onShowToast(`Replacement image selected: ${file.name}`);
   };
 
   const handleSaveEdit = async () => {
     if (!editingItem) return;
     try {
+      if (replacementBase64) {
+        onShowToast("Uploading replacement image to Cloudinary...");
+        await cmsMedia.replaceAsset(editingItem.id, {
+          base64Data: replacementBase64,
+          fileName: replacementFileName || undefined,
+        });
+      }
       await cmsMedia.updateMetadata(editingItem.id, {
         title: editTitle,
         altText: editAltText,
@@ -153,8 +180,10 @@ export const MediaTab: React.FC<MediaTabProps> = ({
         category: editCategory,
       });
       await onRefreshMedia();
-      onShowToast(`Updated metadata for "${editingItem.fileName}".`);
+      onShowToast(`Updated "${editingItem.fileName}" successfully.`);
       setEditingItem(null);
+      setReplacementBase64(null);
+      setReplacementFileName(null);
     } catch (err: any) {
       onShowToast("Update failed: " + (err.message || String(err)));
     }
@@ -218,7 +247,12 @@ export const MediaTab: React.FC<MediaTabProps> = ({
             className="hidden"
           />
           <button
-            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
             disabled={isUploading}
             className="px-6 py-2.5 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#DF9B43] hover:bg-[#c88532] text-black shadow-lg flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
           >
@@ -328,8 +362,12 @@ export const MediaTab: React.FC<MediaTabProps> = ({
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           {categories.map((cat) => (
             <button
+              type="button"
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedCategory(cat);
+              }}
               className={`px-3 py-1.5 rounded-xl text-xs font-display capitalize transition-all cursor-pointer border ${
                 selectedCategory.toLowerCase() === cat.toLowerCase()
                   ? "bg-[#FF9E4A] text-black font-semibold border-[#FF9E4A]"
@@ -384,21 +422,36 @@ export const MediaTab: React.FC<MediaTabProps> = ({
                 {/* Quick overlay actions */}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <button
-                    onClick={() => handleCopyUrl(item.url)}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCopyUrl(item.url);
+                    }}
                     className="p-2 rounded-xl bg-white text-black hover:bg-[#FF9E4A] transition-colors cursor-pointer"
                     title="Copy Image URL"
                   >
                     <Copy size={13} />
                   </button>
                   <button
-                    onClick={() => handleOpenEdit(item)}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleOpenEdit(item);
+                    }}
                     className="p-2 rounded-xl bg-white text-black hover:bg-[#FF9E4A] transition-colors cursor-pointer"
                     title="Edit Metadata"
                   >
                     <Edit3 size={13} />
                   </button>
                   <button
-                    onClick={() => handleOpenDelete(item)}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleOpenDelete(item);
+                    }}
                     className="p-2 rounded-xl bg-rose-500 text-white hover:bg-rose-600 transition-colors cursor-pointer"
                     title="Delete Image"
                   >
@@ -434,9 +487,52 @@ export const MediaTab: React.FC<MediaTabProps> = ({
               </button>
             </div>
 
-            <div className="aspect-video w-full rounded-xl overflow-hidden bg-black border border-stone-800">
-              <img src={editingItem.url} alt={editAltText} className="w-full h-full object-cover" />
+            {/* Image Preview & Asset Replacement */}
+            <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-stone-800 group">
+              <img
+                src={replacementBase64 || editingItem.url}
+                alt={editAltText}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-3 text-center">
+                <input
+                  ref={replaceInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+                  onChange={handleReplacementSelect}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => replaceInputRef.current?.click()}
+                  className="px-3 py-1.5 rounded-lg bg-[#FF9E4A] text-black font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg hover:bg-[#e88a35]"
+                >
+                  <Upload size={13} />
+                  <span>{replacementBase64 ? "Change Replacement" : "Replace Image File"}</span>
+                </button>
+                {replacementFileName && (
+                  <span className="text-[10px] text-white/90 font-mono truncate max-w-xs">
+                    New: {replacementFileName}
+                  </span>
+                )}
+              </div>
             </div>
+
+            {replacementBase64 && (
+              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-400 flex items-center justify-between">
+                <span>New asset staged (will upload to Cloudinary & update DB)</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReplacementBase64(null);
+                    setReplacementFileName(null);
+                  }}
+                  className="text-stone-400 hover:text-white text-xs underline cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
 
             <div className="space-y-3 text-xs font-display">
               <div>
@@ -482,16 +578,22 @@ export const MediaTab: React.FC<MediaTabProps> = ({
 
             <div className="flex items-center justify-end gap-3 pt-3 border-t dark:border-stone-800 border-stone-200">
               <button
-                onClick={() => setEditingItem(null)}
+                type="button"
+                onClick={() => {
+                  setEditingItem(null);
+                  setReplacementBase64(null);
+                  setReplacementFileName(null);
+                }}
                 className="px-4 py-2 rounded-full text-xs font-display border dark:border-stone-800 cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSaveEdit}
-                className="px-5 py-2 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] text-black cursor-pointer"
+                className="px-5 py-2 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] text-black cursor-pointer shadow-md hover:bg-[#e88a35]"
               >
-                Save Metadata
+                {replacementBase64 ? "Save & Replace Asset" : "Save Metadata"}
               </button>
             </div>
           </div>
@@ -541,7 +643,9 @@ export const MediaTab: React.FC<MediaTabProps> = ({
 
             <div className="flex items-center justify-end gap-3 pt-3 border-t dark:border-stone-800 border-stone-200">
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
                   setDeleteItem(null);
                   setDeleteError(null);
                 }}
@@ -551,14 +655,22 @@ export const MediaTab: React.FC<MediaTabProps> = ({
               </button>
               {deleteError && deleteError.inUse ? (
                 <button
-                  onClick={() => handleConfirmDelete(true)}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleConfirmDelete(true);
+                  }}
                   className="px-5 py-2 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-rose-600 text-white cursor-pointer"
                 >
                   Force Delete Anyway
                 </button>
               ) : (
                 <button
-                  onClick={() => handleConfirmDelete(false)}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleConfirmDelete(false);
+                  }}
                   className="px-5 py-2 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-rose-500 text-white cursor-pointer"
                 >
                   Delete Image

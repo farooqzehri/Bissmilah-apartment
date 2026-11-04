@@ -16,6 +16,7 @@ import { useCMS } from "../../utils/cmsContext";
 import { useProperties } from "../../utils/propertyStore";
 import { Property, AvailabilityStatus } from "../../types/cms";
 import { cmsAuth, cmsEnquiries, cmsMedia } from "../../utils/cmsApi";
+import { FALLBACK_MEDIA, FALLBACK_ENQUIRIES } from "../../utils/cmsDefaults";
 
 interface AdminDashboardProps {
   onNavigateHome: () => void;
@@ -30,8 +31,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const { properties, addProperty, updateProperty, deleteProperty, resetToDefaults } = useProperties();
 
   const [currentTab, setCurrentTab] = useState<AdminTab>("overview");
-  const [enquiries, setEnquiries] = useState<any[]>([]);
-  const [media, setMedia] = useState<any[]>([]);
+  const [enquiries, setEnquiries] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("bismillah_cms_enquiries");
+        if (raw) return JSON.parse(raw);
+      } catch {}
+    }
+    return FALLBACK_ENQUIRIES;
+  });
+  const [media, setMedia] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("bismillah_cms_media");
+        if (raw) return JSON.parse(raw);
+      } catch {}
+    }
+    return FALLBACK_MEDIA;
+  });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Property Modals

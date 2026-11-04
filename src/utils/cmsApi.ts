@@ -70,10 +70,31 @@ function readCache<T>(key: string, defaultValue: T): T {
   }
 }
 
+function sanitizeForCache(obj: any): any {
+  if (!obj) return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeForCache);
+  }
+  if (typeof obj === "object") {
+    const sanitized: any = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (typeof v === "string" && v.startsWith("data:image/") && v.length > 5000) {
+        // Prevent storing megabytes of raw base64 data in localStorage to avoid QuotaExceededError
+        sanitized[k] = "";
+      } else {
+        sanitized[k] = sanitizeForCache(v);
+      }
+    }
+    return sanitized;
+  }
+  return obj;
+}
+
 function writeCache<T>(key: string, data: T): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(key, JSON.stringify(data));
+    const cleanData = sanitizeForCache(data);
+    localStorage.setItem(key, JSON.stringify(cleanData));
   } catch (err) {
     console.warn(`LocalStorage write skipped for ${key}:`, err);
   }
@@ -577,24 +598,6 @@ export const cmsMedia = {
     caption?: string;
     category?: string;
   }): Promise<MediaItem> => {
-    const newMedia: MediaItem = {
-      id: `med-${Date.now()}`,
-      fileName: uploadData.fileName || `image-${Date.now()}.jpg`,
-      originalName: uploadData.fileName || "uploaded-image.jpg",
-      url: uploadData.base64Data, // store base64 directly so previews and images render immediately
-      mimeType: "image/jpeg",
-      sizeBytes: uploadData.base64Data.length,
-      category: uploadData.category || "General",
-      title: uploadData.title || uploadData.fileName || "Uploaded Image",
-      altText: uploadData.altText || "",
-      caption: uploadData.caption || "",
-      uploadedAt: new Date().toISOString(),
-    };
-
-    const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
-    writeCache(CACHE_KEYS.media, [newMedia, ...items]);
-    recordLocalAudit("UPLOAD_MEDIA", "Media", `Uploaded image: ${newMedia.title}`);
-
     try {
       const res = await requestJson(
         "/api/media/upload",
@@ -605,11 +608,44 @@ export const cmsMedia = {
         },
         "Failed to upload image"
       );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend media upload sync pending:", err);
+      if (res && res.data) {
+        const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
+        writeCache(CACHE_KEYS.media, [res.data, ...items.filter((m) => m.id !== res.data.id)]);
+        recordLocalAudit("UPLOAD_MEDIA", "Media", `Uploaded image: ${res.data.title || res.data.fileName}`);
+        return res.data;
+      }
+    } catch (err: any) {
+      console.warn("Backend media upload failed:", err);
+      throw err;
     }
-    return newMedia;
+
+    throw new Error("Failed to receive media record from server");
+  },
+
+  replaceAsset: async (
+    id: string,
+    replaceData: { base64Data: string; fileName?: string }
+  ): Promise<MediaItem> => {
+    const res = await requestJson(
+      `/api/media/${id}/replace`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(replaceData),
+      },
+      "Failed to replace image asset"
+    );
+    if (res && res.data) {
+      const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
+      const idx = items.findIndex((m) => m.id === id);
+      if (idx !== -1) {
+        items[idx] = res.data;
+        writeCache(CACHE_KEYS.media, [...items]);
+      }
+      recordLocalAudit("REPLACE_MEDIA", "Media", `Replaced image asset for: ${res.data.title || res.data.fileName}`);
+      return res.data;
+    }
+    throw new Error("No data returned from asset replacement");
   },
 
   updateMetadata: async (
