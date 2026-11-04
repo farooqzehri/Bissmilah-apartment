@@ -300,6 +300,59 @@
   },
   "properties": [
     {
+      "id": "prop-1793794280467-495",
+      "slug": "haxudio-digital-solutions",
+      "title": "Haxudio digital solutions",
+      "category": "apartments",
+      "price": "PKR 2.5 Crore",
+      "numericPrice": 25000000,
+      "currency": "PKR",
+      "location": "A-1 City, Block C, Quetta",
+      "city": "Quetta",
+      "area": "A-1 City",
+      "googleMapsUrl": "",
+      "size": "2,500 Sq. Ft.",
+      "coveredAreaUnit": "Sq. Ft.",
+      "tag": "Shandaar Flat",
+      "status": "100% Registry Ready",
+      "availability": "Available",
+      "published": true,
+      "featured": true,
+      "bedrooms": 3,
+      "bathrooms": 3,
+      "floorNumber": "1st Floor",
+      "totalFloors": "8 Floors",
+      "furnishingStatus": "Unfurnished",
+      "description": "A-1 City Quetta mein shandaar luxury property jis ke sath mukammal legal registry documents hain.",
+      "fullOverview": "A-1 City Quetta mein shandaar luxury property jis ke sath mukammal legal registry documents hain.",
+      "image": "https://res.cloudinary.com/dwmpvmagk/image/upload/v1793794252/bismillah_apartments/lc9eyptlgwy6dnvjs64r.jpg",
+      "imagePublicId": "bismillah_apartments/lc9eyptlgwy6dnvjs64r",
+      "gallery": [],
+      "galleryPublicIds": [],
+      "highlights": [
+        "Mukammal legal registry aur certified title transfer",
+        "Sweet water supply aur 24/7 solar backup battery",
+        "High security boundary wall aur gate surveillance"
+      ],
+      "specs": [
+        {
+          "label": "Format",
+          "value": "Luxury Residence"
+        },
+        {
+          "label": "Registry",
+          "value": "Direct Deed Ready"
+        },
+        {
+          "label": "Possession",
+          "value": "Immediate"
+        }
+      ],
+      "amenities": [],
+      "createdAt": "2026-11-04T12:11:20.467Z",
+      "updatedAt": "2026-11-04T12:11:20.467Z"
+    },
+    {
       "id": "prop-1793728863462-546",
       "slug": "dilo-rang-houseese",
       "title": "dilo rang houseese",
@@ -729,6 +782,21 @@
   ],
   "media": [
     {
+      "id": "med-1793794253032-fc8d586db9ac2963",
+      "fileName": "insta post hax.jfif",
+      "originalName": "insta post hax.jfif",
+      "url": "https://res.cloudinary.com/dwmpvmagk/image/upload/v1793794252/bismillah_apartments/lc9eyptlgwy6dnvjs64r.jpg",
+      "cloudinaryPublicId": "bismillah_apartments/lc9eyptlgwy6dnvjs64r",
+      "mimeType": "image/jpeg",
+      "sizeBytes": 705040,
+      "category": "apartments",
+      "title": "insta post hax",
+      "altText": "insta post hax",
+      "caption": "",
+      "uploadedAt": "2026-11-04T12:10:49.940Z",
+      "usageCount": 0
+    },
+    {
       "id": "med-1793790284559-b3fd0276b88160b2",
       "fileName": "test-cloud.png",
       "originalName": "test-cloud.png",
@@ -797,6 +865,22 @@
     }
   ],
   "enquiries": [
+    {
+      "id": "enq-1793794628445-284",
+      "token": "BME-843825",
+      "clientName": "cheetah",
+      "phone": "+92334585681",
+      "propertyInterest": "Double Road Commercial Frontage (Corner Dukaan & Plaza)",
+      "preferredDate": "2027-08-06",
+      "meetingType": "onsite",
+      "clientNote": "Hello Testingg",
+      "status": "New",
+      "internalNotes": [
+        "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
+      ],
+      "createdAt": "2026-11-04T12:17:08.445Z",
+      "updatedAt": "2026-11-04T12:17:08.445Z"
+    },
     {
       "id": "enq-1793786596305-463",
       "token": "BME-471095",
@@ -885,7 +969,49 @@
   ],
   "auditLogs": [
     {
-<<<<<<< HEAD
+      "id": "log-1793794628625-336",
+      "action": "NEW_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793794628445-284",
+      "details": "New booking inquiry received from cheetah (BME-843825)",
+      "timestamp": "2026-11-04T12:17:08.625Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793794280668-776",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1793794280467-495",
+      "details": "Created property: \"Haxudio digital solutions\"",
+      "timestamp": "2026-11-04T12:11:20.668Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793794253186-394",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793794253032-fc8d586db9ac2963",
+      "details": "Uploaded image \"insta post hax.jfif\" via Cloudinary",
+      "timestamp": "2026-11-04T12:10:53.186Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1793794023846-810",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (admin)",
+      "timestamp": "2026-11-04T12:07:03.846Z",
+      "performedBy": "admin"
+    },
+    {
+      "id": "log-1793794020967-998",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (admin)",
+      "timestamp": "2026-11-04T12:07:00.967Z",
+      "performedBy": "admin"
+    },
+    {
       "id": "log-1793728864290-124",
       "action": "CREATE_PROPERTY",
       "entity": "Properties",
@@ -959,14 +1085,15 @@
       "entityId": "enq-1793704120365-701",
       "details": "New booking inquiry received from Farooq Ahmed baloch llllllllllllrrrrrrtttt (BME-562665)",
       "timestamp": "2026-11-03T11:08:45.270Z",
-=======
+      "performedBy": "Admin"
+    },
+    {
       "id": "log-1793790284712-160",
       "action": "UPLOAD_IMAGE",
       "entity": "MediaLibrary",
       "entityId": "med-1793790284559-b3fd0276b88160b2",
       "details": "Uploaded image \"test-cloud.png\" via local",
       "timestamp": "2026-11-04T11:04:44.712Z",
->>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
       "performedBy": "Admin"
     },
     {

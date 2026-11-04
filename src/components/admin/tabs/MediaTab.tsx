@@ -304,10 +304,6 @@ export const MediaTab: React.FC<MediaTabProps> = ({
                   ? "bg-sky-400 animate-pulse" 
                   : (storageStatus?.cloudinary?.error ? "bg-amber-400" : (storageStatus?.cloudinary?.configured ? "bg-sky-400" : "bg-stone-500"))
               }`} />
-<<<<<<< HEAD
-              <span className="font-semibold text-sky-500">
-                {storageStatus?.cloudinary?.configured ? "Cloudinary CDN Active" : "Cloudinary Not Configured"}
-=======
               <span className={`font-semibold ${
                 storageStatus?.cloudinary?.verified 
                   ? "text-sky-500" 
@@ -316,7 +312,6 @@ export const MediaTab: React.FC<MediaTabProps> = ({
                 {storageStatus?.cloudinary?.verified 
                   ? "Cloudinary CDN Active" 
                   : (storageStatus?.cloudinary?.error ? "Cloudinary Setup Attention" : "Cloudinary Ready")}
->>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
               </span>
               <span className={isDarkMode ? "text-stone-400" : "text-stone-500"}>
                 ({storageStatus?.cloudinary?.cloudName || "Credentials in Secrets"})

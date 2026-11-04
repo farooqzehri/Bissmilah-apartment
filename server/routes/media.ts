@@ -343,7 +343,6 @@ router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => 
   }
 });
 
-<<<<<<< HEAD
 // PUT /api/media/:id - Edit image metadata
 router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
   try {
@@ -420,7 +419,8 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     console.error("[Media] Failed to update media metadata:", err);
     res.status(500).json({ error: "Failed to update media metadata." });
   }
-=======
+});
+
 // Helper function to handle image asset replacement
 async function handleImageReplacement(
   id: string,
@@ -591,58 +591,6 @@ router.put("/:id/replace", requireAdminAuth, async (req: Request, res: Response)
     console.error("Image replacement error:", err);
     res.status(500).json({ error: err.message || "Failed to replace image asset" });
   }
->>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
-});
-
-// PUT /api/media/:id - Edit image metadata and/or replace image
-router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { title, altText, caption, category, base64Data, fileName } = req.body;
-
-    let replacementResult: any = null;
-    if (base64Data) {
-      replacementResult = await handleImageReplacement(id, base64Data, fileName);
-    }
-
-    const updates: any = {};
-    if (title !== undefined) updates.title = title;
-    if (altText !== undefined) updates.altText = altText;
-    if (caption !== undefined) updates.caption = caption;
-    if (category !== undefined) updates.category = category;
-
-    if (isMongoConnected()) {
-      await MediaAssetModel.updateOne(
-        { id },
-        { $set: updates }
-      );
-    }
-
-    const db = dbManager.getDb();
-    const item = db.media.find((m) => m.id === id);
-    if (!item) {
-      res.status(404).json({ error: "Media item not found" });
-      return;
-    }
-
-    if (title !== undefined) item.title = title;
-    if (altText !== undefined) item.altText = altText;
-    if (caption !== undefined) item.caption = caption;
-    if (category !== undefined) item.category = category;
-
-    dbManager.saveDb(db);
-    dbManager.addAuditLog("UPDATE_MEDIA_METADATA", "MediaLibrary", `Updated metadata for "${item.fileName}"`, id);
-
-    res.json({
-      success: true,
-      data: item,
-      replacement: replacementResult,
-      message: "Image metadata updated successfully",
-    });
-  } catch (err: any) {
-    console.error("Media PUT error:", err);
-    res.status(500).json({ error: err.message || "Failed to update media item" });
-  }
 });
 
 // DELETE /api/media/:id - Delete image with in-use protection and safe Cloudinary cleanup
@@ -705,21 +653,13 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
       await deleteFromCloudinary(publicIdToDelete);
     }
 
-<<<<<<< HEAD
-=======
     // Step 3: Delete from MongoDB Atlas
->>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
     if (isMongoConnected()) {
       await MediaAssetModel.deleteOne({ id });
     }
 
-<<<<<<< HEAD
-    // 2. Remove physical file if in local uploads directory
-    if (item.url.startsWith("/uploads/")) {
-=======
     // Step 4: Remove physical file if stored in local uploads directory
     if (item.url && item.url.startsWith("/uploads/")) {
->>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
       const localPath = path.join(process.cwd(), item.url);
       if (fs.existsSync(localPath)) {
         try {
