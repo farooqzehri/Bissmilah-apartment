@@ -44,7 +44,6 @@ function MainAppContent() {
     }
     return "home";
   });
-  // admuby
 
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
   const [catalogCategoryFilter, setCatalogCategoryFilter] = useState<string>("all");

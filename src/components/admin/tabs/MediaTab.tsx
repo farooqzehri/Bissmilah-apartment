@@ -38,10 +38,11 @@ export const MediaTab: React.FC<MediaTabProps> = ({
   const [deleteItem, setDeleteItem] = useState<MediaItem | null>(null);
   const [deleteError, setDeleteError] = useState<{ message: string; inUse?: boolean; places?: string[] } | null>(null);
   const [storageStatus, setStorageStatus] = useState<{
-    cloudinary?: { configured: boolean; cloudName: string; folder: string };
+    cloudinary?: { configured: boolean; verified?: boolean; cloudName: string; folder: string; hasSpaces?: boolean; error?: string; advice?: string };
     database?: { provider: string; connected: boolean; hasUri?: boolean; error?: string; advice?: string };
   } | null>(null);
   const [isRetryingDb, setIsRetryingDb] = useState(false);
+  const [isRetryingCloudinary, setIsRetryingCloudinary] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -78,6 +79,24 @@ export const MediaTab: React.FC<MediaTabProps> = ({
       onShowToast("Failed to test MongoDB connection.");
     } finally {
       setIsRetryingDb(false);
+    }
+  };
+
+  const handleRetryCloudinary = async () => {
+    setIsRetryingCloudinary(true);
+    try {
+      const res = await fetch("/api/media/retry-cloudinary", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        onShowToast("Connected to Cloudinary CDN successfully!");
+      } else {
+        onShowToast(data.cloudinary?.advice || data.cloudinary?.error || "Could not authenticate with Cloudinary.");
+      }
+      fetchStatus();
+    } catch {
+      onShowToast("Failed to test Cloudinary connection.");
+    } finally {
+      setIsRetryingCloudinary(false);
     }
   };
 
@@ -271,13 +290,21 @@ export const MediaTab: React.FC<MediaTabProps> = ({
             {/* Cloudinary Status */}
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${
-                storageStatus?.cloudinary?.configured ? "bg-sky-400 animate-pulse" : "bg-amber-400"
+                storageStatus?.cloudinary?.verified 
+                  ? "bg-sky-400 animate-pulse" 
+                  : (storageStatus?.cloudinary?.error ? "bg-amber-400" : (storageStatus?.cloudinary?.configured ? "bg-sky-400" : "bg-stone-500"))
               }`} />
-              <span className="font-semibold text-sky-500">
-                {storageStatus?.cloudinary?.configured ? "Cloudinary CDN Active" : "Cloudinary Storage Ready"}
+              <span className={`font-semibold ${
+                storageStatus?.cloudinary?.verified 
+                  ? "text-sky-500" 
+                  : (storageStatus?.cloudinary?.error ? "text-amber-500" : "text-sky-500")
+              }`}>
+                {storageStatus?.cloudinary?.verified 
+                  ? "Cloudinary CDN Active" 
+                  : (storageStatus?.cloudinary?.error ? "Cloudinary Setup Attention" : "Cloudinary Ready")}
               </span>
               <span className={isDarkMode ? "text-stone-400" : "text-stone-500"}>
-                ({storageStatus?.cloudinary?.configured ? `Folder: ${storageStatus.cloudinary.folder}` : "Credentials in .env"})
+                ({storageStatus?.cloudinary?.cloudName || "Credentials in Secrets"})
               </span>
             </div>
 
@@ -301,6 +328,16 @@ export const MediaTab: React.FC<MediaTabProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
+            {storageStatus?.cloudinary?.configured && !storageStatus?.cloudinary?.verified && (
+              <button
+                type="button"
+                onClick={handleRetryCloudinary}
+                disabled={isRetryingCloudinary}
+                className="px-3 py-1 rounded-lg text-[11px] font-sans font-semibold bg-sky-500 hover:bg-sky-600 text-black cursor-pointer transition-all disabled:opacity-50"
+              >
+                {isRetryingCloudinary ? "Testing Cloudinary..." : "Retry Cloudinary"}
+              </button>
+            )}
             {storageStatus?.database?.hasUri && !storageStatus?.database?.connected && (
               <button
                 type="button"
@@ -316,6 +353,24 @@ export const MediaTab: React.FC<MediaTabProps> = ({
             </span>
           </div>
         </div>
+
+        {/* Cloudinary Setup Alert Note if needed */}
+        {storageStatus?.cloudinary?.configured && !storageStatus?.cloudinary?.verified && storageStatus?.cloudinary?.error && (
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-stone-300 text-[11px] font-sans flex items-start gap-2.5">
+            <AlertTriangle size={15} className="text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div className="font-semibold text-amber-400">
+                Action Required: Cloudinary Cloud Name Misconfigured
+              </div>
+              <div className={isDarkMode ? "text-stone-300" : "text-stone-600"}>
+                {storageStatus?.cloudinary?.advice || "Cloudinary Cloud Names cannot contain spaces. Copy the exact 'Cloud Name' from your Cloudinary Console under Product Environment Credentials."}
+              </div>
+              <div className="text-[10px] text-stone-400 font-mono">
+                {storageStatus?.cloudinary?.error} · Images will safely upload to server disk storage until corrected.
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Database IP Whitelist Alert Note if needed */}
         {storageStatus?.database?.hasUri && !storageStatus?.database?.connected && (

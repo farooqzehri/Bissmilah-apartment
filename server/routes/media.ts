@@ -12,7 +12,8 @@ import {
   isCloudinaryConfigured, 
   uploadToCloudinary, 
   deleteFromCloudinary, 
-  getCloudinaryStatus 
+  getCloudinaryStatus,
+  verifyCloudinaryConnection
 } from "../utils/cloudinary";
 
 const router = Router();
@@ -76,6 +77,15 @@ router.post("/retry-mongo", async (_req: Request, res: Response) => {
   res.json({
     success,
     database: getMongoStatus(),
+  });
+});
+
+// POST /api/media/retry-cloudinary - Attempt re-verifying Cloudinary credentials
+router.post("/retry-cloudinary", async (_req: Request, res: Response) => {
+  const success = await verifyCloudinaryConnection(true);
+  res.json({
+    success,
+    cloudinary: getCloudinaryStatus(),
   });
 });
 

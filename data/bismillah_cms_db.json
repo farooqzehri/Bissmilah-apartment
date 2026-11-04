@@ -570,6 +570,21 @@
   ],
   "media": [
     {
+      "id": "med-1793790284559-b3fd0276b88160b2",
+      "fileName": "test-cloud.png",
+      "originalName": "test-cloud.png",
+      "url": "/uploads/test-cloud_png_1793790284559_b3fd0276b88160b2.png",
+      "cloudinaryPublicId": "",
+      "mimeType": "image/png",
+      "sizeBytes": 70,
+      "category": "Apartments",
+      "title": "test-cloud_png",
+      "altText": "Bismillah Real Estate photo",
+      "caption": "",
+      "uploadedAt": "2026-11-04T11:04:43.914Z",
+      "usageCount": 0
+    },
+    {
       "id": "med-1",
       "fileName": "mansion_elevation.jpg",
       "originalName": "mansion_elevation.jpg",
@@ -710,6 +725,15 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1793790284712-160",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1793790284559-b3fd0276b88160b2",
+      "details": "Uploaded image \"test-cloud.png\" via local",
+      "timestamp": "2026-11-04T11:04:44.712Z",
+      "performedBy": "Admin"
+    },
     {
       "id": "log-1793786596439-455",
       "action": "NEW_LEAD",
