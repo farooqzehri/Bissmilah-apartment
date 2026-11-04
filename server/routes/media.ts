@@ -12,7 +12,8 @@ import {
   isCloudinaryConfigured, 
   uploadToCloudinary, 
   deleteFromCloudinary, 
-  getCloudinaryStatus 
+  getCloudinaryStatus,
+  verifyCloudinaryConnection
 } from "../utils/cloudinary";
 
 const router = Router();
@@ -76,6 +77,15 @@ router.post("/retry-mongo", async (_req: Request, res: Response) => {
   res.json({
     success,
     database: getMongoStatus(),
+  });
+});
+
+// POST /api/media/retry-cloudinary - Attempt re-verifying Cloudinary credentials
+router.post("/retry-cloudinary", async (_req: Request, res: Response) => {
+  const success = await verifyCloudinaryConnection(true);
+  res.json({
+    success,
+    cloudinary: getCloudinaryStatus(),
   });
 });
 
@@ -333,6 +343,7 @@ router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => 
   }
 });
 
+<<<<<<< HEAD
 // PUT /api/media/:id - Edit image metadata
 router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
   try {
@@ -409,9 +420,232 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     console.error("[Media] Failed to update media metadata:", err);
     res.status(500).json({ error: "Failed to update media metadata." });
   }
+=======
+// Helper function to handle image asset replacement
+async function handleImageReplacement(
+  id: string,
+  base64Data: string,
+  fileName?: string
+): Promise<{ url: string; publicId: string; mimeType: string; sizeBytes: number }> {
+  // Validate MIME type
+  const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  let mimeType = "image/jpeg";
+  let buffer: Buffer;
+  let ext = "jpg";
+
+  if (matches && matches.length === 3) {
+    mimeType = matches[1];
+    buffer = Buffer.from(matches[2], "base64");
+
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif", "image/svg+xml"];
+    if (!allowed.includes(mimeType)) {
+      throw new Error(`Unsupported image format (${mimeType}). Supported: JPEG, PNG, WebP, AVIF, SVG.`);
+    }
+
+    if (mimeType === "image/png") ext = "png";
+    else if (mimeType === "image/webp") ext = "webp";
+    else if (mimeType === "image/avif") ext = "avif";
+    else if (mimeType === "image/gif") ext = "gif";
+    else if (mimeType === "image/svg+xml") ext = "svg";
+  } else {
+    buffer = Buffer.from(base64Data, "base64");
+  }
+
+  if (buffer.length > 15 * 1024 * 1024) {
+    throw new Error("Replacement image size exceeds 15MB limit.");
+  }
+
+  const uniqueId = crypto.randomBytes(8).toString("hex");
+  const sanitizedName = (fileName || "replacement").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 30);
+
+  let newPublicUrl = "";
+  let newPublicId = "";
+  let isCloudinary = false;
+
+  // 1. Upload new asset to Cloudinary if configured
+  if (isCloudinaryConfigured()) {
+    try {
+      const cloudResult = await uploadToCloudinary(base64Data, {
+        folder: "bismillah_apartments",
+        category: "Replacement",
+      });
+      newPublicUrl = cloudResult.secureUrl;
+      newPublicId = cloudResult.publicId;
+      isCloudinary = true;
+    } catch (cloudErr: any) {
+      console.warn("[Cloudinary] Asset replacement upload error:", cloudErr.message);
+    }
+  }
+
+  // 2. Disk fallback if Cloudinary not available
+  if (!newPublicUrl) {
+    const storageFileName = `${sanitizedName}_${Date.now()}_${uniqueId}.${ext}`;
+    const filePath = path.join(UPLOADS_DIR, storageFileName);
+    fs.writeFileSync(filePath, buffer);
+    newPublicUrl = `/uploads/${storageFileName}`;
+  }
+
+  // Find existing asset to get old public ID
+  let oldPublicId = "";
+  let oldLocalUrl = "";
+
+  if (isMongoConnected()) {
+    const existingDoc = await MediaAssetModel.findOne({ id });
+    if (existingDoc) {
+      oldPublicId = existingDoc.publicId || "";
+      oldLocalUrl = existingDoc.url || "";
+    }
+  }
+
+  const db = dbManager.getDb();
+  const existingLocal = db.media.find((m) => m.id === id);
+  if (existingLocal) {
+    if (!oldPublicId) oldPublicId = existingLocal.cloudinaryPublicId || "";
+    if (!oldLocalUrl) oldLocalUrl = existingLocal.url || "";
+  }
+
+  // 3. Update database with new asset details FIRST
+  try {
+    if (isMongoConnected()) {
+      await MediaAssetModel.updateOne(
+        { id },
+        {
+          $set: {
+            url: newPublicUrl,
+            secureUrl: newPublicUrl,
+            publicId: newPublicId,
+            mimeType,
+            sizeBytes: buffer.length,
+            storageProvider: isCloudinary ? "cloudinary" : "local",
+          },
+        }
+      );
+    }
+
+    if (existingLocal) {
+      existingLocal.url = newPublicUrl;
+      existingLocal.cloudinaryPublicId = newPublicId;
+      existingLocal.mimeType = mimeType;
+      existingLocal.sizeBytes = buffer.length;
+      dbManager.saveDb(db);
+    }
+  } catch (dbErr: any) {
+    // If DB update fails, clean up the newly uploaded asset to avoid orphaned files
+    if (newPublicId) {
+      deleteFromCloudinary(newPublicId).catch(() => {});
+    }
+    throw new Error(`Failed to update media record in database: ${dbErr.message}`);
+  }
+
+  // 4. Delete old asset ONLY after database update succeeds
+  if (oldPublicId && oldPublicId !== newPublicId) {
+    console.log(`[Cloudinary] Cleaning up superseded asset ${oldPublicId}...`);
+    deleteFromCloudinary(oldPublicId).catch((delErr) => {
+      console.warn("[Cloudinary] Notice: Could not remove superseded asset:", oldPublicId, delErr.message);
+    });
+  }
+
+  if (oldLocalUrl && oldLocalUrl.startsWith("/uploads/") && oldLocalUrl !== newPublicUrl) {
+    const localOldPath = path.join(process.cwd(), oldLocalUrl);
+    if (fs.existsSync(localOldPath)) {
+      try {
+        fs.unlinkSync(localOldPath);
+      } catch (err) {
+        console.warn("Could not delete old physical file:", localOldPath, err);
+      }
+    }
+  }
+
+  return {
+    url: newPublicUrl,
+    publicId: newPublicId,
+    mimeType,
+    sizeBytes: buffer.length,
+  };
+}
+
+// PUT /api/media/:id/replace - Explicitly replace an image file
+router.put("/:id/replace", requireAdminAuth, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { base64Data, fileName } = req.body;
+
+    if (!base64Data) {
+      res.status(400).json({ error: "base64Data is required to replace image" });
+      return;
+    }
+
+    const replacement = await handleImageReplacement(id, base64Data, fileName);
+
+    const db = dbManager.getDb();
+    const item = db.media.find((m) => m.id === id);
+
+    dbManager.addAuditLog("REPLACE_MEDIA_IMAGE", "MediaLibrary", `Replaced image asset for ID: ${id}`, id);
+
+    res.json({
+      success: true,
+      data: item || { id, ...replacement },
+      message: "Image asset replaced successfully and previous file safely recycled",
+    });
+  } catch (err: any) {
+    console.error("Image replacement error:", err);
+    res.status(500).json({ error: err.message || "Failed to replace image asset" });
+  }
+>>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
 });
 
-// DELETE /api/media/:id - Delete image with Cloudinary cleanup and in-use check
+// PUT /api/media/:id - Edit image metadata and/or replace image
+router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { title, altText, caption, category, base64Data, fileName } = req.body;
+
+    let replacementResult: any = null;
+    if (base64Data) {
+      replacementResult = await handleImageReplacement(id, base64Data, fileName);
+    }
+
+    const updates: any = {};
+    if (title !== undefined) updates.title = title;
+    if (altText !== undefined) updates.altText = altText;
+    if (caption !== undefined) updates.caption = caption;
+    if (category !== undefined) updates.category = category;
+
+    if (isMongoConnected()) {
+      await MediaAssetModel.updateOne(
+        { id },
+        { $set: updates }
+      );
+    }
+
+    const db = dbManager.getDb();
+    const item = db.media.find((m) => m.id === id);
+    if (!item) {
+      res.status(404).json({ error: "Media item not found" });
+      return;
+    }
+
+    if (title !== undefined) item.title = title;
+    if (altText !== undefined) item.altText = altText;
+    if (caption !== undefined) item.caption = caption;
+    if (category !== undefined) item.category = category;
+
+    dbManager.saveDb(db);
+    dbManager.addAuditLog("UPDATE_MEDIA_METADATA", "MediaLibrary", `Updated metadata for "${item.fileName}"`, id);
+
+    res.json({
+      success: true,
+      data: item,
+      replacement: replacementResult,
+      message: "Image metadata updated successfully",
+    });
+  } catch (err: any) {
+    console.error("Media PUT error:", err);
+    res.status(500).json({ error: err.message || "Failed to update media item" });
+  }
+});
+
+// DELETE /api/media/:id - Delete image with in-use protection and safe Cloudinary cleanup
 router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -423,6 +657,7 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     let item = index !== -1 ? db.media[index] : null;
     let cloudinaryPublicId: string | undefined;
 
+    // Retrieve metadata and public ID from MongoDB without deleting yet
     if (isMongoConnected()) {
       const doc = await MediaAssetModel.findOne({ id });
       if (doc) {
@@ -450,9 +685,10 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
       return;
     }
 
+    // Step 1: Check if the image is in active use across properties or homepage
     const usage = checkImageUsage(item.url);
 
-    // If in use and not forced, prevent accidental removal
+    // If in use and not forced, REFUSE DELETION before touching MongoDB or Cloudinary
     if (usage.inUse && force !== "true") {
       res.status(409).json({
         error: `Cannot delete image because it is actively used in ${usage.count} location(s).`,
@@ -463,18 +699,27 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
       return;
     }
 
-    // 1. Delete from Cloudinary if public ID exists
+    // Step 2: Delete from Cloudinary if public ID exists
     const publicIdToDelete = cloudinaryPublicId || item.cloudinaryPublicId;
     if (publicIdToDelete) {
       await deleteFromCloudinary(publicIdToDelete);
     }
 
+<<<<<<< HEAD
+=======
+    // Step 3: Delete from MongoDB Atlas
+>>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
     if (isMongoConnected()) {
       await MediaAssetModel.deleteOne({ id });
     }
 
+<<<<<<< HEAD
     // 2. Remove physical file if in local uploads directory
     if (item.url.startsWith("/uploads/")) {
+=======
+    // Step 4: Remove physical file if stored in local uploads directory
+    if (item.url && item.url.startsWith("/uploads/")) {
+>>>>>>> f3d042dc8bb5e5872c6a768bc83adaf70b2a5618
       const localPath = path.join(process.cwd(), item.url);
       if (fs.existsSync(localPath)) {
         try {
@@ -485,6 +730,7 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
       }
     }
 
+    // Step 5: Remove from local database
     if (index !== -1) {
       db.media.splice(index, 1);
       dbManager.saveDb(db);
@@ -494,7 +740,7 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      message: `Image "${item.fileName}" removed from media library and storage service`,
+      message: `Image "${item.fileName}" removed from media library and Cloudinary storage`,
     });
   } catch (err: any) {
     res.status(500).json({ error: "Failed to delete media: " + err.message });

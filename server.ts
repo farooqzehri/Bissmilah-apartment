@@ -111,6 +111,15 @@ async function startServer() {
       server: {
         middlewareMode: true,
         hmr: process.env.DISABLE_HMR !== "true",
+        watch: {
+          ignored: [
+            "**/data/**",
+            "**/uploads/**",
+            "**/dist/**",
+            "**/.git/**",
+            "**/server/data/**",
+          ],
+        },
       },
       appType: "spa",
     });

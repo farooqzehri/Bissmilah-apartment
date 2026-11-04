@@ -4,8 +4,8 @@ import { requireAdminAuth } from "./auth";
 import { Property } from "../types";
 import { isMongoConnected } from "../db/mongodb";
 import { PropertyModel } from "../models/Property";
-import { deleteFromCloudinary } from "../utils/cloudinary";
-import { escapeRegex } from "../utils/search";
+import { MediaAssetModel } from "../models/MediaAsset";
+import { deleteFromCloudinary, uploadToCloudinary, isCloudinaryConfigured } from "../utils/cloudinary";
 
 const router = Router();
 
@@ -63,7 +63,7 @@ router.get("/", async (req: Request, res: Response) => {
       }
 
       if (search && typeof search === "string" && search.trim() !== "") {
-        const q = escapeRegex(search.trim());
+        const q = search.trim();
         query.$or = [
           { title: { $regex: q, $options: "i" } },
           { location: { $regex: q, $options: "i" } },
@@ -230,6 +230,45 @@ router.post("/", requireAdminAuth, async (req: Request, res: Response) => {
       }
     }
 
+    let coverUrl = data.image;
+    let coverPublicId = data.imagePublicId || "";
+
+    // If main image is base64, upload to Cloudinary or disk
+    if (coverUrl && coverUrl.startsWith("data:image/")) {
+      if (isCloudinaryConfigured()) {
+        try {
+          const cloudResult = await uploadToCloudinary(coverUrl, {
+            folder: "bismillah_properties",
+            category: data.category || "apartments",
+          });
+          coverUrl = cloudResult.secureUrl;
+          coverPublicId = cloudResult.publicId;
+
+          // Also mirror to MediaAssetModel so it appears in Media Library
+          if (isMongoConnected()) {
+            MediaAssetModel.create({
+              id: `med-${Date.now()}-${cloudResult.publicId.slice(-6)}`,
+              url: cloudResult.secureUrl,
+              secureUrl: cloudResult.secureUrl,
+              publicId: cloudResult.publicId,
+              fileName: `${slug}-cover.jpg`,
+              originalName: `${slug}-cover.jpg`,
+              mimeType: "image/jpeg",
+              sizeBytes: cloudResult.sizeBytes || 500000,
+              category: data.category || "apartments",
+              title: `${data.title} Cover`,
+              altText: `${data.title} primary exterior view`,
+              caption: `${data.title} luxury real estate`,
+              uploadedAt: now,
+              storageProvider: "cloudinary",
+            }).catch(() => {});
+          }
+        } catch (uploadErr: any) {
+          console.warn("[Cloudinary] Property cover upload failed, continuing with provided URL:", uploadErr.message);
+        }
+      }
+    }
+
     const newProperty: Property = {
       id,
       slug,
@@ -256,8 +295,8 @@ router.post("/", requireAdminAuth, async (req: Request, res: Response) => {
       furnishingStatus: data.furnishingStatus || "Unfurnished",
       description: data.description || "",
       fullOverview: data.fullOverview || data.description || "",
-      image: data.image,
-      imagePublicId: data.imagePublicId || "",
+      image: coverUrl,
+      imagePublicId: coverPublicId,
       gallery: Array.isArray(data.gallery) ? data.gallery : [],
       galleryPublicIds: Array.isArray(data.galleryPublicIds) ? data.galleryPublicIds : [],
       highlights: Array.isArray(data.highlights) && data.highlights.length > 0
@@ -313,19 +352,38 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     const updates = req.body;
     const now = new Date().toISOString();
 
+    // If updating with a new base64 image, upload to Cloudinary first
+    if (updates.image && updates.image.startsWith("data:image/")) {
+      if (isCloudinaryConfigured()) {
+        try {
+          const cloudResult = await uploadToCloudinary(updates.image, {
+            folder: "bismillah_properties",
+            category: updates.category || "apartments",
+          });
+          updates.image = cloudResult.secureUrl;
+          updates.imagePublicId = cloudResult.publicId;
+        } catch (uploadErr: any) {
+          console.warn("[Cloudinary] Property cover update upload failed:", uploadErr.message);
+        }
+      }
+    }
+
     let updatedProperty: Property | null = null;
+    let oldCloudinaryPublicIdToDelete = "";
 
     if (isMongoConnected()) {
       const doc = await PropertyModel.findOne({ id });
       if (doc) {
-        // If cover image was replaced and had an old Cloudinary public ID, remove old asset
-        if (updates.image && updates.imagePublicId && doc.imagePublicId && doc.imagePublicId !== updates.imagePublicId) {
-          deleteFromCloudinary(doc.imagePublicId).catch((e) => console.warn("Old image deletion notice", e));
-        }
+        const oldPublicId = doc.imagePublicId;
 
         Object.assign(doc, updates, { updatedAt: now });
         await doc.save();
         updatedProperty = doc.toObject() as unknown as Property;
+
+        // Mark old Cloudinary asset for deletion ONLY after database update succeeds
+        if (oldPublicId && updates.imagePublicId && oldPublicId !== updates.imagePublicId) {
+          oldCloudinaryPublicIdToDelete = oldPublicId;
+        }
       }
     }
 
@@ -333,6 +391,11 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     const index = db.properties.findIndex((p) => p.id === id);
 
     if (index !== -1) {
+      const existingProp = db.properties[index];
+      if (!oldCloudinaryPublicIdToDelete && existingProp.imagePublicId && updates.imagePublicId && existingProp.imagePublicId !== updates.imagePublicId) {
+        oldCloudinaryPublicIdToDelete = existingProp.imagePublicId;
+      }
+
       db.properties[index] = {
         ...db.properties[index],
         ...updates,
@@ -345,6 +408,13 @@ router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     if (!updatedProperty) {
       res.status(404).json({ error: "Property not found" });
       return;
+    }
+
+    // Delete old asset ONLY after the database update succeeds
+    if (oldCloudinaryPublicIdToDelete) {
+      deleteFromCloudinary(oldCloudinaryPublicIdToDelete).catch((e) =>
+        console.warn("[Cloudinary] Old property image deletion notice:", e.message)
+      );
     }
 
     dbManager.addAuditLog("UPDATE_PROPERTY", "Properties", `Updated property "${updatedProperty.title}"`, id);
