@@ -76,7 +76,7 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const refreshProperties = useCallback(async () => {
     try {
-      const res = await cmsProperties.list({ limit: 100 });
+      const res = await cmsProperties.list({ limit: 100, includeUnpublished: true });
       setProperties(res.data);
     } catch (err) {
       console.error("Failed to load CMS properties", err);

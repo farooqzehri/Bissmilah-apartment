@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IAdminUser extends Document {
   username: string;
   email: string;
-  pin: string; // Staff PIN (e.g. 786)
+  pin: string;
   passwordHash?: string;
   role: "admin" | "superadmin" | "manager" | "staff";
   permissions: string[];
@@ -16,7 +16,7 @@ const AdminUserSchema = new Schema<IAdminUser>(
   {
     username: { type: String, required: true, trim: true },
     email: { type: String, trim: true, lowercase: true },
-    pin: { type: String, required: true, default: "786" },
+    pin: { type: String, required: true, select: false },
     passwordHash: { type: String },
     role: {
       type: String,

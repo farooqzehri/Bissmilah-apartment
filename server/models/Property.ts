@@ -86,7 +86,7 @@ const PropertySchema = new Schema<IProperty>(
       enum: ["Furnished", "Semi-Furnished", "Unfurnished", "N/A"],
       default: "Unfurnished",
     },
-    description: { type: String, required: true },
+    description: { type: String, default: "" },
     fullOverview: { type: String },
     image: { type: String, required: true },
     imagePublicId: { type: String },

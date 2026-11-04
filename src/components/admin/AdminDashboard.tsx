@@ -19,11 +19,13 @@ import { cmsAuth, cmsEnquiries, cmsMedia } from "../../utils/cmsApi";
 
 interface AdminDashboardProps {
   onNavigateHome: () => void;
+  onLogout: () => void;
   isDarkMode: boolean;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onNavigateHome,
+  onLogout,
   isDarkMode,
 }) => {
   const { settings, homepage, updateSettings, updateHomepage, updateHomepageSection } = useCMS();
@@ -70,6 +72,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     } catch (e) {
       console.warn("Logout error:", e);
     }
+    onLogout();
     localStorage.removeItem("bismillah_current_page");
     window.location.hash = "";
     onNavigateHome();
@@ -108,34 +111,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const handleConfirmDelete = async () => {
-    if (propertyToDelete) {
-      await deleteProperty(propertyToDelete.id);
-      showToast(`Removed "${propertyToDelete.title}".`);
+    try {
+      if (propertyToDelete) {
+        await deleteProperty(propertyToDelete.id);
+        showToast(`Removed "${propertyToDelete.title}".`);
+      }
+      setIsDeleteModalOpen(false);
+      setPropertyToDelete(null);
+    } catch (err) {
+      showToast("Error deleting property: " + (err instanceof Error ? err.message : String(err)));
     }
-    setIsDeleteModalOpen(false);
-    setPropertyToDelete(null);
   };
 
   const handleToggleFeatured = async (prop: Property) => {
-    await updateProperty(prop.id, { featured: !prop.featured });
-    showToast(!prop.featured ? `Featured "${prop.title}".` : `Unfeatured "${prop.title}".`);
+    try {
+      await updateProperty(prop.id, { featured: !prop.featured });
+      showToast(!prop.featured ? `Featured "${prop.title}".` : `Unfeatured "${prop.title}".`);
+    } catch (err) {
+      showToast("Error updating property: " + (err instanceof Error ? err.message : String(err)));
+    }
   };
 
   const handleTogglePublished = async (prop: Property) => {
     const isCurrentlyPublished = prop.published !== false;
-    await updateProperty(prop.id, { published: !isCurrentlyPublished });
-    showToast(!isCurrentlyPublished ? `Listing "${prop.title}" is now Live.` : `Listing "${prop.title}" is now Hidden.`);
+    try {
+      await updateProperty(prop.id, { published: !isCurrentlyPublished });
+      showToast(!isCurrentlyPublished ? `Listing "${prop.title}" is now Live.` : `Listing "${prop.title}" is now Hidden.`);
+    } catch (err) {
+      showToast("Error updating property: " + (err instanceof Error ? err.message : String(err)));
+    }
   };
 
   const handleChangeAvailability = async (prop: Property, status: AvailabilityStatus) => {
-    await updateProperty(prop.id, { availability: status });
-    showToast(`"${prop.title}" status changed to ${status}.`);
+    try {
+      await updateProperty(prop.id, { availability: status });
+      showToast(`"${prop.title}" status changed to ${status}.`);
+    } catch (err) {
+      showToast("Error updating property: " + (err instanceof Error ? err.message : String(err)));
+    }
   };
 
   const handleResetCatalog = async () => {
     if (window.confirm("Are you sure you want to restore initial factory listings? Any custom entries will be reset.")) {
-      await resetToDefaults();
-      showToast("Property catalog reset to initial records.");
+      try {
+        await resetToDefaults();
+        showToast("Property catalog reset to initial records.");
+      } catch (err) {
+        showToast("Error resetting properties: " + (err instanceof Error ? err.message : String(err)));
+      }
     }
   };
 

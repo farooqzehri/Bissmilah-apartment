@@ -3,7 +3,6 @@ import { PropertyModel } from "../models/Property";
 import { WebsiteSettingsModel } from "../models/WebsiteSettings";
 import { CustomerInquiryModel } from "../models/CustomerInquiry";
 import { MediaAssetModel } from "../models/MediaAsset";
-import { AdminUserModel } from "../models/AdminUser";
 import { dbManager } from "../db";
 
 let isConnected = false;
@@ -242,10 +241,27 @@ async function seedDefaultDataIfEmpty() {
     }
 
     // 2. Seed Settings
-    const settingsCount = await WebsiteSettingsModel.countDocuments();
-    if (settingsCount === 0 && localDb.settings) {
-      console.log("[MongoDB Atlas] Seeding initial website settings...");
-      await WebsiteSettingsModel.create(localDb.settings);
+    const settingsDoc = await WebsiteSettingsModel.findOne();
+    if (!settingsDoc && localDb.settings) {
+      console.log("[MongoDB Atlas] Seeding initial website settings and CMS content...");
+      await WebsiteSettingsModel.create({
+        ...localDb.settings,
+        homepage: localDb.homepage,
+        pages: localDb.pages,
+      });
+    } else if (settingsDoc) {
+      let needsSave = false;
+      if (settingsDoc.homepage == null && localDb.homepage) {
+        settingsDoc.homepage = localDb.homepage;
+        needsSave = true;
+      }
+      if (settingsDoc.pages == null && localDb.pages) {
+        settingsDoc.pages = localDb.pages;
+        needsSave = true;
+      }
+      if (needsSave) {
+        await settingsDoc.save();
+      }
     }
 
     // 3. Seed Media Assets
@@ -272,20 +288,7 @@ async function seedDefaultDataIfEmpty() {
       }
     }
 
-    // 4. Seed Admin User
-    const adminCount = await AdminUserModel.countDocuments();
-    if (adminCount === 0) {
-      console.log("[MongoDB Atlas] Seeding default administrator profile (PIN: 786)...");
-      await AdminUserModel.create({
-        username: "Haji Saud Zehri Admin",
-        email: "hajisaud@bismillahrealestate.pk",
-        pin: "786",
-        role: "admin",
-        permissions: ["read", "write", "delete", "publish", "settings"],
-      });
-    }
-
-    // 5. Seed Inquiries
+    // 4. Seed Inquiries
     const inqCount = await CustomerInquiryModel.countDocuments();
     if (inqCount === 0 && localDb.enquiries.length > 0) {
       console.log(`[MongoDB Atlas] Seeding ${localDb.enquiries.length} customer inquiries...`);

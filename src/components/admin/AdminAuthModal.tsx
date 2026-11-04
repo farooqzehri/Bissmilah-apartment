@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Lock, KeyRound, ArrowRight, X, Sparkles, RefreshCw, CheckCircle2 } from "lucide-react";
-import { cmsAuth, setAuthToken } from "../../utils/cmsApi";
+import { Lock, KeyRound, ArrowRight, X, RefreshCw } from "lucide-react";
+import { cmsAuth } from "../../utils/cmsApi";
 
 interface AdminAuthModalProps {
   isOpen: boolean;
@@ -28,66 +28,26 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
       e.stopPropagation();
     }
 
-    const tokenInput = pin.trim();
-    if (!tokenInput) {
-      setError("Please enter staff security PIN (e.g. 786).");
+    const passcode = pin.trim();
+    if (!passcode) {
+      setError("Please enter your configured staff passcode.");
       return;
     }
 
-    const validLocalPins = ["786", "bismillah786", "admin", "1234"];
-    const isDirectMatch = validLocalPins.includes(tokenInput.toLowerCase());
-
     setIsLoading(true);
     setError("");
 
     try {
-      if (isDirectMatch) {
-        // Instant synchronous unlock to guarantee zero delays or reload glitches
-        setAuthToken("bismillah-staff-token-786");
+      const res = await cmsAuth.login(passcode);
+      if (res?.token) {
         localStorage.setItem("bismillah_current_page", "admin");
         window.location.hash = "admin";
         onSuccess();
-
-        // Background server audit logging
-        cmsAuth.login(tokenInput).catch((err) => {
-          console.warn("Background auth session sync:", err);
-        });
-        return;
+      } else {
+        setError("Authentication failed. Please try again.");
       }
-
-      // If user typed a custom key, verify through API
-      const res = await cmsAuth.login(tokenInput);
-      if (res && res.token) {
-        localStorage.setItem("bismillah_current_page", "admin");
-        window.location.hash = "admin";
-        onSuccess();
-      }
-    } catch (err: any) {
-      setError(err.message || "Invalid staff passcode. Try '786' or click Demo Access below.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleQuickDemoAccess = async (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setIsLoading(true);
-    setError("");
-
-    try {
-      setAuthToken("bismillah-staff-token-786");
-      localStorage.setItem("bismillah_current_page", "admin");
-      window.location.hash = "admin";
-      onSuccess();
-
-      cmsAuth.login("786", "Haji Saud Staff Demo").catch((err) => {
-        console.warn("Background auth log:", err);
-      });
-    } catch (err: any) {
-      setError(err.message || "Demo login failed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Authentication failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -131,20 +91,20 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
             Haji Saud Zehri Staff Login
           </h2>
           <p className={`text-xs mt-1 leading-relaxed ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
-            Enter staff passcode <strong className="text-[#FF9E4A]">786</strong> to unlock full website content and property management CMS.
+            Enter the staff passcode configured by your site administrator to access the property management CMS.
           </p>
 
           {/* Form container using div to completely prevent native browser reload */}
           <div className="mt-6 space-y-4">
             <div className="space-y-1.5">
               <label className="font-mono text-[10px] uppercase tracking-wider block text-stone-400">
-                Staff Security PIN (Default: 786)
+                Staff Security Passcode
               </label>
               <div className="relative">
                 <KeyRound size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                 <input
                   type="password"
-                  placeholder="Enter 786"
+                  placeholder="Enter your passcode"
                   value={pin}
                   onChange={(e) => {
                     setPin(e.target.value);
@@ -177,22 +137,6 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
             </button>
           </div>
 
-          {/* Quick Demo Access Button */}
-          <div className="mt-5 pt-4 border-t border-stone-200/50 dark:border-stone-800/80">
-            <button
-              type="button"
-              onClick={handleQuickDemoAccess}
-              disabled={isLoading}
-              className={`w-full py-2.5 rounded-full text-xs font-display flex items-center justify-center gap-2 border transition-all cursor-pointer ${
-                isDarkMode 
-                  ? "border-stone-800 hover:bg-stone-900 text-stone-300 hover:text-white" 
-                  : "border-stone-200 hover:bg-stone-50 text-stone-700 hover:text-black"
-              }`}
-            >
-              <Sparkles size={13} className="text-[#FF9E4A]" />
-              <span>Instant 1-Click Staff Access (786)</span>
-            </button>
-          </div>
         </motion.div>
       </div>
     </AnimatePresence>

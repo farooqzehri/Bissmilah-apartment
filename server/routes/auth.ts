@@ -3,123 +3,142 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { dbManager } from "../db";
 import { isMongoConnected } from "../db/mongodb";
-import { AdminUserModel } from "../models/AdminUser";
 
 const router = Router();
+const INSECURE_JWT_SECRETS = new Set([
+  "bismillah_default_secret_786_key",
+  "bismillah_super_secret_jwt_key_786",
+  "super_secret_jwt_key_bismillah_786_california_luxury",
+]);
+const INSECURE_ADMIN_PINS = new Set(["786", "bismillah786", "admin", "1234"]);
+const revokedTokens = new Map<string, number>();
 
-const activeTokens = new Set<string>();
-const DEFAULT_AUTH_TOKEN = "bismillah-staff-token-786";
-activeTokens.add(DEFAULT_AUTH_TOKEN);
+const pruneRevokedTokens = (): void => {
+  const now = Date.now();
+  for (const [tokenId, expiresAt] of revokedTokens) {
+    if (expiresAt <= now) revokedTokens.delete(tokenId);
+  }
+};
 
-const getJwtSecret = (): string => {
-  return process.env.JWT_SECRET || "bismillah_default_secret_786_key";
+const getJwtSecret = (): string | undefined => {
+  const secret = process.env.JWT_SECRET?.trim();
+  if (!secret || secret.length < 32 || INSECURE_JWT_SECRETS.has(secret)) {
+    return undefined;
+  }
+  return secret;
+};
+
+const getAdminPin = (): string | undefined => {
+  const pin = process.env.ADMIN_PIN?.trim();
+  if (!pin || pin.length < 8 || INSECURE_ADMIN_PINS.has(pin.toLowerCase())) {
+    return undefined;
+  }
+  return pin;
+};
+
+const isValidAdminPin = (candidate: string, expected: string): boolean => {
+  const candidateHash = crypto.createHash("sha256").update(candidate).digest();
+  const expectedHash = crypto.createHash("sha256").update(expected).digest();
+  return crypto.timingSafeEqual(candidateHash, expectedHash);
 };
 
 export const requireAdminAuth = (req: Request, res: Response, next: NextFunction): void => {
+  const secret = getJwtSecret();
+  if (!secret || !getAdminPin()) {
+    res.status(503).json({ error: "Admin authentication is not configured securely" });
+    return;
+  }
+
   const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({ error: "Unauthorized: Missing authentication credentials" });
+  const tokenMatch = authHeader?.match(/^Bearer\s+(\S+)$/);
+  if (!tokenMatch) {
+    res.status(401).json({ error: "Unauthorized: Missing or invalid authentication credentials" });
     return;
   }
 
-  const parts = authHeader.split(" ");
-  if (parts.length !== 2 || parts[0] !== "Bearer") {
-    res.status(401).json({ error: "Unauthorized: Invalid authorization format" });
-    return;
-  }
-
-  const token = parts[1];
-
-  // 1. Direct match with active session or default token
-  if (activeTokens.has(token) || token === DEFAULT_AUTH_TOKEN) {
-    next();
-    return;
-  }
-
-  // 2. Validate JWT token if signed
   try {
-    const decoded = jwt.verify(token, getJwtSecret());
-    if (decoded) {
-      (req as any).user = decoded;
-      next();
+    const decoded = jwt.verify(tokenMatch[1], secret, { algorithms: ["HS256"] });
+    if (typeof decoded === "string" || decoded.role !== "admin" || !decoded.jti) {
+      res.status(401).json({ error: "Unauthorized: Invalid admin session" });
       return;
     }
-  } catch {
-    // JWT verification failed
-  }
 
-  res.status(403).json({ error: "Forbidden: Session expired or invalid admin token" });
+    const revokedUntil = revokedTokens.get(decoded.jti);
+    if (revokedUntil && revokedUntil > Date.now()) {
+      res.status(401).json({ error: "Unauthorized: Admin session has been logged out" });
+      return;
+    }
+    if (revokedUntil) {
+      revokedTokens.delete(decoded.jti);
+    }
+
+    (req as Request & { user?: jwt.JwtPayload }).user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ error: "Unauthorized: Session expired or invalid" });
+  }
 };
 
 // POST /api/auth/login
-router.post("/login", async (req: Request, res: Response) => {
-  const { pin, password, username } = req.body;
-  const inputPin = String(pin || password || "").trim().toLowerCase();
+router.post("/login", (req: Request, res: Response) => {
+  const expectedPin = getAdminPin();
+  const secret = getJwtSecret();
 
-  const standardPins = ["786", "bismillah786", "admin", "1234"];
-  let isValid = standardPins.includes(inputPin);
-  let adminRecord: any = null;
-
-  // Check against MongoDB Atlas if connected
-  if (isMongoConnected()) {
-    try {
-      adminRecord = await AdminUserModel.findOne({
-        $or: [{ pin: inputPin }, { username: username || "admin" }],
-      });
-      if (adminRecord && adminRecord.pin === inputPin) {
-        isValid = true;
-      }
-    } catch (err) {
-      console.warn("MongoDB auth check warning:", err);
-    }
+  if (!expectedPin || !secret) {
+    res.status(503).json({
+      success: false,
+      error: "Admin authentication is not configured securely. Set ADMIN_PIN and JWT_SECRET.",
+    });
+    return;
   }
 
-  if (isValid) {
-    // Sign JWT token
-    const tokenPayload = {
-      username: username || adminRecord?.username || "Haji Saud Zehri Staff",
-      role: adminRecord?.role || "admin",
-      permissions: adminRecord?.permissions || ["read", "write", "delete", "publish", "settings"],
+  const suppliedPin = typeof req.body?.pin === "string" ? req.body.pin.trim() : "";
+  if (!suppliedPin || !isValidAdminPin(suppliedPin, expectedPin)) {
+    res.status(401).json({ success: false, error: "Invalid staff passcode" });
+    return;
+  }
+
+  try {
+    pruneRevokedTokens();
+    const username = process.env.ADMIN_USERNAME?.trim() || "admin";
+    const user = {
+      username,
+      role: "admin",
+      permissions: ["read", "write", "delete", "publish", "settings"],
     };
-
-    const sessionToken = jwt.sign(tokenPayload, getJwtSecret(), { expiresIn: "7d" });
-    activeTokens.add(sessionToken);
-
-    // Update lastLogin in MongoDB if connected
-    if (adminRecord) {
-      adminRecord.lastLogin = new Date();
-      adminRecord.save().catch(() => {});
-    }
+    const sessionToken = jwt.sign(user, secret, {
+      algorithm: "HS256",
+      jwtid: crypto.randomUUID(),
+      expiresIn: "7d",
+    });
 
     dbManager.addAuditLog(
       "STAFF_LOGIN",
       "Authentication",
-      `Staff authenticated successfully (${tokenPayload.username})`,
+      `Staff authenticated successfully (${username})`,
       undefined,
-      tokenPayload.username
+      username
     );
 
     res.json({
       success: true,
       token: sessionToken,
-      user: tokenPayload,
+      user,
       database: isMongoConnected() ? "MongoDB Atlas" : "Local Storage",
       message: "Authentication successful",
     });
-  } else {
-    res.status(401).json({
-      success: false,
-      error: "Invalid staff PIN. Use '786' or 'admin'.",
-    });
+  } catch (err) {
+    console.error("[Auth] Failed to create admin session:", err);
+    res.status(500).json({ success: false, error: "Unable to create admin session" });
   }
 });
 
 // POST /api/auth/logout
-router.post("/logout", (req: Request, res: Response) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.split(" ")[1];
-    activeTokens.delete(token);
+router.post("/logout", requireAdminAuth, (req: Request, res: Response) => {
+  const user = (req as Request & { user?: jwt.JwtPayload }).user;
+  if (user?.jti && user.exp) {
+    pruneRevokedTokens();
+    revokedTokens.set(user.jti, user.exp * 1000);
   }
 
   res.json({
@@ -132,11 +151,7 @@ router.post("/logout", (req: Request, res: Response) => {
 router.get("/me", requireAdminAuth, (req: Request, res: Response) => {
   res.json({
     authenticated: true,
-    user: (req as any).user || {
-      username: "Haji Saud Zehri Staff",
-      role: "admin",
-      permissions: ["read", "write", "delete", "publish", "settings"],
-    },
+    user: (req as Request & { user?: jwt.JwtPayload }).user,
     database: isMongoConnected() ? "MongoDB Atlas" : "Local Storage",
   });
 });

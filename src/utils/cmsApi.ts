@@ -146,40 +146,21 @@ async function requestJson<T = any>(
 // 1. Authentication
 export const cmsAuth = {
   login: async (pin: string, username?: string) => {
-    try {
-      const data = await requestJson(
-        "/api/auth/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pin, username }),
-        },
-        "Authentication failed"
-      );
-      if (data && data.token) {
-        setAuthToken(data.token);
-      }
-      recordLocalAudit("STAFF_LOGIN", "Authentication", `Staff authenticated with PIN: ${pin}`);
-      return data;
-    } catch (err: any) {
-      // Offline / edge proxy fallback for valid PINs
-      const trimmed = String(pin || "").trim().toLowerCase();
-      if (["786", "bismillah786", "admin", "1234"].includes(trimmed)) {
-        const dummyToken = "bme_local_" + Date.now();
-        setAuthToken(dummyToken);
-        recordLocalAudit("STAFF_LOGIN", "Authentication", "Staff logged in (local session)");
-        return {
-          success: true,
-          token: dummyToken,
-          user: {
-            username: username || "Haji Saud Zehri Staff",
-            role: "admin",
-            permissions: ["read", "write", "delete", "publish", "settings"],
-          },
-        };
-      }
-      throw err;
+    const data = await requestJson(
+      "/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin, username }),
+      },
+      "Authentication failed"
+    );
+    if (!data?.token) {
+      throw new Error("Authentication failed: no session token was returned");
     }
+    setAuthToken(data.token);
+    recordLocalAudit("STAFF_LOGIN", "Authentication", "Staff authenticated successfully");
+    return data;
   },
 
   logout: async () => {
@@ -201,15 +182,15 @@ export const cmsAuth = {
 
   checkSession: async () => {
     const token = getAuthToken();
-    if (!token) return false;
+    if (!token || !token.trim()) return false;
+
     try {
       const data = await requestJson("/api/auth/me", {
         headers: getHeaders(true),
       });
       return Boolean(data && data.authenticated);
     } catch {
-      // If offline or edge error, token existence in localStorage confirms staff session
-      return true;
+      return false;
     }
   },
 };
@@ -230,33 +211,21 @@ export const cmsSettings = {
   },
 
   update: async (updates: Partial<GlobalSettings>): Promise<GlobalSettings> => {
-    const current = readCache<GlobalSettings>(CACHE_KEYS.settings, FALLBACK_SETTINGS);
-    const updated: GlobalSettings = {
-      ...current,
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-    writeCache(CACHE_KEYS.settings, updated);
-    recordLocalAudit("UPDATE_SETTINGS", "GlobalSettings", "Updated global branding, contact, and behavior settings");
-
-    try {
-      const res = await requestJson(
-        "/api/settings",
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(updates),
-        },
-        "Failed to update settings"
-      );
-      if (res && res.data) {
-        writeCache(CACHE_KEYS.settings, res.data);
-        return res.data;
-      }
-    } catch (err) {
-      console.warn("Backend settings sync pending:", err);
+    const res = await requestJson(
+      "/api/settings",
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updates),
+      },
+      "Failed to update settings"
+    );
+    if (!res?.data) {
+      throw new Error("Settings update failed: no saved settings were returned");
     }
-    return updated;
+    writeCache(CACHE_KEYS.settings, res.data);
+    recordLocalAudit("UPDATE_SETTINGS", "GlobalSettings", "Updated global branding, contact, and behavior settings");
+    return res.data;
   },
 };
 
@@ -276,62 +245,40 @@ export const cmsHomepage = {
   },
 
   update: async (updates: Partial<HomepageSections>): Promise<HomepageSections> => {
-    const current = readCache<HomepageSections>(CACHE_KEYS.homepage, FALLBACK_HOMEPAGE);
-    const updated: HomepageSections = {
-      ...current,
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-    writeCache(CACHE_KEYS.homepage, updated);
-    recordLocalAudit("UPDATE_HOMEPAGE", "HomepageCMS", "Updated homepage section configurations");
-
-    try {
-      const res = await requestJson(
-        "/api/homepage",
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(updates),
-        },
-        "Failed to update homepage"
-      );
-      if (res && res.data) {
-        writeCache(CACHE_KEYS.homepage, res.data);
-        return res.data;
-      }
-    } catch (err) {
-      console.warn("Backend homepage sync pending:", err);
+    const res = await requestJson(
+      "/api/homepage",
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updates),
+      },
+      "Failed to update homepage"
+    );
+    if (!res?.data) {
+      throw new Error("Homepage update failed: no saved content was returned");
     }
-    return updated;
+    writeCache(CACHE_KEYS.homepage, res.data);
+    recordLocalAudit("UPDATE_HOMEPAGE", "HomepageCMS", "Updated homepage section configurations");
+    return res.data;
   },
 
   updateSection: async (section: string, sectionData: any): Promise<any> => {
-    const current = readCache<HomepageSections>(CACHE_KEYS.homepage, FALLBACK_HOMEPAGE);
-    const updated: HomepageSections = {
-      ...current,
-      [section]: sectionData,
-      updatedAt: new Date().toISOString(),
-    };
-    writeCache(CACHE_KEYS.homepage, updated);
-    recordLocalAudit("UPDATE_HOMEPAGE_SECTION", "HomepageCMS", `Updated section: ${section}`);
-
-    try {
-      const res = await requestJson(
-        `/api/homepage/${section}`,
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(sectionData),
-        },
-        `Failed to update ${section}`
-      );
-      if (res && res.data) {
-        return res.data;
-      }
-    } catch (err) {
-      console.warn(`Backend sync pending for section ${section}:`, err);
+    const res = await requestJson(
+      `/api/homepage/${section}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(sectionData),
+      },
+      `Failed to update ${section}`
+    );
+    if (!res || !("data" in res)) {
+      throw new Error(`Homepage section update failed: no saved ${section} content was returned`);
     }
-    return sectionData;
+    const current = readCache<HomepageSections>(CACHE_KEYS.homepage, FALLBACK_HOMEPAGE);
+    writeCache(CACHE_KEYS.homepage, { ...current, [section]: res.data });
+    recordLocalAudit("UPDATE_HOMEPAGE_SECTION", "HomepageCMS", `Updated section: ${section}`);
+    return res.data;
   },
 };
 
@@ -420,133 +367,73 @@ export const cmsProperties = {
 
   create: async (propData: Partial<Property>): Promise<Property> => {
     const items = readCache<Property[]>(CACHE_KEYS.properties, FALLBACK_PROPERTIES);
-    const newProp: Property = {
-      id: `prop-${Date.now()}`,
-      slug: (propData.slug || propData.title || `prop-${Date.now()}`)
-        .toLowerCase()
-        .replace(/[^a-z0-9_-]/g, "-"),
-      title: propData.title || "New Property",
-      category: propData.category || "apartments",
-      location: propData.location || "Quetta",
-      city: propData.city || "Quetta",
-      area: propData.area || "City Centre",
-      price: propData.price || "PKR 1.5 Crore",
-      numericPrice: propData.numericPrice || 15000000,
-      currency: "PKR",
-      size: propData.size || "2,000 Sq. Ft.",
-      coveredAreaUnit: propData.coveredAreaUnit || "Sq. Ft.",
-      tag: propData.tag || "Exclusive",
-      status: propData.status || "100% Registry Ready",
-      availability: propData.availability || "Available",
-      published: propData.published !== false,
-      featured: Boolean(propData.featured),
-      description: propData.description || "",
-      highlights: propData.highlights || [],
-      specs: propData.specs || [],
-      image:
-        propData.image ||
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      gallery: propData.gallery || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      ...propData,
-    };
-
-    const updatedList = [newProp, ...items];
-    writeCache(CACHE_KEYS.properties, updatedList);
-    recordLocalAudit("CREATE_PROPERTY", "Properties", `Created property: ${newProp.title}`);
-
-    try {
-      const res = await requestJson(
-        "/api/properties",
-        {
-          method: "POST",
-          headers: getHeaders(true),
-          body: JSON.stringify(propData),
-        },
-        "Failed to create property"
-      );
-      if (res && res.data) {
-        const freshList = [res.data, ...items.filter((p) => p.id !== newProp.id && p.id !== res.data.id)];
-        writeCache(CACHE_KEYS.properties, freshList);
-        return res.data;
-      }
-    } catch (err) {
-      console.warn("Backend property create sync pending:", err);
+    const res = await requestJson(
+      "/api/properties",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(propData),
+      },
+      "Failed to create property"
+    );
+    if (!res?.data) {
+      throw new Error("Property creation failed: no saved property was returned");
     }
-    return newProp;
+    writeCache(CACHE_KEYS.properties, [res.data, ...items.filter((p) => p.id !== res.data.id)]);
+    recordLocalAudit("CREATE_PROPERTY", "Properties", `Created property: ${res.data.title}`);
+    return res.data;
   },
 
   update: async (id: string, propData: Partial<Property>): Promise<Property> => {
     const items = readCache<Property[]>(CACHE_KEYS.properties, FALLBACK_PROPERTIES);
-    const idx = items.findIndex((p) => p.id === id);
-    let updatedProp: Property;
-
-    if (idx !== -1) {
-      updatedProp = { ...items[idx], ...propData, updatedAt: new Date().toISOString() };
-      items[idx] = updatedProp;
-      writeCache(CACHE_KEYS.properties, [...items]);
-    } else {
-      updatedProp = { id, ...propData } as Property;
+    const res = await requestJson(
+      `/api/properties/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(propData),
+      },
+      "Failed to update property"
+    );
+    if (!res?.data) {
+      throw new Error("Property update failed: no saved property was returned");
     }
-
+    const index = items.findIndex((p) => p.id === id);
+    if (index === -1) items.unshift(res.data);
+    else items[index] = res.data;
+    writeCache(CACHE_KEYS.properties, items);
     recordLocalAudit("UPDATE_PROPERTY", "Properties", `Updated property ID: ${id}`);
-
-    try {
-      const res = await requestJson(
-        `/api/properties/${id}`,
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(propData),
-        },
-        "Failed to update property"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend property update sync pending:", err);
-    }
-    return updatedProp;
+    return res.data;
   },
 
   delete: async (id: string): Promise<void> => {
     const items = readCache<Property[]>(CACHE_KEYS.properties, FALLBACK_PROPERTIES);
-    writeCache(
-      CACHE_KEYS.properties,
-      items.filter((p) => p.id !== id)
+    await requestJson(
+      `/api/properties/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete property"
     );
+    writeCache(CACHE_KEYS.properties, items.filter((p) => p.id !== id));
     recordLocalAudit("DELETE_PROPERTY", "Properties", `Deleted property ID: ${id}`);
-
-    try {
-      await requestJson(
-        `/api/properties/${id}`,
-        {
-          method: "DELETE",
-          headers: getHeaders(true),
-        },
-        "Failed to delete property"
-      );
-    } catch (err) {
-      console.warn("Backend property delete sync pending:", err);
-    }
   },
 
   resetDefaults: async (): Promise<Property[]> => {
-    writeCache(CACHE_KEYS.properties, FALLBACK_PROPERTIES);
-    try {
-      const res = await requestJson(
-        "/api/properties/reset-defaults",
-        {
-          method: "POST",
-          headers: getHeaders(true),
-        },
-        "Failed to reset properties"
-      );
-      if (res && res.data) return res.data;
-    } catch {
-      // Ignored
+    const res = await requestJson(
+      "/api/properties/reset-defaults",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+      },
+      "Failed to reset properties"
+    );
+    if (!Array.isArray(res?.data)) {
+      throw new Error("Property reset failed: no saved property list was returned");
     }
-    return FALLBACK_PROPERTIES;
+    writeCache(CACHE_KEYS.properties, res.data);
+    return res.data;
   },
 };
 
@@ -577,39 +464,22 @@ export const cmsMedia = {
     caption?: string;
     category?: string;
   }): Promise<MediaItem> => {
-    const newMedia: MediaItem = {
-      id: `med-${Date.now()}`,
-      fileName: uploadData.fileName || `image-${Date.now()}.jpg`,
-      originalName: uploadData.fileName || "uploaded-image.jpg",
-      url: uploadData.base64Data, // store base64 directly so previews and images render immediately
-      mimeType: "image/jpeg",
-      sizeBytes: uploadData.base64Data.length,
-      category: uploadData.category || "General",
-      title: uploadData.title || uploadData.fileName || "Uploaded Image",
-      altText: uploadData.altText || "",
-      caption: uploadData.caption || "",
-      uploadedAt: new Date().toISOString(),
-    };
-
-    const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
-    writeCache(CACHE_KEYS.media, [newMedia, ...items]);
-    recordLocalAudit("UPLOAD_MEDIA", "Media", `Uploaded image: ${newMedia.title}`);
-
-    try {
-      const res = await requestJson(
-        "/api/media/upload",
-        {
-          method: "POST",
-          headers: getHeaders(true),
-          body: JSON.stringify(uploadData),
-        },
-        "Failed to upload image"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend media upload sync pending:", err);
+    const res = await requestJson(
+      "/api/media/upload",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(uploadData),
+      },
+      "Failed to upload image"
+    );
+    if (!res?.data) {
+      throw new Error("Image upload failed: no saved media record was returned");
     }
-    return newMedia;
+    const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
+    writeCache(CACHE_KEYS.media, [res.data, ...items.filter((item) => item.id !== res.data.id)]);
+    recordLocalAudit("UPLOAD_MEDIA", "Media", `Uploaded image: ${res.data.title}`);
+    return res.data;
   },
 
   updateMetadata: async (
@@ -617,54 +487,37 @@ export const cmsMedia = {
     metadata: { title?: string; altText?: string; caption?: string; category?: string }
   ): Promise<MediaItem> => {
     const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
-    const idx = items.findIndex((m) => m.id === id);
-    let updatedItem: MediaItem;
-
-    if (idx !== -1) {
-      updatedItem = { ...items[idx], ...metadata };
-      items[idx] = updatedItem;
-      writeCache(CACHE_KEYS.media, [...items]);
-    } else {
-      updatedItem = { id, ...metadata } as MediaItem;
+    const res = await requestJson(
+      `/api/media/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(metadata),
+      },
+      "Failed to update media"
+    );
+    if (!res?.data) {
+      throw new Error("Media update failed: no saved media record was returned");
     }
-
-    try {
-      const res = await requestJson(
-        `/api/media/${id}`,
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(metadata),
-        },
-        "Failed to update media"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend media update sync pending:", err);
-    }
-    return updatedItem;
+    const index = items.findIndex((item) => item.id === id);
+    if (index === -1) items.unshift(res.data);
+    else items[index] = res.data;
+    writeCache(CACHE_KEYS.media, items);
+    return res.data;
   },
 
   delete: async (id: string, force = false): Promise<void> => {
     const items = readCache<MediaItem[]>(CACHE_KEYS.media, FALLBACK_MEDIA);
-    writeCache(
-      CACHE_KEYS.media,
-      items.filter((m) => m.id !== id)
+    await requestJson(
+      `/api/media/${id}?force=${force ? "true" : "false"}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete image"
     );
+    writeCache(CACHE_KEYS.media, items.filter((item) => item.id !== id));
     recordLocalAudit("DELETE_MEDIA", "Media", `Deleted image ID: ${id}`);
-
-    try {
-      await requestJson(
-        `/api/media/${id}?force=${force ? "true" : "false"}`,
-        {
-          method: "DELETE",
-          headers: getHeaders(true),
-        },
-        "Failed to delete image"
-      );
-    } catch (err) {
-      console.warn("Backend media delete sync pending:", err);
-    }
   },
 };
 
@@ -698,93 +551,57 @@ export const cmsPages = {
 
   create: async (pageData: Partial<PageContent>): Promise<PageContent> => {
     const items = readCache<PageContent[]>(CACHE_KEYS.pages, FALLBACK_PAGES);
-    const newPage: PageContent = {
-      id: `page-${Date.now()}`,
-      slug: (pageData.slug || pageData.title || `page-${Date.now()}`)
-        .toLowerCase()
-        .replace(/[^a-z0-9_-]/g, "-"),
-      title: pageData.title || "Untitled Page",
-      metaTitle: pageData.metaTitle || `${pageData.title} | Bismillah Real Estate`,
-      metaDescription: pageData.metaDescription || "",
-      bodyContent: pageData.bodyContent || "",
-      published: pageData.published !== false,
-      showInNav: Boolean(pageData.showInNav),
-      navOrder: items.length + 1,
-      updatedAt: new Date().toISOString(),
-    };
-
-    writeCache(CACHE_KEYS.pages, [newPage, ...items]);
-    recordLocalAudit("CREATE_PAGE", "PagesCMS", `Created page: ${newPage.title}`);
-
-    try {
-      const res = await requestJson(
-        "/api/pages",
-        {
-          method: "POST",
-          headers: getHeaders(true),
-          body: JSON.stringify(pageData),
-        },
-        "Failed to create page"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend page create sync pending:", err);
+    const res = await requestJson(
+      "/api/pages",
+      {
+        method: "POST",
+        headers: getHeaders(true),
+        body: JSON.stringify(pageData),
+      },
+      "Failed to create page"
+    );
+    if (!res?.data) {
+      throw new Error("Page creation failed: no saved page was returned");
     }
-    return newPage;
+    writeCache(CACHE_KEYS.pages, [res.data, ...items.filter((page) => page.id !== res.data.id)]);
+    recordLocalAudit("CREATE_PAGE", "PagesCMS", `Created page: ${res.data.title}`);
+    return res.data;
   },
 
   update: async (id: string, pageData: Partial<PageContent>): Promise<PageContent> => {
     const items = readCache<PageContent[]>(CACHE_KEYS.pages, FALLBACK_PAGES);
-    const idx = items.findIndex((p) => p.id === id);
-    let updatedPage: PageContent;
-
-    if (idx !== -1) {
-      updatedPage = { ...items[idx], ...pageData, updatedAt: new Date().toISOString() };
-      items[idx] = updatedPage;
-      writeCache(CACHE_KEYS.pages, [...items]);
-    } else {
-      updatedPage = { id, ...pageData } as PageContent;
+    const res = await requestJson(
+      `/api/pages/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(pageData),
+      },
+      "Failed to update page"
+    );
+    if (!res?.data) {
+      throw new Error("Page update failed: no saved page was returned");
     }
-
+    const index = items.findIndex((page) => page.id === id);
+    if (index === -1) items.unshift(res.data);
+    else items[index] = res.data;
+    writeCache(CACHE_KEYS.pages, items);
     recordLocalAudit("UPDATE_PAGE", "PagesCMS", `Updated page ID: ${id}`);
-
-    try {
-      const res = await requestJson(
-        `/api/pages/${id}`,
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(pageData),
-        },
-        "Failed to update page"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend page update sync pending:", err);
-    }
-    return updatedPage;
+    return res.data;
   },
 
   delete: async (id: string): Promise<void> => {
     const items = readCache<PageContent[]>(CACHE_KEYS.pages, FALLBACK_PAGES);
-    writeCache(
-      CACHE_KEYS.pages,
-      items.filter((p) => p.id !== id)
+    await requestJson(
+      `/api/pages/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete page"
     );
+    writeCache(CACHE_KEYS.pages, items.filter((page) => page.id !== id));
     recordLocalAudit("DELETE_PAGE", "PagesCMS", `Deleted page ID: ${id}`);
-
-    try {
-      await requestJson(
-        `/api/pages/${id}`,
-        {
-          method: "DELETE",
-          headers: getHeaders(true),
-        },
-        "Failed to delete page"
-      );
-    } catch (err) {
-      console.warn("Backend page delete sync pending:", err);
-    }
   },
 };
 
@@ -884,62 +701,36 @@ export const cmsEnquiries = {
     updateData: { status?: string; note?: string }
   ): Promise<EnquiryLead> => {
     const items = readCache<EnquiryLead[]>(CACHE_KEYS.enquiries, FALLBACK_ENQUIRIES);
-    const idx = items.findIndex((e) => e.id === id);
-    let updatedLead: EnquiryLead;
-
-    if (idx !== -1) {
-      const current = items[idx];
-      const newNotes = updateData.note
-        ? [...(current.internalNotes || []), updateData.note]
-        : current.internalNotes;
-      updatedLead = {
-        ...current,
-        status: (updateData.status as any) || current.status,
-        internalNotes: newNotes,
-        updatedAt: new Date().toISOString(),
-      };
-      items[idx] = updatedLead;
-      writeCache(CACHE_KEYS.enquiries, [...items]);
-    } else {
-      updatedLead = { id, ...updateData } as any;
+    const res = await requestJson(
+      `/api/enquiries/${id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(true),
+        body: JSON.stringify(updateData),
+      },
+      "Failed to update lead"
+    );
+    if (!res?.data) {
+      throw new Error("Lead update failed: no saved lead was returned");
     }
-
-    try {
-      const res = await requestJson(
-        `/api/enquiries/${id}`,
-        {
-          method: "PUT",
-          headers: getHeaders(true),
-          body: JSON.stringify(updateData),
-        },
-        "Failed to update lead"
-      );
-      if (res && res.data) return res.data;
-    } catch (err) {
-      console.warn("Backend enquiry update sync pending:", err);
-    }
-    return updatedLead;
+    const index = items.findIndex((lead) => lead.id === id);
+    if (index === -1) items.unshift(res.data);
+    else items[index] = res.data;
+    writeCache(CACHE_KEYS.enquiries, items);
+    return res.data;
   },
 
   delete: async (id: string): Promise<void> => {
     const items = readCache<EnquiryLead[]>(CACHE_KEYS.enquiries, FALLBACK_ENQUIRIES);
-    writeCache(
-      CACHE_KEYS.enquiries,
-      items.filter((e) => e.id !== id)
+    await requestJson(
+      `/api/enquiries/${id}`,
+      {
+        method: "DELETE",
+        headers: getHeaders(true),
+      },
+      "Failed to delete lead"
     );
-
-    try {
-      await requestJson(
-        `/api/enquiries/${id}`,
-        {
-          method: "DELETE",
-          headers: getHeaders(true),
-        },
-        "Failed to delete lead"
-      );
-    } catch (err) {
-      console.warn("Backend enquiry delete sync pending:", err);
-    }
+    writeCache(CACHE_KEYS.enquiries, items.filter((lead) => lead.id !== id));
   },
 };
 

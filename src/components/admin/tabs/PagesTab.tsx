@@ -19,9 +19,7 @@ export const PagesTab: React.FC<PagesTabProps> = ({ isDarkMode, onShowToast }) =
     try {
       setLoading(true);
       const data = await cmsPages.list();
-      if (data && data.length > 0) {
-        setPages(data);
-      }
+      setPages(data);
       if (isManual) {
         onShowToast("CMS pages refreshed.");
       }

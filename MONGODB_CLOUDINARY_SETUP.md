@@ -100,16 +100,20 @@ CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
-# JWT Authentication Secret
-JWT_SECRET=super_secret_jwt_key_bismillah_786_california_luxury
+# Admin Authentication
+ADMIN_PIN=<private-passcode-at-least-8-characters>
+ADMIN_USERNAME=admin
+JWT_SECRET=<random-secret-at-least-32-characters>
 ```
+
+Generate a unique `JWT_SECRET` for each environment and keep both admin values on the server only. Do not use a sample/default PIN; admin login is disabled until both `ADMIN_PIN` and a strong `JWT_SECRET` are configured.
 
 ---
 
 ## 4. Automatic Seeding & Resilience Architecture
 
 The application is built with a dual-layer architecture:
-1. **With MongoDB Atlas**: When `MONGODB_URI` is supplied, Mongoose connects to your cluster. If the collections are empty, the backend automatically seeds initial properties, settings, customer inquiries, and the default admin profile (`username: admin`, staff PIN: `786`).
+1. **With MongoDB Atlas**: When `MONGODB_URI` is supplied, Mongoose connects to your cluster. If the collections are empty, the backend automatically seeds initial properties, settings, and customer inquiries. It does not create a default administrator account.
 2. **With Cloudinary**: Uploaded property images, logos, and favicons are delivered via Cloudinary's secure CDN. The database stores the high-res CDN `url` and `publicId`. Deleting a property or replacing an image automatically cleans up the remote asset on Cloudinary.
 3. **Resilience Fallback**: If MongoDB is temporarily unreachable, the system continues using local persistent storage and retries the connection with increasing delays (up to once per minute). Invalid URI syntax or authentication errors require correcting `MONGODB_URI`; inspect `/api/health` for the connection status and advice.
 
@@ -143,7 +147,7 @@ npm start
 
 ## 6. Verifying Integration
 
-1. **Admin Portal**: Go to the Admin Dashboard (default Staff PIN is `786`).
+1. **Admin Portal**: Configure `ADMIN_PIN` and `JWT_SECRET` in the server environment, then enter the configured passcode in the Admin Dashboard.
 2. **Media Manager**: Open the **Media Manager** tab. A live status card at the top will verify:
    - `MongoDB Atlas: Connected (Mongoose)`
    - `Cloudinary CDN: Active (Folder: bismillah_apartments)`

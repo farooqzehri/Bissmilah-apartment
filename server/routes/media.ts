@@ -159,7 +159,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/media/upload - Upload new image (Cloudinary or local storage)
+// POST /api/media/upload - Upload a new image to Cloudinary
 router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => {
   try {
     const { base64Data, fileName, title, altText, caption, category } = req.body;
@@ -170,76 +170,78 @@ router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => 
     }
 
     // Validate MIME type
-    const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-    let mimeType = "image/jpeg";
-    let buffer: Buffer;
-    let ext = "jpg";
-
-    if (matches && matches.length === 3) {
-      mimeType = matches[1];
-      buffer = Buffer.from(matches[2], "base64");
-
-      const allowed = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif", "image/svg+xml"];
-      if (!allowed.includes(mimeType)) {
-        res.status(400).json({ error: `Unsupported image format (${mimeType}). Supported: JPEG, PNG, WebP, AVIF, SVG.` });
-        return;
-      }
-
-      if (mimeType === "image/png") ext = "png";
-      else if (mimeType === "image/webp") ext = "webp";
-      else if (mimeType === "image/avif") ext = "avif";
-      else if (mimeType === "image/gif") ext = "gif";
-      else if (mimeType === "image/svg+xml") ext = "svg";
-    } else {
-      buffer = Buffer.from(base64Data, "base64");
+    const matches = base64Data.match(/^data:([A-Za-z0-9.+-]+\/[A-Za-z0-9.+-]+);base64,([A-Za-z0-9+/]+={0,2})$/);
+    if (!matches) {
+      res.status(400).json({ error: "Image data must be a valid base64 data URI." });
+      return;
     }
 
+    const mimeType = matches[1].toLowerCase();
+    const buffer = Buffer.from(matches[2], "base64");
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    if (!allowed.includes(mimeType)) {
+      res.status(400).json({ error: "Unsupported image format. Supported formats: JPEG, PNG, WebP, AVIF, and GIF." });
+      return;
+    }
+
+    const imageHeader = buffer
+      .toString("utf8", 0, Math.min(buffer.length, 1024))
+      .replace(/^\uFEFF/, "")
+      .trimStart();
+    if (/<svg\b|<!DOCTYPE\s+svg/i.test(imageHeader)) {
+      res.status(400).json({ error: "SVG images are not supported." });
+      return;
+    }
+
+    let ext = "jpg";
+    if (mimeType === "image/png") ext = "png";
+    else if (mimeType === "image/webp") ext = "webp";
+    else if (mimeType === "image/avif") ext = "avif";
+    else if (mimeType === "image/gif") ext = "gif";
+
     // Max 15MB file size limit
-    if (buffer.length > 15 * 1024 * 1024) {
+    if (buffer.length === 0 || buffer.length > 15 * 1024 * 1024) {
+      if (buffer.length === 0) {
+        res.status(400).json({ error: "Image data is empty." });
+        return;
+      }
       res.status(400).json({ error: "Image size exceeds 15MB limit." });
+      return;
+    }
+
+    if (!isCloudinaryConfigured()) {
+      res.status(503).json({ error: "Cloudinary storage is not configured. No media record was saved." });
       return;
     }
 
     const uniqueId = crypto.randomBytes(8).toString("hex");
     const sanitizedName = (fileName || "image").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 30);
     const now = new Date().toISOString();
-
-    let publicUrl = "";
-    let cloudinaryPublicId = "";
-    let storageProvider: "cloudinary" | "local" = "local";
-
-    // 1. Try Cloudinary if configured
-    if (isCloudinaryConfigured()) {
-      try {
-        console.log(`[Cloudinary] Uploading ${sanitizedName} to Cloudinary...`);
-        const cloudResult = await uploadToCloudinary(base64Data, {
-          folder: "bismillah_apartments",
-          category: category || "General",
-        });
-
-        publicUrl = cloudResult.secureUrl;
-        cloudinaryPublicId = cloudResult.publicId;
-        storageProvider = "cloudinary";
-        console.log(`[Cloudinary] Successfully uploaded asset: ${cloudinaryPublicId}`);
-      } catch (cloudErr: any) {
-        console.warn("[Cloudinary] Upload error, falling back to server disk storage:", cloudErr.message);
-      }
+    let cloudResult: Awaited<ReturnType<typeof uploadToCloudinary>>;
+    try {
+      cloudResult = await uploadToCloudinary(base64Data, {
+        folder: "bismillah_apartments",
+        category: category || "General",
+      });
+    } catch (cloudErr) {
+      console.error(
+        "[Cloudinary] Image upload failed:",
+        cloudErr instanceof Error ? cloudErr.name : "Unknown error"
+      );
+      res.status(502).json({ error: "Cloudinary image upload failed. No media record was saved." });
+      return;
     }
-
-    // 2. Fallback to server local disk storage
-    if (!publicUrl) {
-      const storageFileName = `${sanitizedName}_${Date.now()}_${uniqueId}.${ext}`;
-      const filePath = path.join(UPLOADS_DIR, storageFileName);
-      fs.writeFileSync(filePath, buffer);
-      publicUrl = `/uploads/${storageFileName}`;
+    if (!cloudResult.secureUrl || !cloudResult.publicId) {
+      res.status(502).json({ error: "Cloudinary returned incomplete image details. No media record was saved." });
+      return;
     }
 
     const mediaRecord: MediaItem = {
       id: `med-${Date.now()}-${uniqueId}`,
       fileName: fileName || `${sanitizedName}.${ext}`,
       originalName: fileName || `${sanitizedName}.${ext}`,
-      url: publicUrl,
-      cloudinaryPublicId,
+      url: cloudResult.secureUrl,
+      cloudinaryPublicId: cloudResult.publicId,
       mimeType,
       sizeBytes: buffer.length,
       category: category || "General",
@@ -250,38 +252,80 @@ router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => 
       usageCount: 0,
     };
 
-    // Save to MongoDB if connected
-    if (isMongoConnected()) {
-      await MediaAssetModel.create({
-        id: mediaRecord.id,
-        url: publicUrl,
-        secureUrl: publicUrl,
-        publicId: cloudinaryPublicId,
-        fileName: mediaRecord.fileName,
-        originalName: mediaRecord.originalName,
-        mimeType,
-        sizeBytes: buffer.length,
-        category: mediaRecord.category,
-        title: mediaRecord.title,
-        altText: mediaRecord.altText,
-        caption: mediaRecord.caption,
-        uploadedAt: now,
-        usageCount: 0,
-        storageProvider,
-      });
+    const mongoConnected = isMongoConnected();
+    const localDb = dbManager.getDb();
+    let mongoSaved = false;
+    let localSaved = false;
+    try {
+      if (mongoConnected) {
+        await MediaAssetModel.create({
+          id: mediaRecord.id,
+          url: cloudResult.secureUrl,
+          secureUrl: cloudResult.secureUrl,
+          publicId: cloudResult.publicId,
+          format: cloudResult.format,
+          fileName: mediaRecord.fileName,
+          originalName: mediaRecord.originalName,
+          mimeType,
+          sizeBytes: cloudResult.sizeBytes,
+          category: mediaRecord.category,
+          title: mediaRecord.title,
+          altText: mediaRecord.altText,
+          caption: mediaRecord.caption,
+          uploadedAt: now,
+          usageCount: 0,
+          storageProvider: "cloudinary",
+        });
+        mongoSaved = true;
+      }
+
+      localDb.media.unshift(mediaRecord);
+      dbManager.saveDb(localDb);
+      localSaved = true;
+    } catch (saveErr) {
+      if (localSaved || localDb.media[0]?.id === mediaRecord.id) {
+        localDb.media = localDb.media.filter((item) => item.id !== mediaRecord.id);
+      }
+
+      let mongoRollbackSucceeded = true;
+      if (mongoSaved) {
+        try {
+          await MediaAssetModel.deleteOne({ id: mediaRecord.id });
+        } catch (rollbackErr) {
+          mongoRollbackSucceeded = false;
+          console.error("[Media] MongoDB rollback failed after upload persistence error:", rollbackErr);
+        }
+      }
+
+      if (mongoRollbackSucceeded) {
+        try {
+          await deleteFromCloudinary(cloudResult.publicId);
+        } catch (cleanupErr) {
+          console.error("[Media] Cloudinary cleanup failed after persistence error:", cleanupErr);
+        }
+      }
+
+      console.error("[Media] Failed to persist uploaded image:", saveErr);
+      res.status(500).json({ error: "Failed to save media record after upload." });
+      return;
     }
 
-    // Always mirror to local DB for resilience
-    const db = dbManager.getDb();
-    db.media.unshift(mediaRecord);
-    dbManager.saveDb(db);
-    dbManager.addAuditLog("UPLOAD_IMAGE", "MediaLibrary", `Uploaded image "${mediaRecord.fileName}" via ${storageProvider}`, mediaRecord.id);
+    try {
+      dbManager.addAuditLog(
+        "UPLOAD_IMAGE",
+        "MediaLibrary",
+        `Uploaded image "${mediaRecord.fileName}" via Cloudinary`,
+        mediaRecord.id
+      );
+    } catch (auditErr) {
+      console.error("[Media] Image was saved but its audit log could not be recorded:", auditErr);
+    }
 
     res.status(201).json({
       success: true,
       data: mediaRecord,
-      storageProvider,
-      message: `Image uploaded successfully via ${storageProvider === "cloudinary" ? "Cloudinary CDN" : "Server Storage"}`,
+      storageProvider: "cloudinary",
+      message: "Image uploaded successfully via Cloudinary CDN",
     });
   } catch (err: any) {
     console.error("Upload error", err);
@@ -291,36 +335,80 @@ router.post("/upload", requireAdminAuth, async (req: Request, res: Response) => 
 
 // PUT /api/media/:id - Edit image metadata
 router.put("/:id", requireAdminAuth, async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { title, altText, caption, category } = req.body;
+  try {
+    const { id } = req.params;
+    const { title, altText, caption, category } = req.body || {};
+    const updates = { title, altText, caption, category };
 
-  if (isMongoConnected()) {
-    await MediaAssetModel.updateOne(
-      { id },
-      { $set: { title, altText, caption, category } }
-    );
+    if (Object.values(updates).some((value) => value !== undefined && typeof value !== "string")) {
+      res.status(400).json({ error: "Media metadata fields must be strings." });
+      return;
+    }
+
+    const db = dbManager.getDb();
+    const existingLocalItem = db.media.find((media) => media.id === id);
+    const mongoDoc = isMongoConnected() ? await MediaAssetModel.findOne({ id }) : null;
+    if (!existingLocalItem && !mongoDoc) {
+      res.status(404).json({ error: "Media item not found" });
+      return;
+    }
+
+    if (mongoDoc) {
+      const result = await MediaAssetModel.updateOne({ id }, { $set: updates });
+      if (result.matchedCount === 0) {
+        res.status(404).json({ error: "Media item not found" });
+        return;
+      }
+    }
+
+    const item: MediaItem = existingLocalItem
+      ? { ...existingLocalItem }
+      : {
+          id: mongoDoc!.id,
+          fileName: mongoDoc!.fileName,
+          originalName: mongoDoc!.originalName,
+          url: mongoDoc!.secureUrl || mongoDoc!.url,
+          cloudinaryPublicId: mongoDoc!.publicId,
+          mimeType: mongoDoc!.mimeType,
+          sizeBytes: mongoDoc!.sizeBytes,
+          category: mongoDoc!.category,
+          title: mongoDoc!.title,
+          altText: mongoDoc!.altText,
+          caption: mongoDoc!.caption,
+          uploadedAt: mongoDoc!.uploadedAt,
+          usageCount: mongoDoc!.usageCount,
+        };
+    if (title !== undefined) item.title = title;
+    if (altText !== undefined) item.altText = altText;
+    if (caption !== undefined) item.caption = caption;
+    if (category !== undefined) item.category = category;
+
+    const localIndex = db.media.findIndex((media) => media.id === id);
+    if (localIndex === -1) db.media.unshift(item);
+    else db.media[localIndex] = item;
+
+    try {
+      dbManager.saveDb(db);
+    } catch (saveErr) {
+      if (!mongoDoc) throw saveErr;
+      console.error("[Media] MongoDB metadata was saved but the local mirror failed:", saveErr);
+    }
+
+    try {
+      dbManager.addAuditLog("UPDATE_MEDIA_METADATA", "MediaLibrary", `Updated metadata for "${item.fileName}"`, id);
+    } catch (auditErr) {
+      console.error("[Media] Metadata was saved but its audit log could not be recorded:", auditErr);
+    }
+
+    res.json({
+      success: true,
+      data: item,
+      message: "Image metadata updated successfully",
+    });
+  } catch (err) {
+    console.error("[Media] Failed to update media metadata:", err);
+    res.status(500).json({ error: "Failed to update media metadata." });
   }
-
-  const db = dbManager.getDb();
-  const item = db.media.find((m) => m.id === id);
-  if (!item) {
-    res.status(404).json({ error: "Media item not found" });
-    return;
-  }
-
-  if (title !== undefined) item.title = title;
-  if (altText !== undefined) item.altText = altText;
-  if (caption !== undefined) item.caption = caption;
-  if (category !== undefined) item.category = category;
-
-  dbManager.saveDb(db);
-  dbManager.addAuditLog("UPDATE_MEDIA_METADATA", "MediaLibrary", `Updated metadata for "${item.fileName}"`, id);
-
-  res.json({
-    success: true,
-    data: item,
-    message: "Image metadata updated successfully",
-  });
 });
 
 // DELETE /api/media/:id - Delete image with Cloudinary cleanup and in-use check
@@ -354,7 +442,6 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
           };
         }
         cloudinaryPublicId = doc.publicId;
-        await MediaAssetModel.deleteOne({ id });
       }
     }
 
@@ -379,8 +466,11 @@ router.delete("/:id", requireAdminAuth, async (req: Request, res: Response) => {
     // 1. Delete from Cloudinary if public ID exists
     const publicIdToDelete = cloudinaryPublicId || item.cloudinaryPublicId;
     if (publicIdToDelete) {
-      console.log(`[Cloudinary] Deleting asset ${publicIdToDelete}...`);
       await deleteFromCloudinary(publicIdToDelete);
+    }
+
+    if (isMongoConnected()) {
+      await MediaAssetModel.deleteOne({ id });
     }
 
     // 2. Remove physical file if in local uploads directory

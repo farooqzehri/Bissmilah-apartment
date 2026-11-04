@@ -95,6 +95,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
 
     setIsUploading(true);
     setUploadProgress(`Processing 1 of ${files.length}...`);
+    let uploadedCount = 0;
 
     try {
       for (let i = 0; i < files.length; i++) {
@@ -113,12 +114,21 @@ export const MediaTab: React.FC<MediaTabProps> = ({
           title: file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " "),
           category: selectedCategory !== "all" ? selectedCategory : "General",
         });
+        uploadedCount += 1;
       }
 
       await onRefreshMedia();
       onShowToast(`Successfully uploaded ${files.length} image(s).`);
     } catch (err: any) {
-      onShowToast("Upload failed: " + (err.message || String(err)));
+      if (uploadedCount > 0) {
+        await onRefreshMedia();
+      }
+      const error = err.message || String(err);
+      onShowToast(
+        uploadedCount > 0
+          ? `Uploaded ${uploadedCount} of ${files.length} image(s). Remaining uploads failed: ${error}`
+          : "Upload failed: " + error
+      );
     } finally {
       setIsUploading(false);
       setUploadProgress(null);
@@ -213,7 +223,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
             ref={fileInputRef}
             type="file"
             multiple
-            accept="image/jpeg,image/png,image/webp,image/avif,image/svg+xml"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
             onChange={handleFileUpload}
             className="hidden"
           />
@@ -223,7 +233,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
             className="px-6 py-2.5 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#DF9B43] hover:bg-[#c88532] text-black shadow-lg flex items-center gap-2 cursor-pointer transition-all disabled:opacity-50"
           >
             <Upload size={14} className="stroke-[2.5]" />
-            <span>{isUploading ? "Uploading..." : "Upload to Cloudinary / Storage"}</span>
+            <span>{isUploading ? "Uploading..." : "Upload to Cloudinary"}</span>
           </button>
         </div>
       </div>
@@ -240,7 +250,7 @@ export const MediaTab: React.FC<MediaTabProps> = ({
                 storageStatus?.cloudinary?.configured ? "bg-sky-400 animate-pulse" : "bg-amber-400"
               }`} />
               <span className="font-semibold text-sky-500">
-                {storageStatus?.cloudinary?.configured ? "Cloudinary CDN Active" : "Cloudinary Storage Ready"}
+                {storageStatus?.cloudinary?.configured ? "Cloudinary CDN Active" : "Cloudinary Not Configured"}
               </span>
               <span className={isDarkMode ? "text-stone-400" : "text-stone-500"}>
                 ({storageStatus?.cloudinary?.configured ? `Folder: ${storageStatus.cloudinary.folder}` : "Credentials in .env"})

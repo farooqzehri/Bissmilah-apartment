@@ -63,7 +63,7 @@ export const uploadToCloudinary = async (
   const uploadOptions: any = {
     folder,
     resource_type: "image",
-    allowed_formats: ["jpg", "jpeg", "png", "webp", "avif", "gif", "svg"],
+    allowed_formats: ["jpg", "jpeg", "png", "webp", "avif", "gif"],
     transformation: [
       { quality: "auto:good" },
       { fetch_format: "auto" }
@@ -87,18 +87,20 @@ export const uploadToCloudinary = async (
  * Safely delete an asset from Cloudinary using its public_id.
  */
 export const deleteFromCloudinary = async (publicId: string): Promise<boolean> => {
-  if (!isCloudinaryConfigured() || !publicId) {
+  if (!publicId) {
     return false;
   }
 
-  try {
-    configureCloudinary();
-    const result = await cloudinary.uploader.destroy(publicId, { invalidate: true });
-    return result.result === "ok";
-  } catch (err) {
-    console.warn(`[Cloudinary] Failed to delete asset ${publicId}:`, err);
-    return false;
+  if (!isCloudinaryConfigured()) {
+    throw new Error("Cloudinary is not configured; the asset was not deleted.");
   }
+
+  configureCloudinary();
+  const result = await cloudinary.uploader.destroy(publicId, { invalidate: true });
+  if (result.result === "ok" || result.result === "not found") {
+    return true;
+  }
+  throw new Error("Cloudinary did not confirm asset deletion.");
 };
 
 /**

@@ -1,7 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { GlobalSettings } from "../types";
+import { GlobalSettings, HomepageSections, PageContent } from "../types";
 
 export interface IWebsiteSettings extends Document, GlobalSettings {
+  homepage?: HomepageSections;
+  pages?: PageContent[];
   createdAt: Date;
   updatedAt: string;
 }
@@ -79,6 +81,8 @@ const WebsiteSettingsSchema = new Schema(
       enableSocialIcons: { type: Boolean, default: true },
       enableContactForm: { type: Boolean, default: true },
     },
+    homepage: { type: Schema.Types.Mixed },
+    pages: { type: [Schema.Types.Mixed], default: undefined },
     updatedAt: { type: String, default: () => new Date().toISOString() },
   },
   {

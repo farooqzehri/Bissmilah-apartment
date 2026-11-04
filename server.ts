@@ -48,7 +48,18 @@ async function startServer() {
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
-  app.use("/uploads", express.static(uploadsDir));
+  app.use(
+    "/uploads",
+    express.static(uploadsDir, {
+      setHeaders: (res, filePath) => {
+        res.setHeader("X-Content-Type-Options", "nosniff");
+        if (path.extname(filePath).toLowerCase() === ".svg") {
+          res.setHeader("Content-Disposition", "attachment");
+          res.setHeader("Content-Security-Policy", "default-src 'none'; sandbox");
+        }
+      },
+    })
+  );
 
   // Mount API routers
   app.use("/api/auth", authRouter);

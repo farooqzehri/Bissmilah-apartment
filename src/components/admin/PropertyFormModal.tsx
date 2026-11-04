@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { PropertyItem, PropertyCategory, PropertySpec } from "../../types/property";
 import { CURATED_IMAGE_PRESETS } from "../../utils/propertyStore";
+import { cmsMedia } from "../../utils/cmsApi";
 
 interface PropertyFormModalProps {
   isOpen: boolean;
@@ -34,6 +35,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
   const [status, setStatus] = useState("100% Registry Ready");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
+  const [imagePublicId, setImagePublicId] = useState<string | undefined>();
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [gallery, setGallery] = useState<string[]>([]);
   const [highlights, setHighlights] = useState<string[]>([""]);
   const [specs, setSpecs] = useState<PropertySpec[]>([
@@ -58,6 +61,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       setStatus(propertyToEdit.status || "100% Registry Ready");
       setDescription(propertyToEdit.description || "");
       setImage(propertyToEdit.image);
+      setImagePublicId(propertyToEdit.imagePublicId);
       setGallery(propertyToEdit.gallery || []);
       setHighlights(propertyToEdit.highlights?.length ? propertyToEdit.highlights : [""]);
       setSpecs(propertyToEdit.specs?.length ? propertyToEdit.specs : [{ label: "", value: "" }]);
@@ -74,6 +78,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       setStatus("100% Registry Ready");
       setDescription("A-1 City Quetta mein shandaar luxury property jis ke sath mukammal legal registry documents hain.");
       setImage(CURATED_IMAGE_PRESETS[0].url);
+      setImagePublicId(undefined);
       setGallery([]);
       setHighlights([
         "Mukammal legal registry aur certified title transfer",
@@ -93,27 +98,55 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Handle local file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 8 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, image: "Image size must be under 8MB" }));
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (uploadEvent) => {
-        const result = uploadEvent.target?.result as string;
-        if (result) {
-          setImage(result);
-          setErrors((prev) => {
-            const copy = { ...prev };
-            delete copy.image;
-            return copy;
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, image: "Image size must be under 8MB" }));
+      e.target.value = "";
+      return;
+    }
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({ ...prev, image: "Choose a JPEG, PNG, WebP, AVIF, or GIF image." }));
+      e.target.value = "";
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("Unable to read the selected image."));
+        };
+        reader.onerror = () => reject(new Error("Unable to read the selected image."));
+        reader.readAsDataURL(file);
+      });
+      const uploaded = await cmsMedia.upload({
+        base64Data,
+        fileName: file.name,
+        title: file.name.replace(/\.[^/.]+$/, ""),
+        category,
+      });
+      setImage(uploaded.url);
+      setImagePublicId(uploaded.cloudinaryPublicId);
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy.image;
+        return copy;
+      });
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        image: err instanceof Error ? err.message : "Image upload failed.",
+      }));
+    } finally {
+      setIsUploadingImage(false);
+      e.target.value = "";
     }
   };
 
@@ -183,6 +216,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       status: status.trim() || "100% Registry Ready",
       description: description.trim(),
       image: image.trim(),
+      imagePublicId,
       gallery,
       highlights: cleanedHighlights.length > 0 ? cleanedHighlights : ["Verified legal documents under Haji Saud Zehri supervision."],
       specs: cleanedSpecs.length > 0 ? cleanedSpecs : [{ label: "Registry", value: "Verified Deed" }],
@@ -303,6 +337,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                           key={p.id}
                           onClick={() => {
                             setImage(p.url);
+                            setImagePublicId(undefined);
                             setErrors((prev) => {
                               const copy = { ...prev };
                               delete copy.image;
@@ -346,6 +381,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                     value={image}
                     onChange={(e) => {
                       setImage(e.target.value);
+                      setImagePublicId(undefined);
                       setErrors((prev) => {
                         const copy = { ...prev };
                         delete copy.image;
@@ -368,7 +404,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+                    disabled={isUploadingImage}
                     onChange={handleFileUpload}
                     className="hidden"
                   />
@@ -382,7 +419,9 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   >
                     <Upload size={24} className="mx-auto text-[#FF9E4A] mb-2" />
                     <span className="font-display font-medium text-xs block">
-                      Click to choose image from your computer or phone
+                      {isUploadingImage
+                        ? "Uploading image to Cloudinary..."
+                        : "Click to choose image from your computer or phone"}
                     </span>
                     <span className={`text-[10px] font-mono mt-1 block ${isDarkMode ? "text-stone-500" : "text-stone-400"}`}>
                       PNG, JPG, WEBP up to 8MB
@@ -724,7 +763,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="w-full sm:w-auto px-8 py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2"
+                disabled={isUploadingImage}
+                className="w-full sm:w-auto px-8 py-3 rounded-full text-xs font-display uppercase tracking-wider font-semibold bg-[#FF9E4A] hover:bg-[#ff8e30] text-black shadow-lg cursor-pointer transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Check size={14} className="stroke-[2.5]" />
                 <span>{propertyToEdit ? "Update Property" : "Publish Property"}</span>

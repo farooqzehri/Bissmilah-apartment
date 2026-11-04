@@ -124,37 +124,23 @@ export const useProperties = () => {
   };
 
   const updateProperty = async (id: string, updates: Partial<Property>): Promise<boolean> => {
-    try {
-      await cmsProperties.update(id, updates);
-      await fetchProperties();
-      notifyPropertyChange();
-      return true;
-    } catch (err) {
-      console.error("Failed to update property", err);
-      return false;
-    }
+    await cmsProperties.update(id, updates);
+    await fetchProperties();
+    notifyPropertyChange();
+    return true;
   };
 
   const deleteProperty = async (id: string): Promise<boolean> => {
-    try {
-      await cmsProperties.delete(id);
-      await fetchProperties();
-      notifyPropertyChange();
-      return true;
-    } catch (err) {
-      console.error("Failed to delete property", err);
-      return false;
-    }
+    await cmsProperties.delete(id);
+    await fetchProperties();
+    notifyPropertyChange();
+    return true;
   };
 
   const resetToDefaults = async () => {
-    try {
-      await cmsProperties.resetDefaults();
-      await fetchProperties();
-      notifyPropertyChange();
-    } catch (err) {
-      console.error("Failed to reset properties", err);
-    }
+    await cmsProperties.resetDefaults();
+    await fetchProperties();
+    notifyPropertyChange();
   };
 
   const getPropertyById = (id: string) => {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { clearAuthToken, cmsAuth } from "./utils/cmsApi";
 import { CMSProvider, useCMS } from "./utils/cmsContext";
 import { Navbar } from "./components/ui/Navbar";
 import { AnnouncementBanner } from "./components/ui/AnnouncementBanner";
@@ -26,10 +27,8 @@ function MainAppContent() {
   const { settings, isDarkMode, toggleDarkMode } = useCMS();
 
   // Persist authentication state across page reloads
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return Boolean(localStorage.getItem("bismillah_admin_token"));
-  });
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
 
   // Persist current page & respect direct hash URLs (e.g. #admin, #properties)
   const [currentPage, setCurrentPage] = useState<string>(() => {
@@ -49,17 +48,45 @@ function MainAppContent() {
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);
   const [catalogCategoryFilter, setCatalogCategoryFilter] = useState<string>("all");
 
+  React.useEffect(() => {
+    let active = true;
+    const hadAdminPage = currentPage === "admin" || localStorage.getItem("bismillah_current_page") === "admin";
+    const hasToken = Boolean(localStorage.getItem("bismillah_admin_token"));
+
+    const verifySession = async () => {
+      const authenticated = hasToken ? await cmsAuth.checkSession() : false;
+      if (!active) return;
+
+      setIsAdminAuthenticated(authenticated);
+      setIsAuthChecking(false);
+      if (!authenticated) {
+        if (hasToken) clearAuthToken();
+        if (hadAdminPage) {
+          setCurrentPage("home");
+          localStorage.setItem("bismillah_current_page", "home");
+          if (window.location.hash === "#admin") window.location.hash = "";
+          setIsAdminAuthModalOpen(true);
+        }
+      }
+    };
+
+    void verifySession();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // Sync hash changes dynamically
   React.useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace("#", "").trim();
       if (hash === "admin") {
-        const token = localStorage.getItem("bismillah_admin_token");
-        if (token) {
-          setIsAdminAuthenticated(true);
+        if (isAuthChecking) return;
+        if (isAdminAuthenticated && !isAuthChecking) {
           setCurrentPage("admin");
           localStorage.setItem("bismillah_current_page", "admin");
         } else {
+          setCurrentPage("home");
           setIsAdminAuthModalOpen(true);
         }
       } else if (["home", "apartments", "properties", "about"].includes(hash)) {
@@ -70,7 +97,7 @@ function MainAppContent() {
 
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
+  }, [isAdminAuthenticated, isAuthChecking]);
 
   // Universal Navigation Routing handler
   const handleNavigation = (targetId: string) => {
@@ -153,9 +180,8 @@ function MainAppContent() {
   };
 
   const handleOpenAdmin = () => {
-    const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("bismillah_admin_token"));
-    if (isAdminAuthenticated || hasToken) {
-      setIsAdminAuthenticated(true);
+    if (isAuthChecking) return;
+    if (isAdminAuthenticated) {
       setCurrentPage("admin");
       localStorage.setItem("bismillah_current_page", "admin");
       window.location.hash = "admin";
@@ -322,7 +348,7 @@ function MainAppContent() {
             </motion.div>
           )}
 
-          {currentPage === "admin" && (
+          {currentPage === "admin" && isAdminAuthenticated && !isAuthChecking && (
             <motion.div
               key="admin-view"
               initial={{ opacity: 0, y: 15 }}
@@ -336,6 +362,7 @@ function MainAppContent() {
               />
               <AdminDashboard
                 onNavigateHome={() => handleNavigation("home")}
+                onLogout={() => setIsAdminAuthenticated(false)}
                 isDarkMode={isDarkMode}
               />
             </motion.div>
