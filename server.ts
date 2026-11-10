@@ -1,7 +1,7 @@
 ﻿import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors'
+import cors from 'cors';
 
 // Load environment variables
 dotenv.config();
