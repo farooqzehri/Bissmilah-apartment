@@ -1,81 +1,52 @@
-﻿import express, { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors'
+import "dotenv/config";
+import express from "express";
+import path from "node:path";
+import app from "./server/app";
 
-// Load environment variables
-dotenv.config();
+const isVercel = Boolean(process.env.VERCEL);
 
-const app = express();
-
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
-// --- MONGODB CONNECTION CACHING FOR SERVERLESS ---
-let isConnected = false;
-
-async function connectDB() {
-  if (isConnected) return;
-  try {
-    if (mongoose.connections[0].readyState) {
-      isConnected = true;
-      return;
-    }
-    const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
-    if (!mongoUri) {
-      throw new Error("MONGO_URI is missing in environment variables!");
-    }
-    await mongoose.connect(mongoUri);
-    isConnected = true;
-    console.log("MongoDB Connected Successfully");
-  } catch (error) {
-    console.error("MongoDB Connection Error:", error);
-    throw error;
+if (process.env.NODE_ENV === "production") {
+  if (!isVercel) {
+    const distDirectory = path.resolve(process.cwd(), "dist");
+    app.use(express.static(distDirectory));
+    app.get("*", (_req, res, next) => {
+      res.sendFile(path.join(distDirectory, "index.html"), (error) => {
+        if (error) next(error);
+      });
+    });
   }
+} else if (!isVercel) {
+  void startDevelopmentServer();
 }
 
-// Auto-connect DB for any API routes
-app.use(async (req: Request, res: Response, next: NextFunction) => {
-  if (req.path.startsWith('/api')) {
-    try {
-      await connectDB();
-    } catch (err) {
-      return res.status(500).json({ success: false, error: "Database connection failed" });
-    }
+async function startDevelopmentServer(): Promise<void> {
+  const { createServer } = await import("vite");
+  const vite = await createServer({
+    server: { middlewareMode: true },
+    appType: "spa",
+  });
+  app.use(vite.middlewares);
+
+  const port = Number(process.env.PORT || 3000);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    await vite.close();
+    throw new Error(`Invalid PORT value: ${process.env.PORT}`);
   }
-  next();
-});
 
-// ==========================================
-// APIS & ROUTES (Yahan apne baaki routes add karein)
-// ==========================================
+  const server = app.listen(port, () => {
+    console.log(`Bismillah app running at http://localhost:${port}`);
+  });
 
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ success: true, message: "Backend is running smoothly on Vercel!" });
-});
+  server.on("error", (error: NodeJS.ErrnoException) => {
+    void vite.close();
+    if (error.code === "EADDRINUSE") {
+      console.error(`Port ${port} is already in use. Stop the other process or set PORT to a free port.`);
+      return;
+    }
 
-// Example: Agar aapke paas aur routes hain toh unhe yahan mount karein:
-// import authRoutes from './routes/auth';
-// import propertyRoutes from './routes/properties';
-// app.use('/api/auth', authRoutes);
-// app.use('/api/properties', propertyRoutes);
-
-// ==========================================
-
-// Global Error Handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error("Server Error:", err.stack);
-  res.status(500).json({ success: false, message: "Internal Server Error", error: err.message });
-});
-
-// Local Development ke liye listener (Vercel isko ignore karega)
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`Server running locally on port ${PORT}`);
+    console.error("Failed to start the local server:", error);
+    process.exitCode = 1;
   });
 }
 
-// VERCEL REQUIREMENT: Export the Express app as default
 export default app;
