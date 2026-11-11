@@ -126,7 +126,7 @@ The application is built with a dual-layer architecture:
 # 1. Install dependencies (if not already installed)
 npm install
 
-# 2. Start the Express backend + Vite dev server concurrently
+# 2. Start the Express backend and Vite development server
 npm run dev
 ```
 The application will be accessible at `http://localhost:3000`.
