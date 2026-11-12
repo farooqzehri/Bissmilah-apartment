@@ -212,7 +212,7 @@ function MainAppContent() {
       {/* Top Announcement Banner */}
       <AnnouncementBanner />
 
-      {/* Top Navigation Bar */}
+      
 
       {/* Main Multi-Screen Content Layout */}
       <main id="main-content">
