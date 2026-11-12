@@ -212,14 +212,7 @@ function MainAppContent() {
       {/* Top Announcement Banner */}
       <AnnouncementBanner />
 
-      {/* Floating Glassmorphic Navbar */}
-      <Navbar
-        onNavigate={handleNavigation}
-        activeSection={currentPage}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
-        onOpenAdmin={handleOpenAdmin}
-      />
+    
 
       {/* Main Multi-Screen Content Layout */}
       <main id="main-content">
