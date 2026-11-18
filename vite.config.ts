@@ -6,6 +6,11 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    server: {
+    allowedHosts: [
+      "bismillah-apartment.onrender.com"
+    ],
+  },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
