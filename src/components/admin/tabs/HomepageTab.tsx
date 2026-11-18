@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Save, Layers, Plus, Trash2, Edit3, Check, Eye, EyeOff, 
+import {
+  Save, Layers, Plus, Trash2, Edit3, Check, Eye, EyeOff,
   HelpCircle, Star, Image as ImageIcon, Sparkles, RefreshCw
 } from "lucide-react";
 import { HomepageSections, AmenityItem, StatisticItem, GalleryItem, TestimonialItem, FAQItem } from "../../../types/cms";
@@ -93,13 +93,12 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
           <button
             key={tab.id}
             onClick={() => setActiveSectionTab(tab.id as any)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-display whitespace-nowrap transition-all cursor-pointer border ${
-              activeSectionTab === tab.id
+            className={`px-3.5 py-2 rounded-xl text-xs font-display whitespace-nowrap transition-all cursor-pointer border ${activeSectionTab === tab.id
                 ? "bg-[#FF9E4A] text-black font-semibold border-[#FF9E4A] shadow-sm"
                 : isDarkMode
-                ? "bg-stone-900 border-stone-800 text-stone-300 hover:text-white"
-                : "bg-white border-stone-200 text-stone-700 hover:text-black"
-            }`}
+                  ? "bg-stone-900 border-stone-800 text-stone-300 hover:text-white"
+                  : "bg-white border-stone-200 text-stone-700 hover:text-black"
+              }`}
           >
             {tab.label}
           </button>
@@ -108,9 +107,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 1. HERO SECTION */}
       {activeSectionTab === "hero" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <label className="font-display text-xs font-medium uppercase tracking-wider">
@@ -123,9 +121,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, headingLine1: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -140,9 +137,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, headingLine2: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -157,9 +153,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, subheadingBadge: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -174,9 +169,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, subheadingText: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -191,9 +185,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, description: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -208,9 +201,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, backgroundImage: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border focus:outline-none focus:border-[#FF9E4A] ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -225,9 +217,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, primaryButtonText: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -242,9 +233,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   hero: { ...formData.hero, secondaryButtonText: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
           </div>
@@ -253,9 +243,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 2. ABOUT SECTION */}
       {activeSectionTab === "about" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <label className="font-display text-xs font-medium uppercase tracking-wider">
@@ -268,9 +257,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   about: { ...formData.about, heading: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -285,9 +273,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   about: { ...formData.about, subheading: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -302,9 +289,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   about: { ...formData.about, descriptionP1: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -319,15 +305,14 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   about: { ...formData.about, descriptionP2: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
             <div className="md:col-span-2 space-y-1.5">
               <label className="font-display text-xs font-medium uppercase tracking-wider">
-                Haji Saud Zehri Portrait Photo URL
+                Haji Saud Ahmed Zehri Portrait Photo URL
               </label>
               <input
                 type="text"
@@ -336,9 +321,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   about: { ...formData.about, ownerImage: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
           </div>
@@ -347,9 +331,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 3. AMENITIES SECTION */}
       {activeSectionTab === "amenities" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-medium text-base">Features & Amenities</h3>
@@ -379,11 +362,10 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
           <div className="space-y-4">
             {formData.amenities.map((item, idx) => (
-              <div 
+              <div
                 key={item.id}
-                className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                }`}
+                className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                  }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -396,9 +378,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                         updated[idx].name = e.target.value;
                         setFormData({ ...formData, amenities: updated });
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-display border font-medium ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`px-3 py-2 rounded-xl text-xs font-display border font-medium ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     <input
                       type="text"
@@ -409,9 +390,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                         updated[idx].category = e.target.value;
                         setFormData({ ...formData, amenities: updated });
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-mono border ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`px-3 py-2 rounded-xl text-xs font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     <div className="flex items-center gap-3">
                       <label className="flex items-center gap-2 text-xs font-mono cursor-pointer">
@@ -450,9 +430,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                     updated[idx].description = e.target.value;
                     setFormData({ ...formData, amenities: updated });
                   }}
-                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border ${
-                    isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
             ))}
@@ -462,14 +441,13 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 4. STATISTICS */}
       {activeSectionTab === "stats" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-medium text-base">Key Numbers & Track Record</h3>
               <p className={`text-xs ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
-                Real business metrics verified by Haji Saud Zehri.
+                Real business metrics verified by Haji Saud Ahmed Zehri.
               </p>
             </div>
             <button
@@ -493,11 +471,10 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {formData.stats.map((stat, idx) => (
-              <div 
+              <div
                 key={stat.id}
-                className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                }`}
+                className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                  }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <input
@@ -509,9 +486,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].value = e.target.value;
                       setFormData({ ...formData, stats: updated });
                     }}
-                    className={`px-3 py-2 rounded-xl text-sm font-display font-bold text-[#FF9E4A] border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800" : "bg-white border-stone-300"
-                    }`}
+                    className={`px-3 py-2 rounded-xl text-sm font-display font-bold text-[#FF9E4A] border ${isDarkMode ? "bg-stone-950 border-stone-800" : "bg-white border-stone-300"
+                      }`}
                   />
                   <div className="flex items-center gap-2">
                     <label className="flex items-center gap-1.5 text-xs font-mono cursor-pointer">
@@ -550,9 +526,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                     updated[idx].label = e.target.value;
                     setFormData({ ...formData, stats: updated });
                   }}
-                  className={`w-full px-3 py-2 rounded-xl text-xs font-display font-medium border ${
-                    isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-xl text-xs font-display font-medium border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
 
                 <input
@@ -564,9 +539,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                     updated[idx].subtext = e.target.value;
                     setFormData({ ...formData, stats: updated });
                   }}
-                  className={`w-full px-3 py-2 rounded-xl text-xs font-mono border ${
-                    isDarkMode ? "bg-stone-950 border-stone-800 text-stone-400" : "bg-white border-stone-300 text-stone-600"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-xl text-xs font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800 text-stone-400" : "bg-white border-stone-300 text-stone-600"
+                    }`}
                 />
               </div>
             ))}
@@ -576,9 +550,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 5. TESTIMONIALS */}
       {activeSectionTab === "testimonials" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-medium text-base">Client Testimonials</h3>
@@ -609,11 +582,10 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
           <div className="space-y-4">
             {formData.testimonials.map((test, idx) => (
-              <div 
+              <div
                 key={test.id}
-                className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                }`}
+                className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                  }`}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <input
@@ -625,9 +597,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].clientName = e.target.value;
                       setFormData({ ...formData, testimonials: updated });
                     }}
-                    className={`px-3 py-2 rounded-xl text-xs font-display font-medium border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`px-3 py-2 rounded-xl text-xs font-display font-medium border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <input
                     type="text"
@@ -638,9 +609,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].location = e.target.value;
                       setFormData({ ...formData, testimonials: updated });
                     }}
-                    className={`px-3 py-2 rounded-xl text-xs font-mono border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`px-3 py-2 rounded-xl text-xs font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <div className="flex items-center justify-between">
                     <input
@@ -652,9 +622,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                         updated[idx].propertyTitle = e.target.value;
                         setFormData({ ...formData, testimonials: updated });
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-display border ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`px-3 py-2 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     <button
                       onClick={() => {
@@ -679,9 +648,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                     updated[idx].quote = e.target.value;
                     setFormData({ ...formData, testimonials: updated });
                   }}
-                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border ${
-                    isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
             ))}
@@ -691,9 +659,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 6. FAQS */}
       {activeSectionTab === "faqs" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-medium text-base">Frequently Asked Questions</h3>
@@ -722,11 +689,10 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
           <div className="space-y-4">
             {formData.faqs.map((faq, idx) => (
-              <div 
+              <div
                 key={faq.id}
-                className={`p-4 rounded-2xl border space-y-3 ${
-                  isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                }`}
+                className={`p-4 rounded-2xl border space-y-3 ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                  }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <input
@@ -738,9 +704,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].question = e.target.value;
                       setFormData({ ...formData, faqs: updated });
                     }}
-                    className={`flex-1 px-3 py-2 rounded-xl text-xs font-display font-medium border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`flex-1 px-3 py-2 rounded-xl text-xs font-display font-medium border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <input
                     type="text"
@@ -751,9 +716,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].category = e.target.value;
                       setFormData({ ...formData, faqs: updated });
                     }}
-                    className={`w-32 px-3 py-2 rounded-xl text-xs font-mono border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`w-32 px-3 py-2 rounded-xl text-xs font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <button
                     onClick={() => {
@@ -777,9 +741,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                     updated[idx].answer = e.target.value;
                     setFormData({ ...formData, faqs: updated });
                   }}
-                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border leading-relaxed ${
-                    isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-xl text-xs font-display border leading-relaxed ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
             ))}
@@ -789,9 +752,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 7. GALLERY & CTA */}
       {activeSectionTab === "gallery" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-medium text-base">Curated Homepage Gallery</h3>
@@ -821,11 +783,10 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {formData.gallery.map((item, idx) => (
-              <div 
+              <div
                 key={item.id}
-                className={`p-4 rounded-2xl border flex gap-4 ${
-                  isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                }`}
+                className={`p-4 rounded-2xl border flex gap-4 ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                  }`}
               >
                 <div className="w-24 h-24 rounded-xl overflow-hidden bg-black shrink-0 border border-stone-800">
                   <img src={item.url} alt={item.title} className="w-full h-full object-cover" />
@@ -840,9 +801,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].title = e.target.value;
                       setFormData({ ...formData, gallery: updated });
                     }}
-                    className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-display font-medium border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-display font-medium border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <input
                     type="text"
@@ -853,9 +813,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                       updated[idx].url = e.target.value;
                       setFormData({ ...formData, gallery: updated });
                     }}
-                    className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-mono border ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`w-full px-2.5 py-1.5 rounded-lg text-xs font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <div className="flex items-center justify-between">
                     <input
@@ -867,9 +826,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                         updated[idx].category = e.target.value;
                         setFormData({ ...formData, gallery: updated });
                       }}
-                      className={`w-28 px-2 py-1 rounded-lg text-[11px] font-mono border ${
-                        isDarkMode ? "bg-stone-950 border-stone-800" : "bg-white border-stone-300"
-                      }`}
+                      className={`w-28 px-2 py-1 rounded-lg text-[11px] font-mono border ${isDarkMode ? "bg-stone-950 border-stone-800" : "bg-white border-stone-300"
+                        }`}
                     />
                     <button
                       onClick={() => {
@@ -892,9 +850,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
 
       {/* 8. CTA */}
       {activeSectionTab === "cta" && (
-        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1.5">
               <label className="font-display text-xs font-medium uppercase tracking-wider">
@@ -907,9 +864,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   cta: { ...formData.cta, badge: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -924,9 +880,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   cta: { ...formData.cta, officeLocationNote: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -941,9 +896,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   cta: { ...formData.cta, heading: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -958,9 +912,8 @@ export const HomepageTab: React.FC<HomepageTabProps> = ({
                   ...formData,
                   cta: { ...formData.cta, description: e.target.value }
                 })}
-                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs font-display border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
           </div>
