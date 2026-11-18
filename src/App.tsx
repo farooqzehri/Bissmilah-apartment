@@ -205,7 +205,7 @@ function MainAppContent() {
   return (
     <div
       id="luxury-root"
-      className={`min-h-screen relative transition-colors duration-500 selection:bg-[#FF9E4A]/30 ${
+      className={`min-h-screen relative transition-colors duration-500 selection:bg-luxury-accent/30 ${
         isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"
       }`}
     >
