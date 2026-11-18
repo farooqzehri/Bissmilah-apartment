@@ -171,7 +171,7 @@ function MainAppContent() {
         // Auto populate inquiry form
         const msgField = document.getElementById("client-note") as HTMLTextAreaElement;
         if (msgField) {
-          msgField.value = `Assalamu Alaikum Haji Saud Zehri Sahab, I am interested in inquiring about "${propertyTitle || "Luxury Estate Holdings in A-1 City"}" listing. Please schedule a private briefing.`;
+          msgField.value = `Assalamu Alaikum Haji Saud Ahmed Zehri Sahab, I am interested in inquiring about "${propertyTitle || "Luxury Estate Holdings in A-1 City"}" listing. Please schedule a private briefing.`;
           msgField.dispatchEvent(new Event("input", { bubbles: true }));
         }
       }
@@ -205,14 +205,13 @@ function MainAppContent() {
   return (
     <div
       id="luxury-root"
-      className={`min-h-screen relative transition-colors duration-500 selection:bg-luxury-accent/30 ${
-        isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"
-      }`}
+      className={`min-h-screen relative transition-colors duration-500 selection:bg-luxury-accent/30 ${isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"
+        }`}
     >
       {/* Top Announcement Banner */}
       <AnnouncementBanner />
 
-        {/* Floating Glassmorphic Navbar */}
+      {/* Floating Glassmorphic Navbar */}
       <Navbar
         onNavigate={handleNavigation}
         activeSection={currentPage}
@@ -237,7 +236,7 @@ function MainAppContent() {
                 description={siteDesc}
                 ogTitle={settings?.branding.websiteName || "Bismillah Real Estate"}
                 ogDescription={siteDesc}
-                keywords="Bismillah Real Estate, Haji Saud Zehri, Quetta Real Estate, A-1 City Quetta, Plots in Quetta, Flats in Quetta, Balochistan properties, verified zameen, secure properties"
+                keywords="Bismillah Real Estate, Haji Saud Ahmed Zehri, Quetta Real Estate, A-1 City Quetta, Plots in Quetta, Flats in Quetta, Balochistan properties, verified zameen, secure properties"
               />
 
               {/* 1. California Luxury Hero Section */}
@@ -257,9 +256,9 @@ function MainAppContent() {
 
               {/* 3. Curated Estates & Residences Portfolio */}
               {settings?.behavior.sectionToggles.propertiesCatalog !== false && (
-                <Catalog 
-                  isDarkMode={isDarkMode} 
-                  onInquireClick={handleContactInquiry} 
+                <Catalog
+                  isDarkMode={isDarkMode}
+                  onInquireClick={handleContactInquiry}
                   selectedCategoryFilter={catalogCategoryFilter}
                 />
               )}
@@ -309,7 +308,7 @@ function MainAppContent() {
             >
               <Helmet
                 title={`Premium Apartments & Luxury Flats in Quetta | ${settings?.branding.websiteName || "Bismillah Real Estate"}`}
-                description="Discover premium vertical residential apartments & flats in Quetta under the trusted leadership of Haji Saud Zehri. High-security, modern solar backups, and registered titles."
+                description="Discover premium vertical residential apartments & flats in Quetta under the trusted leadership of Haji Saud Ahmed Zehri. High-security, modern solar backups, and registered titles."
               />
               <ApartmentsPage onContactClick={handleContactInquiry} isDarkMode={isDarkMode} />
             </motion.div>
@@ -340,8 +339,8 @@ function MainAppContent() {
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
             >
               <Helmet
-                title={`About Haji Saud Zehri & Bismillah Real Estate Legacy | Quetta`}
-                description="Learn more about Bismillah Real Estate, the legacy of Haji Saud Zehri, and our 100% secure real estate verification standard in Quetta."
+                title={`About Haji Saud Ahmed Zehri & Bismillah Real Estate Legacy | Quetta`}
+                description="Learn more about Bismillah Real Estate, the legacy of Haji Saud Ahmed Zehri, and our 100% secure real estate verification standard in Quetta."
               />
               <AboutPage isDarkMode={isDarkMode} />
             </motion.div>
@@ -357,7 +356,7 @@ function MainAppContent() {
             >
               <Helmet
                 title="Admin Property Management Portal | Bismillah Real Estate"
-                description="Exclusive management console for Haji Saud Zehri to manage website branding, homepage sections, listings, media assets, and leads."
+                description="Exclusive management console for Haji Saud Ahmed Zehri to manage website branding, homepage sections, listings, media assets, and leads."
               />
               <AdminDashboard
                 onNavigateHome={() => handleNavigation("home")}
