@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { 
-  Users, Search, Filter, Phone, MessageSquare, CheckCircle2, 
-  Clock, Trash2, Plus, ArrowUpRight, Calendar, UserCheck, ShieldAlert 
+import {
+  Users, Search, Filter, Phone, MessageSquare, CheckCircle2,
+  Clock, Trash2, Plus, ArrowUpRight, Calendar, UserCheck, ShieldAlert
 } from "lucide-react";
 import { EnquiryLead } from "../../../types/cms";
 import { cmsEnquiries } from "../../../utils/cmsApi";
@@ -87,7 +87,7 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
             Booking Inquiries & Leads ({enquiries.length})
           </h2>
           <p className={`text-xs mt-0.5 ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
-            Track incoming consultation requests, schedule meetings with Haji Saud Zehri, and log private client notes.
+            Track incoming consultation requests, schedule meetings with Haji Saud Ahmed Zehri, and log private client notes.
           </p>
         </div>
       </div>
@@ -101,9 +101,8 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
             placeholder="Search by client name, token, or phone number..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-              isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-            }`}
+            className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+              }`}
           />
         </div>
 
@@ -113,11 +112,10 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
             <button
               key={st}
               onClick={() => setSelectedStatus(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-display transition-all cursor-pointer border ${
-                selectedStatus === st
+              className={`px-3 py-1.5 rounded-xl text-xs font-display transition-all cursor-pointer border ${selectedStatus === st
                   ? "bg-[#FF9E4A] text-black font-semibold border-[#FF9E4A]"
                   : isDarkMode ? "bg-stone-900 border-stone-800 text-stone-400 hover:text-white" : "bg-white border-stone-200 text-stone-700 hover:text-black"
-              }`}
+                }`}
             >
               {st}
             </button>
@@ -130,9 +128,8 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
         {/* Leads List Table / Cards */}
         <div className={`${selectedLead ? "lg:col-span-7" : "lg:col-span-12"} space-y-3`}>
           {filtered.length === 0 ? (
-            <div className={`p-12 text-center rounded-3xl border ${
-              isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200"
-            }`}>
+            <div className={`p-12 text-center rounded-3xl border ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200"
+              }`}>
               <Users size={36} className="mx-auto text-stone-400 mb-3" />
               <h3 className="font-display text-base font-medium">No matching client inquiries</h3>
             </div>
@@ -143,11 +140,10 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
                 <div
                   key={lead.id}
                   onClick={() => setSelectedLead(lead)}
-                  className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${
-                    isSelected
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer ${isSelected
                       ? "border-[#FF9E4A] ring-1 ring-[#FF9E4A]/30 " + (isDarkMode ? "bg-stone-900" : "bg-white")
                       : isDarkMode ? "bg-[#181817] border-stone-800 hover:border-stone-700" : "bg-white border-stone-200 hover:border-stone-300 shadow-sm"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -164,13 +160,12 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
                       value={lead.status}
                       onClick={(e) => e.stopPropagation()}
                       onChange={(e) => handleStatusChange(lead.id, e.target.value as EnquiryLead["status"])}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold uppercase tracking-wider border cursor-pointer ${
-                        lead.status === "New"
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-semibold uppercase tracking-wider border cursor-pointer ${lead.status === "New"
                           ? "bg-rose-500/10 text-rose-500 border-rose-500/30"
                           : lead.status === "In Review"
-                          ? "bg-[#FF9E4A]/10 text-[#FF9E4A] border-[#FF9E4A]/30"
-                          : "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
-                      }`}
+                            ? "bg-[#FF9E4A]/10 text-[#FF9E4A] border-[#FF9E4A]/30"
+                            : "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                        }`}
                     >
                       <option value="New">New</option>
                       <option value="Contacted">Contacted</option>
@@ -197,9 +192,8 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
 
         {/* Lead Detail Panel */}
         {selectedLead && (
-          <div className={`lg:col-span-5 p-6 rounded-3xl border sticky top-28 space-y-5 ${
-            isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-md"
-          }`}>
+          <div className={`lg:col-span-5 p-6 rounded-3xl border sticky top-28 space-y-5 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-md"
+            }`}>
             <div className="flex items-center justify-between pb-3 border-b dark:border-stone-800 border-stone-200">
               <div>
                 <span className="font-mono text-[9px] uppercase tracking-wider text-[#FF9E4A]">CLIENT DOSSIER</span>
@@ -247,9 +241,8 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
               {selectedLead.clientNote && (
                 <div>
                   <span className="text-stone-400 font-mono text-[10px] uppercase block">Client Message</span>
-                  <p className={`p-3 rounded-xl border mt-1 leading-relaxed ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-stone-200" : "bg-[#F9F9F8] border-stone-200 text-stone-700"
-                  }`}>
+                  <p className={`p-3 rounded-xl border mt-1 leading-relaxed ${isDarkMode ? "bg-stone-900 border-stone-800 text-stone-200" : "bg-[#F9F9F8] border-stone-200 text-stone-700"
+                    }`}>
                     "{selectedLead.clientNote}"
                   </p>
                 </div>
@@ -275,9 +268,8 @@ export const LeadsTab: React.FC<LeadsTabProps> = ({
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleAddNote(selectedLead.id);
                     }}
-                    className={`flex-1 px-3 py-2 rounded-xl text-xs border ${
-                      isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300"
-                    }`}
+                    className={`flex-1 px-3 py-2 rounded-xl text-xs border ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300"
+                      }`}
                   />
                   <button
                     onClick={() => handleAddNote(selectedLead.id)}
