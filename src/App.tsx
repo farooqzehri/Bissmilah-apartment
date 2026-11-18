@@ -199,8 +199,8 @@ function MainAppContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const siteTitle = settings?.branding.browserTabTitle || "Bismillah Real Estate | Haji Saud Zehri - Quetta";
-  const siteDesc = settings?.branding.shortDescription || "Ultra-luxury, verified real estate curation for Bismillah Real Estate, Quetta, Balochistan, owned by Haji Saud Zehri.";
+  const siteTitle = settings?.branding.browserTabTitle || "Bismillah Real Estate | Haji Saud Ahmed Zehri - Quetta";
+  const siteDesc = settings?.branding.shortDescription || "Ultra-luxury, verified real estate curation for Bismillah Real Estate, Quetta, Balochistan, owned by Haji Saud Ahmed Zehri.";
 
   return (
     <div
