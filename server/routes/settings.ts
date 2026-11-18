@@ -99,7 +99,9 @@ function mergeSettings(
   };
 }
 
-function toGlobalSettings(settings: IWebsiteSettings): GlobalSettings {
+function toGlobalSettings(
+  settings: Pick<IWebsiteSettings, "branding" | "contact" | "behavior" | "updatedAt">
+): GlobalSettings {
   return {
     branding: settings.branding,
     contact: settings.contact,
@@ -117,7 +119,7 @@ router.get("/", async (_req: Request, res: Response) => {
         res.json({
           success: true,
           source: "MongoDB Atlas",
-          data: doc,
+          data: toGlobalSettings(doc),
         });
         return;
       }
