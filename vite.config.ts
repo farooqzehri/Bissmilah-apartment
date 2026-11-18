@@ -1,26 +1,29 @@
+
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
-    server: {
-    allowedHosts: [
-      "bismillah-apartment.onrender.com"
-    ],
-  },
+
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
     },
+
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
+      // Allow Render host
+      allowedHosts: [
+        'bismillah-apartment.onrender.com',
+      ],
+
+      // HMR configuration
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
+
+      // File watching configuration
       watch:
         process.env.DISABLE_HMR === 'true'
           ? null
