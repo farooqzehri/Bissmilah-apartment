@@ -10,15 +10,15 @@ const DEFAULT_SETTINGS: GlobalSettings = {
   branding: {
     websiteName: "Bismillah Real Estate",
     businessName: "Bismillah Real Estate & Builders",
-    tagline: "Apna Ghar, Apni Zameen — Haji Saud Zehri ki Sarbarahi Mein",
+    tagline: "Apna Ghar, Apni Zameen — Haji Saud Ahmed Zehri ki Sarbarahi Mein",
     shortDescription: "The premier real estate agency and title curation collective in Quetta, Balochistan. Specializing in high-density premium apartments, exclusive walled estates, and secured land schemes.",
-    companyIntroduction: "Established by Haji Saud Zehri, Bismillah Real Estate stands as the cornerstone of property security and luxury residential excellence in Quetta.",
-    ownerName: "Haji Saud Zehri",
+    companyIntroduction: "Established by Haji Saud Ahmed Zehri, Bismillah Real Estate stands as the cornerstone of property security and luxury residential excellence in Quetta.",
+    ownerName: "Haji Saud Ahmed Zehri",
     ownerTitle: "Founder & Managing Director",
     ownerQuote: "Hum sirf zameen nahi bechty, hum aap ka khwab banatay hain. 100% legal registry aur mehfooz zameen ke sath apna ghar banayen.",
-    ownerImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+    ownerImage: "../uploads/Haji-Saud-Zehri_Real-Estate-adership.png",
     mainLogo: "",
-    browserTabTitle: "Bismillah Real Estate | Haji Saud Zehri — Quetta",
+    browserTabTitle: "Bismillah Real Estate | Haji Saud Ahmed Zehri — Quetta",
     copyrightText: "© 2026 Bismillah Real Estate & Builders. All rights reserved. Registered under Government of Balochistan Revenue Department.",
     footerBrandName: "BISMILLAH REAL ESTATE",
     primaryColor: "#FF9E4A",
@@ -52,7 +52,7 @@ const DEFAULT_SETTINGS: GlobalSettings = {
     maintenanceMessage: "Hamari website par security aur inventory updates jaari hain. Baraye meherbani direct phone ya WhatsApp par rabta karein.",
     announcementBanner: {
       enabled: true,
-      text: "✨ Exclusive New Registry: A-1 Executive Commercial & Luxury Apartments files now available for instant transfer under Haji Saud Zehri personal supervision.",
+      text: "✨ Exclusive New Registry: A-1 Executive Commercial & Luxury Apartments files now available for instant transfer under Haji Saud Ahmed Zehri personal supervision.",
       actionText: "View Listings",
       actionUrl: "#curation",
       type: "gold",
@@ -81,8 +81,8 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
     headingLine1: "Bismillah",
     headingLine2: "Real Estate.",
     subheadingBadge: "APNA GHAR, APNI ZAMEEN",
-    subheadingText: "Haji Saud Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat",
-    description: "Quetta ke behtareen verified plots, shandaar apartments, aur home schemes. Mukammal legal registry deeds aur Haji Saud Zehri ki zati tasdeeq ke sath.",
+    subheadingText: "Haji Saud Ahmed Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat",
+    description: "Quetta ke behtareen verified plots, shandaar apartments, aur home schemes. Mukammal legal registry deeds aur Haji Saud Ahmed Zehri ki zati tasdeeq ke sath.",
     backgroundImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     overlayOpacity: 0.65,
     primaryButtonText: "Explore Properties",
@@ -93,13 +93,13 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
   },
   about: {
     badge: "LEGACY & FIDELITY",
-    heading: "Haji Saud Zehri ki Sarbarahi Mein Bismillah Real Estate",
+    heading: "Haji Saud Ahmed Zehri ki Sarbarahi Mein Bismillah Real Estate",
     subheading: "100% Legal Registry aur Mehfooz Zameen ki Tareekh",
-    descriptionP1: "Bismillah Real Estate ki bunyad Haji Saud Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.",
+    descriptionP1: "Bismillah Real Estate ki bunyad Haji Saud Ahmed Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.",
     descriptionP2: "Hum har plot, apartment aur home scheme ki documents file ko khud check kartay hain. Hum se zameen khareedna bilkul safe aur aasan hai. Hamaray har client ko mukammal legal verification aur safety guaranteed di jati hai.",
-    ownerName: "Haji Saud Zehri",
+    ownerName: "Haji Saud Ahmed Zehri",
     ownerTitle: "Founder & Managing Partner",
-    ownerImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+    ownerImage: "../uploads/Haji-Saud-Zehri_Real-Estate-adership.png?auto=format&fit=crop&w=600&q=80",
     published: true,
   },
   amenities: [
@@ -187,7 +187,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
       id: "stat-4",
       label: "Years of Trust",
       value: "22+",
-      subtext: "Under Haji Saud Zehri leadership",
+      subtext: "Under Haji Saud Ahmed Zehri leadership",
       order: 4,
       published: true,
     },
@@ -235,7 +235,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
       id: "test-1",
       clientName: "Mir Asadullah Mengal",
       location: "Quetta Cantonment",
-      quote: "Haji Saud Zehri Sahab ke paas zameen khareedna bilkul be-fikr tajarba hai. File aur registry hand-to-hand verify hui aur transfer aik haftay mein mukammal ho gaya.",
+      quote: "Haji Saud Ahmed Zehri Sahab ke paas zameen khareedna bilkul be-fikr tajarba hai. File aur registry hand-to-hand verify hui aur transfer aik haftay mein mukammal ho gaya.",
       rating: 5,
       propertyTitle: "The Zehri Heights Penthouse",
       order: 1,
@@ -255,7 +255,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
       id: "test-3",
       clientName: "Sardar Farooq Rind",
       location: "Double Road, Quetta",
-      quote: "Commercial plaza corner plot ki valuation pichlay do saal mein double hui hai. Best investment decision guided personally by Haji Saud Zehri.",
+      quote: "Commercial plaza corner plot ki valuation pichlay do saal mein double hui hai. Best investment decision guided personally by Haji Saud Ahmed Zehri.",
       rating: 5,
       propertyTitle: "Double Road Commercial Frontage",
       order: 3,
@@ -266,7 +266,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
     {
       id: "faq-1",
       question: "Zameen ya flat ki registry ka kya process hota hai?",
-      answer: "Tamam plots aur apartments direct Balochistan Land Revenue Department ke official register mein transfer hotay hain. Har purchase se pehle Haji Saud Zehri ki team file verification aur mutation clearance tasdeeq karti hai.",
+      answer: "Tamam plots aur apartments direct Balochistan Land Revenue Department ke official register mein transfer hotay hain. Har purchase se pehle Haji Saud Ahmed Zehri ki team file verification aur mutation clearance tasdeeq karti hai.",
       category: "Legal & Registry",
       order: 1,
       published: true,
@@ -289,7 +289,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
     },
     {
       id: "faq-4",
-      question: "Haji Saud Zehri se direct private meeting kaise schedule karein?",
+      question: "Haji Saud Ahmed Zehri se direct private meeting kaise schedule karein?",
       answer: "Aap hamari website par 'Private Briefing' form submit karein ya direct WhatsApp / phone par rabta karein. Hamari office team aap ka exclusive VIP meeting time schedule karegi.",
       category: "General",
       order: 4,
@@ -298,7 +298,7 @@ const DEFAULT_HOMEPAGE: HomepageSections = {
   ],
   cta: {
     badge: "PRIVATE OFFICE — MEHFOOZ RABTA",
-    heading: "Khush-Aamdeed. Haji Saud Zehri ki Sarbarahi Mein Apna Mehfooz Mustaqbil Banayen.",
+    heading: "Khush-Aamdeed. Haji Saud Ahmed Zehri ki Sarbarahi Mein Apna Mehfooz Mustaqbil Banayen.",
     description: "Hamari private office mein tashreef layein ya direct consultation schedule karein. Hum aap ko Quetta ke verified tareen plots aur apartments ka mukammal briefing package faraham karein ge.",
     officeLocationNote: "Bismillah Executive Plaza, Sector A-1 Commercial Double Road, Quetta",
     backgroundImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
@@ -337,7 +337,7 @@ const DEFAULT_PROPERTIES: Property[] = [
       "Beautiful luxury view of Quetta mountain ranges",
       "Fine marble floors, bright open rooms, and royal decoration",
       "Private direct lift and safe reserved parking spot",
-      "Full title deed registered under Haji Saud Zehri supervision"
+      "Full title deed registered under Haji Saud Ahmed Zehri supervision"
     ],
     specs: [
       { label: "Bedrooms", value: "4 En-Suite" },
@@ -588,7 +588,7 @@ const DEFAULT_ENQUIRIES: EnquiryLead[] = [
     status: "In Review",
     internalNotes: [
       "Initial phone briefing completed on May 2. Client confirmed attendance for private meeting.",
-      "Title verification portfolio prepared under Haji Saud Zehri desk."
+      "Title verification portfolio prepared under Haji Saud Ahmed Zehri desk."
     ],
     createdAt: "2026-05-01T10:30:00.000Z",
     updatedAt: "2026-05-02T15:00:00.000Z",
@@ -602,7 +602,7 @@ const DEFAULT_AUDIT_LOGS: AuditLog[] = [
     entity: "System",
     details: "Bismillah Real Estate CMS initialized with persistent database storage.",
     timestamp: new Date().toISOString(),
-    performedBy: "Haji Saud Zehri (Admin)",
+    performedBy: "Haji Saud Ahmed Zehri (Admin)",
   },
 ];
 
