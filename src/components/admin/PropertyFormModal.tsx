@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  X, Upload, Image as ImageIcon, Sparkles, Plus, Trash2, 
+import {
+  X, Upload, Image as ImageIcon, Sparkles, Plus, Trash2,
   Check, Layers, MapPin, Tag, DollarSign, CheckCircle2, Shield
 } from "lucide-react";
 import { PropertyItem, PropertyCategory, PropertySpec } from "../../types/property";
@@ -218,7 +218,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
       image: image.trim(),
       imagePublicId,
       gallery,
-      highlights: cleanedHighlights.length > 0 ? cleanedHighlights : ["Verified legal documents under Haji Saud Zehri supervision."],
+      highlights: cleanedHighlights.length > 0 ? cleanedHighlights : ["Verified legal documents under Haji Saud Ahmed Zehri supervision."],
       specs: cleanedSpecs.length > 0 ? cleanedSpecs : [{ label: "Registry", value: "Verified Deed" }],
       featured,
       published,
@@ -233,21 +233,19 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 15 }}
           transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.5 }}
-          className={`w-full max-w-4xl my-auto rounded-3xl border shadow-2xl relative overflow-hidden flex flex-col max-h-[92vh] ${
-            isDarkMode ? "bg-[#161615] border-stone-800 text-white" : "bg-white border-stone-200 text-stone-900"
-          }`}
+          className={`w-full max-w-4xl my-auto rounded-3xl border shadow-2xl relative overflow-hidden flex flex-col max-h-[92vh] ${isDarkMode ? "bg-[#161615] border-stone-800 text-white" : "bg-white border-stone-200 text-stone-900"
+            }`}
         >
           {/* Header */}
-          <div className={`p-6 sm:px-8 border-b flex items-center justify-between shrink-0 ${
-            isDarkMode ? "border-stone-800 bg-[#1A1A19]" : "border-stone-200 bg-[#FAFAFA]"
-          }`}>
+          <div className={`p-6 sm:px-8 border-b flex items-center justify-between shrink-0 ${isDarkMode ? "border-stone-800 bg-[#1A1A19]" : "border-stone-200 bg-[#FAFAFA]"
+            }`}>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-[#FF9E4A]/10 text-[#FF9E4A] flex items-center justify-center border border-[#FF9E4A]/30">
                 <Layers size={20} />
               </div>
               <div className="text-left">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-[#FF9E4A] font-bold block">
-                  HAJI SAUD ZEHRI — PROPERTY CMS
+                  Haji Saud Ahmed Zehri — PROPERTY CMS
                 </span>
                 <h2 className="text-lg sm:text-xl font-display font-medium">
                   {propertyToEdit ? "Edit Property Listing" : "Add New Luxury Property"}
@@ -257,9 +255,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
 
             <button
               onClick={onClose}
-              className={`p-2 rounded-full cursor-pointer transition-colors ${
-                isDarkMode ? "hover:bg-stone-800 text-stone-400 hover:text-white" : "hover:bg-stone-200 text-stone-600 hover:text-black"
-              }`}
+              className={`p-2 rounded-full cursor-pointer transition-colors ${isDarkMode ? "hover:bg-stone-800 text-stone-400 hover:text-white" : "hover:bg-stone-200 text-stone-600 hover:text-black"
+                }`}
             >
               <X size={18} />
             </button>
@@ -267,7 +264,7 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
 
           {/* Form Body - Scrollable */}
           <form onSubmit={handleSubmit} className="overflow-y-auto p-6 sm:p-8 space-y-8 text-left">
-            
+
             {/* Section 1: Main Image Selection & Upload */}
             <div className={`p-5 rounded-2xl border ${isDarkMode ? "bg-stone-900/40 border-stone-800" : "bg-[#F9F9F8] border-stone-200"}`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
@@ -283,39 +280,35 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                 </div>
 
                 {/* Tabs for Image Mode */}
-                <div className={`flex rounded-xl p-1 border self-start sm:self-auto ${
-                  isDarkMode ? "bg-stone-950 border-stone-800" : "bg-stone-200/60 border-stone-300"
-                }`}>
+                <div className={`flex rounded-xl p-1 border self-start sm:self-auto ${isDarkMode ? "bg-stone-950 border-stone-800" : "bg-stone-200/60 border-stone-300"
+                  }`}>
                   <button
                     type="button"
                     onClick={() => setImageMode("preset")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer ${
-                      imageMode === "preset"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer ${imageMode === "preset"
                         ? "bg-[#FF9E4A] text-black font-semibold shadow-sm"
                         : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-700 hover:text-black"
-                    }`}
+                      }`}
                   >
                     Presets
                   </button>
                   <button
                     type="button"
                     onClick={() => setImageMode("url")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer ${
-                      imageMode === "url"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer ${imageMode === "url"
                         ? "bg-[#FF9E4A] text-black font-semibold shadow-sm"
                         : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-700 hover:text-black"
-                    }`}
+                      }`}
                   >
                     URL
                   </button>
                   <button
                     type="button"
                     onClick={() => setImageMode("upload")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer flex items-center gap-1 ${
-                      imageMode === "upload"
+                    className={`px-3 py-1.5 rounded-lg text-xs font-display transition-all cursor-pointer flex items-center gap-1 ${imageMode === "upload"
                         ? "bg-[#FF9E4A] text-black font-semibold shadow-sm"
                         : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-700 hover:text-black"
-                    }`}
+                      }`}
                   >
                     <Upload size={12} />
                     <span>Upload</span>
@@ -344,11 +337,10 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                               return copy;
                             });
                           }}
-                          className={`group relative rounded-xl overflow-hidden aspect-video cursor-pointer border-2 transition-all ${
-                            isSelected
+                          className={`group relative rounded-xl overflow-hidden aspect-video cursor-pointer border-2 transition-all ${isSelected
                               ? "border-[#FF9E4A] shadow-md ring-2 ring-[#FF9E4A]/30 scale-[1.02]"
                               : isDarkMode ? "border-stone-800 hover:border-stone-600" : "border-stone-300 hover:border-stone-400"
-                          }`}
+                            }`}
                         >
                           <img
                             src={p.url}
@@ -388,9 +380,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                         return copy;
                       });
                     }}
-                    className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                      isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                    }`}
+                    className={`w-full px-4 py-2.5 rounded-xl text-xs font-mono border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                      }`}
                   />
                   <p className={`text-[11px] ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
                     Tip: Use Unsplash, Cloudinary, or any HTTPS image link.
@@ -411,11 +402,10 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   />
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
-                      isDarkMode
+                    className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${isDarkMode
                         ? "border-stone-800 hover:border-[#FF9E4A]/60 bg-stone-950/60"
                         : "border-stone-300 hover:border-[#FF9E4A]/60 bg-white"
-                    }`}
+                      }`}
                   >
                     <Upload size={24} className="mx-auto text-[#FF9E4A] mb-2" />
                     <span className="font-display font-medium text-xs block">
@@ -477,9 +467,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. The Zehri Heights Penthouses (Shandaar Flat)"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
                 {errors.title && <p className="text-xs text-rose-500 font-mono">{errors.title}</p>}
               </div>
@@ -492,9 +481,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as PropertyCategory)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors cursor-pointer ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors cursor-pointer ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 >
                   <option value="apartments">Apartments & Flats</option>
                   <option value="estates">Elite Estates & Haveli</option>
@@ -513,9 +501,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. PKR 3.8 Crore or PKR 85 Lakh"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
                 {errors.price && <p className="text-xs text-rose-500 font-mono">{errors.price}</p>}
               </div>
@@ -531,9 +518,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. A-1 City, Block C, Main Double Road, Quetta"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
                 {errors.location && <p className="text-xs text-rose-500 font-mono">{errors.location}</p>}
               </div>
@@ -548,9 +534,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. 500 Sq. Yds or 3,400 Sq. Ft."
                   value={size}
                   onChange={(e) => setSize(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
                 {errors.size && <p className="text-xs text-rose-500 font-mono">{errors.size}</p>}
               </div>
@@ -566,9 +551,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. Shandaar Flat, 100% File Ready, VVIP Corner"
                   value={tag}
                   onChange={(e) => setTag(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
 
@@ -583,9 +567,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                   placeholder="e.g. 100% Registry Ready, Immediate Possession"
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
             </div>
@@ -600,9 +583,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                 placeholder="Write full details about the plot, scheme, apartment specifications, and legal status..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors leading-relaxed ${
-                  isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                }`}
+                className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] transition-colors leading-relaxed ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                  }`}
               />
             </div>
 
@@ -635,18 +617,16 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                       placeholder="Label (e.g. Bedrooms)"
                       value={sp.label}
                       onChange={(e) => handleSpecChange(idx, "label", e.target.value)}
-                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     <input
                       type="text"
                       placeholder="Value (e.g. 4 En-Suite)"
                       value={sp.value}
                       onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
-                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     {specs.length > 1 && (
                       <button
@@ -692,9 +672,8 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
                       placeholder="Feature bullet point (e.g. Continuous sweet water tube-well)"
                       value={h}
                       onChange={(e) => handleHighlightChange(idx, e.target.value)}
-                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${
-                        isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                      }`}
+                      className={`flex-1 px-3 py-2 rounded-xl text-xs font-display border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-950 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                        }`}
                     />
                     {highlights.length > 1 && (
                       <button
@@ -748,15 +727,13 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
             </div>
 
             {/* Actions Bar inside scrollable */}
-            <div className={`pt-6 border-t flex flex-col sm:flex-row items-center justify-end gap-3 ${
-              isDarkMode ? "border-stone-800" : "border-stone-200"
-            }`}>
+            <div className={`pt-6 border-t flex flex-col sm:flex-row items-center justify-end gap-3 ${isDarkMode ? "border-stone-800" : "border-stone-200"
+              }`}>
               <button
                 type="button"
                 onClick={onClose}
-                className={`w-full sm:w-auto px-6 py-3 rounded-full text-xs font-display uppercase tracking-wider transition-colors cursor-pointer border ${
-                  isDarkMode ? "border-stone-800 hover:bg-stone-800 text-stone-300" : "border-stone-200 hover:bg-stone-100 text-stone-700"
-                }`}
+                className={`w-full sm:w-auto px-6 py-3 rounded-full text-xs font-display uppercase tracking-wider transition-colors cursor-pointer border ${isDarkMode ? "border-stone-800 hover:bg-stone-800 text-stone-300" : "border-stone-200 hover:bg-stone-100 text-stone-700"
+                  }`}
               >
                 Cancel
               </button>
