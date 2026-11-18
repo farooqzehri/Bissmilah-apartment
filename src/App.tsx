@@ -394,7 +394,7 @@ function MainAppContent() {
     </div>
   );
 }
-// render the main app content within the CMSProvider to provide context to all components
+
 
 export default function App() {
   return (
