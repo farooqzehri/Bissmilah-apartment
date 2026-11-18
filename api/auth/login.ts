@@ -27,7 +27,7 @@ export default function login(req: Request, res: Response): void {
   const username =
     typeof body?.username === "string" && body.username.trim()
       ? body.username.trim()
-      : "Haji Saud Zehri Staff";
+      : "Haji Saud Ahmed Zehri Staff";
 
   res.status(200).json({
     success: true,
