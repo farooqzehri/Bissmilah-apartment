@@ -31,7 +31,7 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
   return (
     <div className={`pt-28 sm:pt-36 pb-24 px-4 md:px-8 ${isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"} min-h-screen text-left transition-colors duration-500`}>
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Editorial Title */}
         <div className="border-b border-[#E2E8F0]/30 dark:border-stone-850 pb-10 mb-10">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#FF9E4A] font-bold block mb-3">
@@ -41,13 +41,13 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
             Elite <span className="italic font-serif text-[#FF9E4A]">Estates aur Home Schemes</span>
           </h1>
           <p className={`max-w-xl text-xs sm:text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-600"}`}>
-            Haji Saud Zehri ki direct tasdeeq ke sath safe zameen ki Registry Deeds. Hamaray paas har kism ke commercial, residential plans, aur premium schemes shamil hain.
+            Haji Saud Ahmed Zehri ki direct tasdeeq ke sath safe zameen ki Registry Deeds. Hamaray paas har kism ke commercial, residential plans, aur premium schemes shamil hain.
           </p>
         </div>
 
         {/* Searching and Dynamic Filtering Control Column */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-          
+
           {/* Custom Minimal Search input field */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 scale-90" size={16} />
@@ -56,11 +56,10 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
               placeholder="Search zameen by title or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-11 pr-4 py-2.5 rounded-xl text-xs font-display focus:outline-none border transition-all ${
-                isDarkMode 
-                  ? "bg-[#1A1A1A] border-stone-800 text-white placeholder:text-stone-500 focus:border-[#FF9E4A]" 
+              className={`w-full pl-11 pr-4 py-2.5 rounded-xl text-xs font-display focus:outline-none border transition-all ${isDarkMode
+                  ? "bg-[#1A1A1A] border-stone-800 text-white placeholder:text-stone-500 focus:border-[#FF9E4A]"
                   : "bg-white border-stone-200 text-stone-900 placeholder:text-stone-400 focus:border-[#FF9E4A]"
-              }`}
+                }`}
             />
           </div>
 
@@ -77,13 +76,12 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
               <button
                 key={btn.value}
                 onClick={() => setSelectedType(btn.value as any)}
-                className={`px-4 py-2 rounded-full text-xs font-display uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                  selectedType === btn.value
+                className={`px-4 py-2 rounded-full text-xs font-display uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap shrink-0 ${selectedType === btn.value
                     ? "bg-[#FF9E4A] text-black font-semibold shadow-md"
                     : isDarkMode
                       ? "bg-stone-900 border border-stone-800 text-stone-300 hover:text-white"
                       : "bg-white border border-stone-200 text-stone-700 hover:border-black/20"
-                }`}
+                  }`}
               >
                 {btn.label}
               </button>
@@ -115,11 +113,10 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
                   transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.6 }}
                   key={prop.id}
                   onClick={() => setSelectedProperty(prop)}
-                  className={`group border rounded-2xl overflow-hidden transition-all duration-500 flex flex-col justify-between h-full cursor-pointer ${
-                    isDarkMode 
-                      ? "bg-[#161615] border-stone-800 shadow-[0_5px_30px_rgba(0,0,0,0.2)] hover:border-[#FF9E4A]/40" 
+                  className={`group border rounded-2xl overflow-hidden transition-all duration-500 flex flex-col justify-between h-full cursor-pointer ${isDarkMode
+                      ? "bg-[#161615] border-stone-800 shadow-[0_5px_30px_rgba(0,0,0,0.2)] hover:border-[#FF9E4A]/40"
                       : "bg-white border-stone-200 shadow-sm hover:shadow-xl hover:border-stone-900/20"
-                  }`}
+                    }`}
                 >
                   <div>
                     {/* Photo frame */}
@@ -151,9 +148,8 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
                       </div>
 
                       <div className="space-y-1">
-                        <h3 className={`text-lg font-display font-medium tracking-tight group-hover:text-[#FF9E4A] transition-colors duration-300 line-clamp-2 ${
-                          isDarkMode ? "text-white" : "text-[#1A1A1A]"
-                        }`}>
+                        <h3 className={`text-lg font-display font-medium tracking-tight group-hover:text-[#FF9E4A] transition-colors duration-300 line-clamp-2 ${isDarkMode ? "text-white" : "text-[#1A1A1A]"
+                          }`}>
                           {prop.title}
                         </h3>
                         <p className={`font-mono text-[10px] uppercase flex items-center gap-1 truncate ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
@@ -192,7 +188,7 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
         {/* Modal Inspector */}
         <AnimatePresence>
           {selectedProperty && (
-            <div 
+            <div
               onClick={() => setSelectedProperty(null)}
               className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto"
             >
@@ -201,15 +197,13 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 15 }}
                 onClick={(e) => e.stopPropagation()}
-                className={`max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto border my-auto rounded-3xl ${
-                  isDarkMode ? "bg-[#161615] border-stone-800 text-white" : "bg-white border-[#E2E8F0] text-[#1A1A1A]"
-                }`}
+                className={`max-w-4xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto border my-auto rounded-3xl ${isDarkMode ? "bg-[#161615] border-stone-800 text-white" : "bg-white border-[#E2E8F0] text-[#1A1A1A]"
+                  }`}
               >
                 <button
                   onClick={() => setSelectedProperty(null)}
-                  className={`absolute top-5 right-5 p-2 rounded-full border transition-all cursor-pointer z-10 ${
-                    isDarkMode ? "hover:bg-stone-850 border-stone-800 text-stone-200" : "hover:bg-[#F7F7F5] border-stone-200 text-[#1A1A1A]"
-                  }`}
+                  className={`absolute top-5 right-5 p-2 rounded-full border transition-all cursor-pointer z-10 ${isDarkMode ? "hover:bg-stone-850 border-stone-800 text-stone-200" : "hover:bg-[#F7F7F5] border-stone-200 text-[#1A1A1A]"
+                    }`}
                 >
                   <X size={18} />
                 </button>
@@ -226,16 +220,15 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
                         {selectedProperty.tag}
                       </div>
                     </div>
-                    <div className={`border p-4 rounded-2xl flex items-center gap-3 ${
-                      isDarkMode ? "bg-stone-900/50 border-stone-800" : "bg-[#F7F7F5] border-stone-200"
-                    }`}>
+                    <div className={`border p-4 rounded-2xl flex items-center gap-3 ${isDarkMode ? "bg-stone-900/50 border-stone-800" : "bg-[#F7F7F5] border-stone-200"
+                      }`}>
                       <Shield size={20} className="text-[#FF9E4A] shrink-0" />
                       <div className="flex flex-col">
                         <span className={`font-mono text-[9px] tracking-wider uppercase font-semibold ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
                           100% REGISTRY TRANSFER GUARANTEE
                         </span>
                         <span className={`font-display text-xs font-light leading-snug ${isDarkMode ? "text-stone-300" : "text-stone-800"}`}>
-                          Direct transfer deeds approved under Haji Saud Zehri personal office.
+                          Direct transfer deeds approved under Haji Saud Ahmed Zehri personal office.
                         </span>
                       </div>
                     </div>
@@ -263,9 +256,8 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
                       <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2.5 py-3 border-y ${isDarkMode ? "border-stone-800" : "border-stone-200"}`}>
                         {selectedProperty.specs.map((sp, idx) => (
                           <div key={idx} className="flex flex-col">
-                            <span className={`font-mono text-[8px] uppercase tracking-widest leading-none mb-1 ${
-                              isDarkMode ? "text-stone-400" : "text-stone-500"
-                            }`}>
+                            <span className={`font-mono text-[8px] uppercase tracking-widest leading-none mb-1 ${isDarkMode ? "text-stone-400" : "text-stone-500"
+                              }`}>
                               {sp.label}
                             </span>
                             <span className={`font-display text-xs font-semibold ${isDarkMode ? "text-[#FF9E4A]" : "text-stone-900"}`}>
@@ -278,9 +270,8 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({ onInquireClick, 
 
                     <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-stone-200/50 dark:border-stone-800/80">
                       <div>
-                        <span className={`font-mono text-[8px] uppercase tracking-widest leading-none block mb-1 ${
-                          isDarkMode ? "text-stone-400" : "text-stone-500"
-                        }`}>
+                        <span className={`font-mono text-[8px] uppercase tracking-widest leading-none block mb-1 ${isDarkMode ? "text-stone-400" : "text-stone-500"
+                          }`}>
                           VALUATION IN PKR
                         </span>
                         <span className="font-display text-xl sm:text-2xl font-bold text-[#FF9E4A]">

@@ -30,24 +30,22 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ isDarkMode }) =>
     : galleryItems.filter((g) => g.category.toLowerCase() === activeCategory.toLowerCase());
 
   return (
-    <section 
+    <section
       id="gallery-section"
-      className={`py-20 sm:py-28 md:py-36 border-t relative transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#090908] border-stone-850 text-[#F7F6F2]" 
+      className={`py-20 sm:py-28 md:py-36 border-t relative transition-colors duration-500 ${isDarkMode
+          ? "bg-[#090908] border-stone-850 text-[#F7F6F2]"
           : "bg-[#F5F2EB] border-stone-200/80 text-[#141413]"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 text-left">
-        
+
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 gap-6 pb-6 border-b dark:border-stone-850 border-stone-200">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-[#DF9B43] animate-pulse" />
-              <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${
-                isDarkMode ? "text-stone-400" : "text-stone-600"
-              }`}>
+              <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${isDarkMode ? "text-stone-400" : "text-stone-600"
+                }`}>
                 05 / VISUAL MONOGRAPH
               </span>
             </div>
@@ -56,26 +54,23 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ isDarkMode }) =>
               Architectural <span className="font-serif italic font-normal text-[#DF9B43]">Perspectives</span>
             </h2>
 
-            <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed max-w-xl ${
-              isDarkMode ? "text-stone-400" : "text-stone-600"
-            }`}>
-              Explore elevation perspectives, interior foyer marble, mountain view balconies, and roadside commercial landmarks built under Haji Saud Zehri leadership.
+            <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed max-w-xl ${isDarkMode ? "text-stone-400" : "text-stone-600"
+              }`}>
+              Explore elevation perspectives, interior foyer marble, mountain view balconies, and roadside commercial landmarks built under Haji Saud Ahmed Zehri leadership.
             </p>
           </div>
 
           {/* Category Tabs */}
-          <div className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto max-w-full ${
-            isDarkMode ? "bg-[#161614] border-stone-800" : "bg-[#EAE6DF] border-stone-300"
-          }`}>
+          <div className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto max-w-full ${isDarkMode ? "bg-[#161614] border-stone-800" : "bg-[#EAE6DF] border-stone-300"
+            }`}>
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-display uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === cat
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-display uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${activeCategory === cat
                     ? "bg-[#DF9B43] text-black font-semibold shadow-sm"
                     : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-600 hover:text-black"
-                }`}
+                  }`}
               >
                 {cat === "all" ? "All Frames" : cat}
               </button>
@@ -95,9 +90,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ isDarkMode }) =>
                 transition={{ duration: 0.5, delay: idx * 0.05 }}
                 key={item.id}
                 onClick={() => setLightboxItem(item)}
-                className={`group relative rounded-3xl overflow-hidden border aspect-[4/5] cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 ${
-                  isDarkMode ? "border-stone-800 bg-stone-900" : "border-stone-200 bg-white"
-                }`}
+                className={`group relative rounded-3xl overflow-hidden border aspect-[4/5] cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 ${isDarkMode ? "border-stone-800 bg-stone-900" : "border-stone-200 bg-white"
+                  }`}
               >
                 <img
                   src={item.url}
@@ -165,7 +159,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ isDarkMode }) =>
               <div className="p-5 sm:p-6 bg-[#111110] text-white flex items-center justify-between border-t border-stone-800">
                 <div>
                   <span className="font-mono text-[10px] tracking-widest text-[#DF9B43] uppercase block">
-                    {lightboxItem.category} · HAJI SAUD ZEHRI ARCHIVE
+                    {lightboxItem.category} · Haji Saud Ahmed Zehri ARCHIVE
                   </span>
                   <h3 className="text-base sm:text-lg font-display font-medium mt-0.5">
                     {lightboxItem.title}

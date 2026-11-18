@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Building2, Calendar, ClipboardCheck, Clock, Contact, MapPin, 
-  PhoneCall, ShieldAlert, Sparkles, UserCheck, Compass, CheckCircle2, 
+import {
+  Building2, Calendar, ClipboardCheck, Clock, Contact, MapPin,
+  PhoneCall, ShieldAlert, Sparkles, UserCheck, Compass, CheckCircle2,
   ArrowUpRight, Phone, MessageSquare
 } from "lucide-react";
 import { cmsEnquiries } from "../../utils/cmsApi";
@@ -85,26 +85,25 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
   };
 
   const whatsappUrl = `https://wa.me/${(settings?.contact.whatsappNumber || "923337861928").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
-    "Assalamu Alaikum Haji Saud Zehri Sahab, I would like to schedule a private walkthrough and title deed review for Bismillah Real Estate properties."
+    "Assalamu Alaikum Haji Saud Ahmed Zehri Sahab, I would like to schedule a private walkthrough and title deed review for Bismillah Real Estate properties."
   )}`;
 
   return (
-    <section 
-      id="private-office" 
-      className={`py-20 sm:py-28 md:py-36 border-t relative overflow-hidden transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#0D0D0C] border-stone-850 text-[#F7F6F2]" 
+    <section
+      id="private-office"
+      className={`py-20 sm:py-28 md:py-36 border-t relative overflow-hidden transition-colors duration-500 ${isDarkMode
+          ? "bg-[#0D0D0C] border-stone-850 text-[#F7F6F2]"
           : "bg-[#FAF8F5] border-stone-200/80 text-[#141413]"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 relative z-10">
-        
+
         {/* Main Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
+
           {/* Left Column: California Private Showing Office Profile */}
           <div className="lg:col-span-5 text-left space-y-8 lg:sticky lg:top-36">
-            
+
             <div className="flex flex-col items-start gap-3">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#DF9B43] animate-pulse" />
@@ -118,22 +117,19 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
               </h2>
             </div>
 
-            <p className={`font-light text-xs sm:text-sm md:text-base leading-relaxed ${
-              isDarkMode ? "text-stone-300" : "text-stone-700"
-            }`}>
-              We welcome you and your family to our executive office at A-1 City. Experience direct portfolio briefing with Haji Saud Zehri, complete legal revenue mutation papers, and accompanied on-site tours.
+            <p className={`font-light text-xs sm:text-sm md:text-base leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-700"
+              }`}>
+              We welcome you and your family to our executive office at A-1 City. Experience direct portfolio briefing with Haji Saud Ahmed Zehri, complete legal revenue mutation papers, and accompanied on-site tours.
             </p>
 
             {/* Address & Timings Pavilion Card */}
-            <div className={`p-6 sm:p-7 rounded-3xl border space-y-5 ${
-              isDarkMode ? "bg-[#141412] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-sm"
-            }`}>
+            <div className={`p-6 sm:p-7 rounded-3xl border space-y-5 ${isDarkMode ? "bg-[#141412] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-sm"
+              }`}>
               <div className="flex items-start gap-3.5">
                 <MapPin className="text-[#DF9B43] mt-1 shrink-0" size={18} />
                 <div>
-                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${
-                    isDarkMode ? "text-stone-400" : "text-stone-500"
-                  }`}>
+                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${isDarkMode ? "text-stone-400" : "text-stone-500"
+                    }`}>
                     EXECUTIVE SUITE
                   </span>
                   <span className="font-display font-medium text-sm block">
@@ -148,9 +144,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
               <div className="flex items-start gap-3.5 pt-4 border-t dark:border-stone-850 border-stone-100">
                 <Clock className="text-[#DF9B43] mt-1 shrink-0" size={18} />
                 <div>
-                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${
-                    isDarkMode ? "text-stone-400" : "text-stone-500"
-                  }`}>
+                  <span className={`font-mono text-[9px] uppercase tracking-widest block leading-none mb-1 ${isDarkMode ? "text-stone-400" : "text-stone-500"
+                    }`}>
                     OFFICE HOURS
                   </span>
                   <span className="font-display font-medium text-xs sm:text-sm block">
@@ -163,9 +158,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
               <div className="pt-4 border-t dark:border-stone-850 border-stone-100 flex flex-wrap gap-3">
                 <a
                   href={`tel:${settings?.contact.primaryPhone || "+923337861928"}`}
-                  className={`px-4 py-2 rounded-full border text-xs font-mono flex items-center gap-2 transition-colors ${
-                    isDarkMode ? "border-stone-800 hover:border-white text-stone-200" : "border-stone-300 hover:border-black text-stone-800"
-                  }`}
+                  className={`px-4 py-2 rounded-full border text-xs font-mono flex items-center gap-2 transition-colors ${isDarkMode ? "border-stone-800 hover:border-white text-stone-200" : "border-stone-300 hover:border-black text-stone-800"
+                    }`}
                 >
                   <Phone size={12} className="text-[#DF9B43]" />
                   <span>Call Office</span>
@@ -186,12 +180,11 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
 
           {/* Right Column: California Concierge Booking Form */}
           <div className="lg:col-span-7">
-            <div className={`p-6 sm:p-10 rounded-3xl border text-left shadow-2xl transition-all duration-300 ${
-              isDarkMode 
-                ? "bg-[#141412] border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.5)]" 
+            <div className={`p-6 sm:p-10 rounded-3xl border text-left shadow-2xl transition-all duration-300 ${isDarkMode
+                ? "bg-[#141412] border-white/[0.08] shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
                 : "bg-white border-stone-200 shadow-[0_20px_50px_rgba(0,0,0,0.06)]"
-            }`}>
-              
+              }`}>
+
               {isSubmitted ? (
                 <div className="py-12 text-center space-y-6">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-500">
@@ -205,16 +198,14 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                     <h3 className="text-2xl sm:text-3xl font-display font-medium">
                       Showing Dossier Created
                     </h3>
-                    <p className={`text-xs sm:text-sm font-light mt-2 max-w-md mx-auto ${
-                      isDarkMode ? "text-stone-300" : "text-stone-600"
-                    }`}>
+                    <p className={`text-xs sm:text-sm font-light mt-2 max-w-md mx-auto ${isDarkMode ? "text-stone-300" : "text-stone-600"
+                      }`}>
                       Shukriya, <span className="font-semibold text-[#DF9B43]">{formData.name}</span>. Your showing file has been registered with priority code:
                     </p>
                   </div>
 
-                  <div className={`inline-block px-6 py-3 rounded-2xl border font-mono text-lg font-bold tracking-widest ${
-                    isDarkMode ? "bg-stone-900 border-[#DF9B43]/40 text-[#DF9B43]" : "bg-stone-50 border-[#DF9B43]/40 text-stone-900"
-                  }`}>
+                  <div className={`inline-block px-6 py-3 rounded-2xl border font-mono text-lg font-bold tracking-widest ${isDarkMode ? "bg-stone-900 border-[#DF9B43]/40 text-[#DF9B43]" : "bg-stone-50 border-[#DF9B43]/40 text-stone-900"
+                    }`}>
                     {appointmentId}
                   </div>
 
@@ -267,9 +258,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="e.g. Sardar Aurangzeb Zehri"
-                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
-                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
-                        }`}
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
+                          }`}
                       />
                     </div>
 
@@ -284,9 +274,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                         value={formData.phone}
                         onChange={handleInputChange}
                         placeholder="+92 333 1234567"
-                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
-                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
-                        }`}
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
+                          }`}
                       />
                     </div>
 
@@ -299,9 +288,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                         name="interest"
                         value={formData.interest}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${
-                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
-                        }`}
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
+                          }`}
                       >
                         <option value="The Zehri Heights Penthouses (Shandaar Residence)">
                           The Zehri Heights Duplex Penthouse
@@ -331,9 +319,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                         name="preferredDate"
                         value={formData.preferredDate}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${
-                          isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
-                        }`}
+                        className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] cursor-pointer ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
+                          }`}
                       />
                     </div>
                   </div>
@@ -353,13 +340,12 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                           key={item.id}
                           type="button"
                           onClick={() => setFormData((prev) => ({ ...prev, meetingType: item.id }))}
-                          className={`p-3 rounded-xl border text-xs font-display text-center transition-all cursor-pointer ${
-                            formData.meetingType === item.id
+                          className={`p-3 rounded-xl border text-xs font-display text-center transition-all cursor-pointer ${formData.meetingType === item.id
                               ? "bg-[#DF9B43] text-black font-semibold border-[#DF9B43] shadow-sm"
-                              : isDarkMode 
-                                ? "bg-stone-900 border-stone-800 text-stone-400 hover:text-white" 
+                              : isDarkMode
+                                ? "bg-stone-900 border-stone-800 text-stone-400 hover:text-white"
                                 : "bg-stone-50 border-stone-200 text-stone-600 hover:text-black"
-                          }`}
+                            }`}
                         >
                           {item.label}
                         </button>
@@ -379,9 +365,8 @@ export const CTASection: React.FC<CTASectionProps> = ({ isDarkMode = false }) =>
                       value={formData.message}
                       onChange={handleInputChange}
                       placeholder="Please mention any specific title deed or mutation verification files you would like prepared for review."
-                      className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${
-                        isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
-                      }`}
+                      className={`w-full px-4 py-3 rounded-xl text-xs font-display border focus:outline-none focus:border-[#DF9B43] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-stone-50 border-stone-200 text-stone-900"
+                        }`}
                     />
                   </div>
 

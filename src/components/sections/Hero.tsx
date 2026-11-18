@@ -11,11 +11,11 @@ interface HeroProps {
   onSelectCategory?: (category: string) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ 
-  onExploreClick, 
-  onBookingClick, 
+export const Hero: React.FC<HeroProps> = ({
+  onExploreClick,
+  onBookingClick,
   isDarkMode,
-  onSelectCategory 
+  onSelectCategory
 }) => {
   const { homepage, settings } = useCMS();
   const heroData = homepage?.hero;
@@ -52,31 +52,29 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section 
+    <section
       id="hero-section"
-      className={`relative min-h-[92vh] lg:min-h-screen flex flex-col justify-between overflow-hidden pt-28 sm:pt-36 md:pt-40 pb-12 sm:pb-16 px-4 sm:px-6 md:px-12 selection:bg-[#DF9B43]/30 transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#0D0D0C] text-[#F7F6F2]" 
+      className={`relative min-h-[92vh] lg:min-h-screen flex flex-col justify-between overflow-hidden pt-28 sm:pt-36 md:pt-40 pb-12 sm:pb-16 px-4 sm:px-6 md:px-12 selection:bg-[#DF9B43]/30 transition-colors duration-500 ${isDarkMode
+          ? "bg-[#0D0D0C] text-[#F7F6F2]"
           : "bg-[#FAF8F5] text-[#141413]"
-      }`}
+        }`}
     >
       {/* 3D Architectural wireframe canvas in background */}
       <Hero3D />
 
       {/* Sunlit California Coastal Gradient Aura */}
-      <div 
-        aria-hidden="true" 
-        className={`absolute top-0 right-0 w-[55vw] h-[55vw] max-w-[800px] max-h-[800px] rounded-full blur-[140px] pointer-events-none -z-10 transition-opacity duration-700 ${
-          isDarkMode 
-            ? "bg-gradient-to-bl from-[#DF9B43]/12 via-[#DF9B43]/5 to-transparent opacity-80" 
+      <div
+        aria-hidden="true"
+        className={`absolute top-0 right-0 w-[55vw] h-[55vw] max-w-[800px] max-h-[800px] rounded-full blur-[140px] pointer-events-none -z-10 transition-opacity duration-700 ${isDarkMode
+            ? "bg-gradient-to-bl from-[#DF9B43]/12 via-[#DF9B43]/5 to-transparent opacity-80"
             : "bg-gradient-to-bl from-[#E5A95B]/25 via-[#F3E5D0]/40 to-transparent opacity-90"
-        }`} 
+          }`}
       />
 
       <div className="max-w-7xl mx-auto w-full relative z-10 my-auto">
         {/* Main Grid: Left Grand Editorial Title & Right Architectural Glass Dossier */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-          
+
           {/* Left Column: California Architectural Headline */}
           <motion.div
             variants={containerVariants}
@@ -85,7 +83,7 @@ export const Hero: React.FC<HeroProps> = ({
             className="lg:col-span-7 flex flex-col text-left items-start"
           >
             {/* Editorial Kicker - Anti-Pill, Typographic Spacing */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6 text-[10px] sm:text-[11px] font-mono tracking-[0.28em] uppercase"
             >
@@ -100,11 +98,10 @@ export const Hero: React.FC<HeroProps> = ({
             </motion.div>
 
             {/* Grand Architectural Headline */}
-            <motion.h1 
+            <motion.h1
               variants={itemVariants}
-              className={`text-4xl sm:text-6xl md:text-7xl xl:text-8xl font-light tracking-[-0.04em] leading-[0.98] mb-6 sm:mb-8 ${
-                isDarkMode ? "text-white" : "text-[#141413]"
-              }`}
+              className={`text-4xl sm:text-6xl md:text-7xl xl:text-8xl font-light tracking-[-0.04em] leading-[0.98] mb-6 sm:mb-8 ${isDarkMode ? "text-white" : "text-[#141413]"
+                }`}
             >
               {heroData?.headingLine1 || "Curated Living."}
               <br />
@@ -114,17 +111,16 @@ export const Hero: React.FC<HeroProps> = ({
             </motion.h1>
 
             {/* Editorial Subtitle */}
-            <motion.p 
+            <motion.p
               variants={itemVariants}
-              className={`max-w-xl text-sm sm:text-base md:text-lg leading-relaxed font-light mb-8 sm:mb-10 ${
-                isDarkMode ? "text-stone-300/90" : "text-stone-700"
-              }`}
+              className={`max-w-xl text-sm sm:text-base md:text-lg leading-relaxed font-light mb-8 sm:mb-10 ${isDarkMode ? "text-stone-300/90" : "text-stone-700"
+                }`}
             >
-              {heroData?.description || "Led by Haji Saud Zehri. Specializing in high-density duplex penthouses, private walled estates, and prime commercial plots — delivered with 100% verified Balochistan Land Revenue mutation and uninterrupted solar utilities."}
+              {heroData?.description || "Led by Haji Saud Ahmed Zehri. Specializing in high-density duplex penthouses, private walled estates, and prime commercial plots — delivered with 100% verified Balochistan Land Revenue mutation and uninterrupted solar utilities."}
             </motion.p>
 
             {/* Action Buttons & Trust Signature */}
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-3.5 sm:gap-4 items-stretch sm:items-center w-full sm:w-auto"
             >
@@ -138,11 +134,10 @@ export const Hero: React.FC<HeroProps> = ({
 
               <button
                 onClick={onBookingClick}
-                className={`px-8 py-4 rounded-full text-xs sm:text-sm font-display tracking-widest uppercase font-medium border transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer ${
-                  isDarkMode 
-                    ? "border-white/20 text-white hover:bg-white hover:text-black" 
+                className={`px-8 py-4 rounded-full text-xs sm:text-sm font-display tracking-widest uppercase font-medium border transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer ${isDarkMode
+                    ? "border-white/20 text-white hover:bg-white hover:text-black"
                     : "border-stone-300 text-stone-800 hover:bg-[#141413] hover:text-white"
-                }`}
+                  }`}
               >
                 <span>{heroData?.secondaryButtonText || "Private Showing"}</span>
                 <ArrowUpRight size={15} />
@@ -152,9 +147,8 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Clean Unboxed Metadata Badges */}
             <motion.div
               variants={itemVariants}
-              className={`mt-8 sm:mt-10 flex flex-wrap items-center gap-y-2 gap-x-4 text-[10px] sm:text-[11px] font-mono tracking-wider uppercase ${
-                isDarkMode ? "text-stone-400" : "text-stone-500"
-              }`}
+              className={`mt-8 sm:mt-10 flex flex-wrap items-center gap-y-2 gap-x-4 text-[10px] sm:text-[11px] font-mono tracking-wider uppercase ${isDarkMode ? "text-stone-400" : "text-stone-500"
+                }`}
             >
               <span className="flex items-center gap-1.5 text-[#DF9B43]">
                 <CheckCircle2 size={13} /> 100% Mutation Ready
@@ -176,12 +170,11 @@ export const Hero: React.FC<HeroProps> = ({
             className="lg:col-span-5 relative"
           >
             {/* The Main Hero Architectural Image Card */}
-            <div className={`relative rounded-3xl overflow-hidden border shadow-2xl transition-all duration-500 ${
-              isDarkMode 
-                ? "bg-[#161614]/85 border-white/[0.09] shadow-[0_20px_60px_rgba(0,0,0,0.6)]" 
+            <div className={`relative rounded-3xl overflow-hidden border shadow-2xl transition-all duration-500 ${isDarkMode
+                ? "bg-[#161614]/85 border-white/[0.09] shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
                 : "bg-white/85 border-stone-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
-            }`}>
-              
+              }`}>
+
               {/* Image Frame with Aspect Ratio 16:11 */}
               <div className="relative aspect-[16/11] overflow-hidden bg-stone-900">
                 <img
@@ -190,7 +183,7 @@ export const Hero: React.FC<HeroProps> = ({
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-transform duration-1000 ease-out hover:scale-105"
                 />
-                
+
                 {/* Subtle Ambient Vignette Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
@@ -202,7 +195,7 @@ export const Hero: React.FC<HeroProps> = ({
                 {/* Bottom Overlay Title on Image */}
                 <div className="absolute bottom-4 left-4 right-4 text-left text-white">
                   <span className="text-[10px] font-mono tracking-widest text-[#DF9B43] uppercase block mb-0.5">
-                    HAJI SAUD ZEHRI SELECTION
+                    Haji Saud Ahmed Zehri SELECTION
                   </span>
                   <h3 className="text-lg sm:text-xl font-display font-medium tracking-tight">
                     The Zehri Heights Duplex Penthouse
@@ -216,9 +209,8 @@ export const Hero: React.FC<HeroProps> = ({
               </div>
 
               {/* Lower Spec & Certified Status Strip */}
-              <div className={`p-5 sm:p-6 text-left border-t ${
-                isDarkMode ? "border-stone-800 bg-[#121210]/95" : "border-stone-200/60 bg-[#FAF8F5]/90"
-              }`}>
+              <div className={`p-5 sm:p-6 text-left border-t ${isDarkMode ? "border-stone-800 bg-[#121210]/95" : "border-stone-200/60 bg-[#FAF8F5]/90"
+                }`}>
                 <div className="grid grid-cols-3 gap-3 divide-x dark:divide-stone-800 divide-stone-200">
                   <div className="pr-2">
                     <span className={`block font-mono text-[9px] uppercase tracking-wider ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
@@ -265,17 +257,16 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Decorative Subtle Stamp Badge Floating in Corner */}
-            <div className={`absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 backdrop-blur-xl p-3.5 rounded-2xl border shadow-xl flex items-center gap-3 text-left ${
-              isDarkMode 
-                ? "bg-[#181816]/90 border-stone-700/60 text-white" 
+            <div className={`absolute -bottom-4 -left-4 sm:-bottom-5 sm:-left-5 backdrop-blur-xl p-3.5 rounded-2xl border shadow-xl flex items-center gap-3 text-left ${isDarkMode
+                ? "bg-[#181816]/90 border-stone-700/60 text-white"
                 : "bg-white/95 border-stone-200/80 text-stone-900"
-            }`}>
+              }`}>
               <div className="w-9 h-9 rounded-full bg-[#DF9B43]/15 border border-[#DF9B43]/30 flex items-center justify-center text-[#DF9B43]">
                 <ShieldCheck size={18} />
               </div>
               <div className="flex flex-col">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-[#DF9B43] font-bold">
-                  HAJI SAUD ZEHRI
+                  Haji Saud Ahmed Zehri
                 </span>
                 <span className="font-display font-semibold text-xs">
                   Direct Mutation Handover
@@ -294,11 +285,10 @@ export const Hero: React.FC<HeroProps> = ({
         >
           <form
             onSubmit={handleQuickSearch}
-            className={`p-3 sm:p-4 rounded-3xl border backdrop-blur-xl shadow-xl transition-all duration-300 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center ${
-              isDarkMode 
-                ? "bg-[#161614]/80 border-white/[0.08]" 
+            className={`p-3 sm:p-4 rounded-3xl border backdrop-blur-xl shadow-xl transition-all duration-300 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-center ${isDarkMode
+                ? "bg-[#161614]/80 border-white/[0.08]"
                 : "bg-white/90 border-stone-200/80"
-            }`}
+              }`}
           >
             {/* Field 1: Property Typology */}
             <div className="lg:col-span-4 px-3 sm:px-4 py-2 text-left flex flex-col">
@@ -308,9 +298,8 @@ export const Hero: React.FC<HeroProps> = ({
               <select
                 value={selectedTypology}
                 onChange={(e) => setSelectedTypology(e.target.value)}
-                className={`bg-transparent font-display text-xs sm:text-sm font-medium mt-1 focus:outline-none cursor-pointer ${
-                  isDarkMode ? "text-white" : "text-stone-900"
-                }`}
+                className={`bg-transparent font-display text-xs sm:text-sm font-medium mt-1 focus:outline-none cursor-pointer ${isDarkMode ? "text-white" : "text-stone-900"
+                  }`}
               >
                 <option value="all" className={isDarkMode ? "bg-stone-900 text-white" : "bg-white text-black"}>
                   All Architectural Holdings
@@ -331,18 +320,16 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Field 2: Region / Sector */}
-            <div className={`lg:col-span-3 px-3 sm:px-4 py-2 text-left flex flex-col border-t sm:border-t-0 sm:border-l ${
-              isDarkMode ? "border-stone-800" : "border-stone-200"
-            }`}>
+            <div className={`lg:col-span-3 px-3 sm:px-4 py-2 text-left flex flex-col border-t sm:border-t-0 sm:border-l ${isDarkMode ? "border-stone-800" : "border-stone-200"
+              }`}>
               <label className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
                 Prime Location
               </label>
               <select
                 value={selectedArea}
                 onChange={(e) => setSelectedArea(e.target.value)}
-                className={`bg-transparent font-display text-xs sm:text-sm font-medium mt-1 focus:outline-none cursor-pointer ${
-                  isDarkMode ? "text-white" : "text-stone-900"
-                }`}
+                className={`bg-transparent font-display text-xs sm:text-sm font-medium mt-1 focus:outline-none cursor-pointer ${isDarkMode ? "text-white" : "text-stone-900"
+                  }`}
               >
                 <option value="all" className={isDarkMode ? "bg-stone-900 text-white" : "bg-white text-black"}>
                   All Quetta Prime Zones
@@ -360,9 +347,8 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Field 3: Verified Registry Guarantee */}
-            <div className={`lg:col-span-3 px-3 sm:px-4 py-2 text-left flex flex-col border-t lg:border-t-0 lg:border-l ${
-              isDarkMode ? "border-stone-800" : "border-stone-200"
-            }`}>
+            <div className={`lg:col-span-3 px-3 sm:px-4 py-2 text-left flex flex-col border-t lg:border-t-0 lg:border-l ${isDarkMode ? "border-stone-800" : "border-stone-200"
+              }`}>
               <label className={`font-mono text-[9px] uppercase tracking-widest ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
                 Title Registry Status
               </label>
@@ -391,7 +377,7 @@ export const Hero: React.FC<HeroProps> = ({
       {/* Subtle Scroll Indicator */}
       <div className="w-full max-w-7xl mx-auto pt-6 flex justify-between items-center text-[10px] font-mono tracking-widest uppercase opacity-60">
         <span>01 / ARCHITECTURAL MONOGRAPH</span>
-        <button 
+        <button
           onClick={onExploreClick}
           className="flex items-center gap-1.5 hover:text-[#DF9B43] transition-colors cursor-pointer"
         >

@@ -10,14 +10,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode }) => {
   return (
     <div className={`pt-32 pb-24 px-4 md:px-8 ${isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"} min-h-screen text-left`}>
       <div className="max-w-5xl mx-auto space-y-20">
-        
+
         {/* Editorial Heading Column */}
         <div className="border-b border-[#E2E8F0]/30 pb-12">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#FF9E4A] font-bold block mb-4">
             LEGACY & FIDELITY
           </span>
           <h1 className="text-4xl md:text-7xl font-light tracking-tight leading-none mb-6">
-            Haji Saud Zehri ki Sarbarahi Mein <br />
+            Haji Saud Ahmed Zehri ki Sarbarahi Mein <br />
             <span className="italic font-serif text-[#FF9E4A]">Bismillah Real Estate</span>
           </h1>
           <p className={`max-w-2xl text-base md:text-lg font-light leading-relaxed italic ${isDarkMode ? "text-stone-300" : "text-stone-600"}`}>
@@ -29,13 +29,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode }) => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
           <div className="md:col-span-5 relative overflow-hidden aspect-[4/5] bg-black border border-stone-800">
             <img
-              src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80"
-              alt="Haji Saud Zehri"
+              src="../../../uploads/Haji-Saud-Zehri_Real-Estate-adership.png?auto=format&fit=crop&w=600&q=80"
+              alt="Haji Saud Ahmed Zehri"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover grayscale brightness-90 contrast-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6">
-              <span className="font-serif italic text-white text-lg">Haji Saud Zehri</span>
+              <span className="font-serif italic text-white text-lg">Haji Saud Ahmed Zehri</span>
               <span className="font-mono text-[9px] tracking-widest text-[#FF9E4A] uppercase mt-1">Founder / Managing Partner</span>
             </div>
           </div>
@@ -47,10 +47,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode }) => {
             <h3 className="text-2xl md:text-3xl font-light tracking-tight leading-snug">
               Mukammal Legal Registry aur 100% Verified Zameen ki Guarantee
             </h3>
-            
+
             <div className={`space-y-4 text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-600"}`}>
               <p>
-                Bismillah Real Estate ki bunyad Haji Saud Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.
+                Bismillah Real Estate ki bunyad Haji Saud Ahmed Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.
               </p>
               <p>
                 Hum har plot, apartment aur home scheme ki documents file ko khud check kartay hain. Hum se zameen khareedna bilkul safe aur aasan hai. Hamaray har client ko mukammal legal verification aur safety guaranteed di jati hai.
@@ -81,7 +81,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode }) => {
             THE ARCHITECTURAL MANIFESTO
           </span>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             <div className={`p-8 border ${isDarkMode ? "bg-[#1A1A1A]/50 border-stone-800" : "bg-white border-stone-200"}`}>
               <Scale className="text-[#FF9E4A] mb-4 stroke-[1.5]" size={28} />
               <h4 className="text-lg font-display tracking-tight mb-2">Mehfooz Registry</h4>
@@ -123,7 +123,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ isDarkMode }) => {
                 Our physical suite boasts armed perimeter security barriers, private client conference rooms, and beautifully scaled master layouts of standard housing segments in Quetta.
               </p>
             </div>
-            
+
             <div className={`p-6 rounded-2xl ${isDarkMode ? "bg-black/40 border border-stone-800" : "bg-white border border-stone-200"} space-y-3 font-mono text-[10px]`}>
               <div className={`flex justify-between border-b pb-2 ${isDarkMode ? "border-stone-800" : "border-stone-100"}`}>
                 <span className="text-stone-400">Headquarters</span>

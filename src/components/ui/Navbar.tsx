@@ -11,10 +11,10 @@ interface NavbarProps {
   onOpenAdmin: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ 
-  onNavigate, 
-  activeSection, 
-  isDarkMode, 
+export const Navbar: React.FC<NavbarProps> = ({
+  onNavigate,
+  activeSection,
+  isDarkMode,
   toggleDarkMode,
   onOpenAdmin
 }) => {
@@ -43,46 +43,41 @@ export const Navbar: React.FC<NavbarProps> = ({
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 1 }}
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-in-out ${
-          isScrolled 
-            ? "py-2.5 px-3 sm:px-6 md:px-8" 
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-in-out ${isScrolled
+            ? "py-2.5 px-3 sm:px-6 md:px-8"
             : "py-4 sm:py-6 px-3 sm:px-6 md:px-8"
-        }`}
+          }`}
       >
-        <div 
+        <div
           id="navbar-container"
-          className={`max-w-7xl mx-auto flex items-center justify-between rounded-full px-4 sm:px-6 py-2.5 sm:py-3 transition-all duration-500 border ${
-            isScrolled
+          className={`max-w-7xl mx-auto flex items-center justify-between rounded-full px-4 sm:px-6 py-2.5 sm:py-3 transition-all duration-500 border ${isScrolled
               ? isDarkMode
                 ? "bg-[#111110]/85 backdrop-blur-md border-stone-800 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
                 : "bg-[#F7F7F5]/85 backdrop-blur-md border-[#E2E8F0]/60 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
               : isDarkMode
                 ? "bg-[#111110]/50 backdrop-blur-sm border-stone-800/40"
                 : "bg-white/40 backdrop-blur-sm border-white/40"
-          }`}
+            }`}
         >
           {/* Brand Logo & Typography */}
-          <div 
+          <div
             id="navbar-brand"
             className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group"
             onClick={() => onNavigate("home")}
           >
-            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
-              isDarkMode 
-                ? "bg-[#DF9B43] text-[#0D0D0C]" 
+            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-500 ${isDarkMode
+                ? "bg-[#DF9B43] text-[#0D0D0C]"
                 : "bg-[#141413] text-white group-hover:bg-[#DF9B43] group-hover:text-black"
-            }`}>
+              }`}>
               <Landmark size={17} className="stroke-[1.5]" />
             </div>
             <div className="flex flex-col text-left">
-              <span className={`font-display font-bold text-xs sm:text-sm tracking-widest leading-none ${
-                isDarkMode ? "text-white" : "text-[#141413]"
-              }`}>
+              <span className={`font-display font-bold text-xs sm:text-sm tracking-widest leading-none ${isDarkMode ? "text-white" : "text-[#141413]"
+                }`}>
                 {settings?.branding.websiteName?.split(" ")[0] || "BISMILLAH"}
               </span>
-              <span className={`font-mono text-[8px] sm:text-[9px] tracking-[0.25em] leading-none mt-1 ${
-                isDarkMode ? "text-[#DF9B43]" : "text-stone-500"
-              }`}>
+              <span className={`font-mono text-[8px] sm:text-[9px] tracking-[0.25em] leading-none mt-1 ${isDarkMode ? "text-[#DF9B43]" : "text-stone-500"
+                }`}>
                 ESTATE COLLECTIVE
               </span>
             </div>
@@ -96,11 +91,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.id}
                   onClick={() => onNavigate(link.id)}
-                  className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 cursor-pointer ${
-                    isActive
+                  className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 cursor-pointer ${isActive
                       ? isDarkMode ? "text-[#DF9B43] font-semibold" : "text-[#141413] font-semibold"
                       : isDarkMode ? "text-stone-400 hover:text-white" : "text-stone-600 hover:text-black"
-                  }`}
+                    }`}
                 >
                   {link.label}
                   {isActive && (
@@ -117,11 +111,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Admin CMS link */}
             <button
               onClick={onOpenAdmin}
-              className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 flex items-center gap-1.5 cursor-pointer ${
-                activeSection === "admin"
+              className={`font-display text-xs tracking-widest uppercase transition-colors duration-300 relative py-1 flex items-center gap-1.5 cursor-pointer ${activeSection === "admin"
                   ? "text-[#DF9B43] font-semibold"
                   : isDarkMode ? "text-stone-400 hover:text-[#DF9B43]" : "text-stone-600 hover:text-[#DF9B43]"
-              }`}
+                }`}
             >
               <Lock size={12} className="text-[#DF9B43]" />
               <span>Admin CMS</span>
@@ -140,25 +133,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Dark / Light Toggle */}
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
-                isDarkMode
+              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${isDarkMode
                   ? "bg-[#181816] text-[#DF9B43] border-stone-800 hover:text-white"
                   : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
-              }`}
+                }`}
               title={isDarkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
             >
               {isDarkMode ? <Sun size={14} className="stroke-[1.5]" /> : <Moon size={14} className="stroke-[1.5]" />}
             </button>
 
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border font-mono text-[10px] ${
-              isDarkMode 
-                ? "bg-stone-900 border-stone-800 text-stone-300" 
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border font-mono text-[10px] ${isDarkMode
+                ? "bg-stone-900 border-stone-800 text-stone-300"
                 : "bg-white/80 border-stone-200 text-stone-700"
-            }`}>
+              }`}>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>100% REGISTRY READY</span>
             </div>
-            
+
             <button
               onClick={() => onNavigate("home-private-office")}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-display text-xs font-semibold tracking-wider uppercase transition-all duration-300 cursor-pointer bg-[#DF9B43] hover:bg-[#c88532] text-black shadow-md hover:shadow-lg"
@@ -173,13 +164,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick Admin Access Button */}
             <button
               onClick={onOpenAdmin}
-              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
-                activeSection === "admin"
+              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${activeSection === "admin"
                   ? "bg-[#FF9E4A] text-black border-[#FF9E4A]"
                   : isDarkMode
-                  ? "bg-stone-900 text-stone-300 border-stone-800"
-                  : "bg-white text-stone-700 border-stone-200"
-              }`}
+                    ? "bg-stone-900 text-stone-300 border-stone-800"
+                    : "bg-white text-stone-700 border-stone-200"
+                }`}
               title="Admin CMS"
             >
               <Lock size={14} />
@@ -188,11 +178,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Quick Dark Toggle for Mobile/Tablet */}
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
-                isDarkMode 
-                  ? "bg-stone-900 text-[#FF9E4A] border-stone-800" 
+              className={`p-2 rounded-full border transition-all cursor-pointer flex items-center justify-center ${isDarkMode
+                  ? "bg-stone-900 text-[#FF9E4A] border-stone-800"
                   : "bg-white text-stone-700 border-stone-200"
-              }`}
+                }`}
               title={isDarkMode ? "Toggle Light Mode" : "Toggle Dark Mode"}
             >
               {isDarkMode ? <Sun size={14} /> : <Moon size={14} />}
@@ -202,11 +191,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="mobile-nav-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 rounded-full border cursor-pointer ${
-                isDarkMode 
-                  ? "bg-stone-950 border-stone-800 text-white" 
+              className={`p-2 rounded-full border cursor-pointer ${isDarkMode
+                  ? "bg-stone-950 border-stone-800 text-white"
                   : "bg-white border-[#E2E8F0] text-[#1A1A1A]"
-              }`}
+                }`}
             >
               {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -222,21 +210,19 @@ export const Navbar: React.FC<NavbarProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-            className={`fixed inset-x-0 top-[72px] sm:top-[76px] z-40 mx-3 sm:mx-4 lg:hidden rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-5 border ${
-              isDarkMode 
-                ? "bg-[#111110]/95 backdrop-blur-xl border-stone-800 text-white" 
+            className={`fixed inset-x-0 top-[72px] sm:top-[76px] z-40 mx-3 sm:mx-4 lg:hidden rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col gap-5 border ${isDarkMode
+                ? "bg-[#111110]/95 backdrop-blur-xl border-stone-800 text-white"
                 : "bg-[#F7F7F5]/95 backdrop-blur-xl border-[#E2E8F0] text-[#1A1A1A]"
-            }`}
+              }`}
           >
-            <div className={`flex items-center justify-between border-b pb-3 ${
-              isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/60"
-            }`}>
+            <div className={`flex items-center justify-between border-b pb-3 ${isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/60"
+              }`}>
               <div className="flex items-center gap-2">
                 <ShieldCheck size={14} className="text-[#FF9E4A]" />
                 <span className="font-mono text-[10px]">A-1 City, Quetta, Balochistan</span>
               </div>
               <span className="font-mono text-[9px] px-2 py-0.5 rounded bg-[#FF9E4A] text-black font-semibold">
-                Haji Saud Zehri
+                Haji Saud Ahmed Zehri
               </span>
             </div>
 
@@ -248,9 +234,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setMobileMenuOpen(false);
                     onNavigate(link.id);
                   }}
-                  className={`font-display text-base font-light py-2 border-b flex items-center justify-between cursor-pointer ${
-                    activeSection === link.id ? "text-[#FF9E4A] font-medium" : ""
-                  } ${isDarkMode ? "border-stone-800/80" : "border-[#E2E8F0]/40"}`}
+                  className={`font-display text-base font-light py-2 border-b flex items-center justify-between cursor-pointer ${activeSection === link.id ? "text-[#FF9E4A] font-medium" : ""
+                    } ${isDarkMode ? "border-stone-800/80" : "border-[#E2E8F0]/40"}`}
                 >
                   <span>{link.label}</span>
                   <ArrowRight size={14} className="text-[#FF9E4A] opacity-70" />
@@ -263,9 +248,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setMobileMenuOpen(false);
                   onOpenAdmin();
                 }}
-                className={`font-display text-base font-light py-2 border-b flex items-center justify-between cursor-pointer ${
-                  activeSection === "admin" ? "text-[#FF9E4A] font-medium" : ""
-                } ${isDarkMode ? "border-stone-800/80" : "border-[#E2E8F0]/40"}`}
+                className={`font-display text-base font-light py-2 border-b flex items-center justify-between cursor-pointer ${activeSection === "admin" ? "text-[#FF9E4A] font-medium" : ""
+                  } ${isDarkMode ? "border-stone-800/80" : "border-[#E2E8F0]/40"}`}
               >
                 <div className="flex items-center gap-2">
                   <Lock size={15} className="text-[#FF9E4A]" />
@@ -278,9 +262,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Mobile/Tablet Dark Mode Switch */}
-            <div className={`flex items-center justify-between py-2 border-t border-b ${
-              isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/60"
-            }`}>
+            <div className={`flex items-center justify-between py-2 border-t border-b ${isDarkMode ? "border-stone-800" : "border-[#E2E8F0]/60"
+              }`}>
               <div className="flex flex-col text-left">
                 <span className={`font-mono text-[9px] uppercase tracking-wider ${isDarkMode ? "text-stone-400" : "text-[#1A1A1A]/60"}`}>
                   Visual Appearance
@@ -291,11 +274,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
               <button
                 onClick={toggleDarkMode}
-                className={`py-1.5 px-3 rounded-full border text-xs font-display flex items-center gap-2 transition-all cursor-pointer ${
-                  isDarkMode 
-                    ? "bg-[#1A1A1A] text-[#FF9E4A] border-stone-800" 
+                className={`py-1.5 px-3 rounded-full border text-xs font-display flex items-center gap-2 transition-all cursor-pointer ${isDarkMode
+                    ? "bg-[#1A1A1A] text-[#FF9E4A] border-stone-800"
                     : "bg-white text-stone-700 border-stone-200"
-                }`}
+                  }`}
               >
                 {isDarkMode ? (
                   <>
@@ -314,11 +296,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div id="mobile-menu-cta" className="flex flex-col gap-2.5 mt-1">
               <a
                 href="tel:+923337827725"
-                className={`w-full py-2.5 rounded-full text-center font-display text-xs tracking-wider uppercase font-light flex items-center justify-center gap-2 shadow-sm border ${
-                  isDarkMode 
-                    ? "bg-[#1A1A1A] border-stone-800 text-stone-300" 
+                className={`w-full py-2.5 rounded-full text-center font-display text-xs tracking-wider uppercase font-light flex items-center justify-center gap-2 shadow-sm border ${isDarkMode
+                    ? "bg-[#1A1A1A] border-stone-800 text-stone-300"
                     : "bg-white border-[#E2E8F0] text-[#1A1A1A]"
-                }`}
+                  }`}
               >
                 <Phone size={12} className="text-[#FF9E4A]" />
                 <span>Call Advisor (+92 333 7827725)</span>

@@ -1,6 +1,6 @@
 import React from "react";
-import { 
-  Building2, Users, Image as ImageIcon, ShieldCheck, 
+import {
+  Building2, Users, Image as ImageIcon, ShieldCheck,
   ArrowUpRight, Plus, ExternalLink, Activity, CheckCircle2, Clock
 } from "lucide-react";
 import { AdminTab } from "../AdminSidebar";
@@ -34,9 +34,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   return (
     <div className="space-y-8 text-left">
       {/* Top Banner / Welcome */}
-      <div className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden ${
-        isDarkMode ? "bg-stone-900/40 border-stone-800" : "bg-white border-stone-200 shadow-sm"
-      }`}>
+      <div className={`p-6 sm:p-8 rounded-3xl border relative overflow-hidden ${isDarkMode ? "bg-stone-900/40 border-stone-800" : "bg-white border-stone-200 shadow-sm"
+        }`}>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -46,7 +45,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-medium">
-              Welcome, <span className="text-[#FF9E4A]">Haji Saud Zehri</span> Team
+              Welcome, <span className="text-[#FF9E4A]">Haji Saud Ahmed Zehri</span> Team
             </h1>
             <p className={`text-xs sm:text-sm mt-1 max-w-xl ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
               Full administrative power to configure website branding, edit homepage sections, publish registry-backed properties, and manage incoming private bookings.
@@ -63,11 +62,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             </button>
             <button
               onClick={onOpenUploadMedia}
-              className={`px-5 py-2.5 rounded-full text-xs font-display uppercase tracking-wider border flex items-center gap-2 transition-all cursor-pointer ${
-                isDarkMode 
-                  ? "bg-stone-800 hover:bg-stone-700 text-white border-stone-700" 
+              className={`px-5 py-2.5 rounded-full text-xs font-display uppercase tracking-wider border flex items-center gap-2 transition-all cursor-pointer ${isDarkMode
+                  ? "bg-stone-800 hover:bg-stone-700 text-white border-stone-700"
                   : "bg-stone-100 hover:bg-stone-200 text-black border-stone-300"
-              }`}
+                }`}
             >
               <ImageIcon size={14} />
               <span>Upload Photo</span>
@@ -78,11 +76,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div 
+        <div
           onClick={() => onNavigateTab("properties")}
-          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${
-            isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
-          }`}
+          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400">
@@ -96,11 +93,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => onNavigateTab("leads")}
-          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${
-            isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
-          }`}
+          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400">
@@ -118,11 +114,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => onNavigateTab("media")}
-          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${
-            isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
-          }`}
+          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400">
@@ -136,11 +131,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => onNavigateTab("properties")}
-          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${
-            isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
-          }`}
+          className={`p-5 rounded-2xl border cursor-pointer group transition-all ${isDarkMode ? "bg-[#181817] border-stone-800 hover:border-[#FF9E4A]" : "bg-white border-stone-200 hover:border-[#FF9E4A] shadow-sm"
+            }`}
         >
           <div className="flex items-center justify-between">
             <span className="font-mono text-[9px] uppercase tracking-widest text-stone-400">
@@ -157,16 +151,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
       {/* Two Column Layout: Recent Leads + Quick CMS Links */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
+
         {/* Left: Latest Inquiries */}
-        <div className={`lg:col-span-7 p-6 rounded-3xl border ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`lg:col-span-7 p-6 rounded-3xl border ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-display font-medium text-base">Latest Private Bookings</h3>
               <p className={`text-xs ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>
-                Clients requesting private consultations under Haji Saud Zehri desk.
+                Clients requesting private consultations under Haji Saud Ahmed Zehri desk.
               </p>
             </div>
             <button
@@ -183,24 +176,22 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
           ) : (
             <div className="space-y-3">
               {enquiries.slice(0, 4).map((enq) => (
-                <div 
+                <div
                   key={enq.id}
-                  className={`p-3.5 rounded-2xl border flex items-center justify-between gap-4 transition-colors ${
-                    isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
-                  }`}
+                  className={`p-3.5 rounded-2xl border flex items-center justify-between gap-4 transition-colors ${isDarkMode ? "bg-stone-900/60 border-stone-800" : "bg-[#F9F9F8] border-stone-200"
+                    }`}
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-display font-medium text-xs truncate">
                         {enq.clientName}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-wider font-semibold ${
-                        enq.status === "New" 
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-wider font-semibold ${enq.status === "New"
                           ? "bg-rose-500/10 text-rose-500 border border-rose-500/30"
                           : enq.status === "In Review"
-                          ? "bg-[#FF9E4A]/10 text-[#FF9E4A] border border-[#FF9E4A]/30"
-                          : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30"
-                      }`}>
+                            ? "bg-[#FF9E4A]/10 text-[#FF9E4A] border border-[#FF9E4A]/30"
+                            : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/30"
+                        }`}>
                         {enq.status}
                       </span>
                     </div>
@@ -218,9 +209,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
 
         {/* Right: Quick Settings & Section Status */}
-        <div className={`lg:col-span-5 p-6 rounded-3xl border space-y-5 ${
-          isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-        }`}>
+        <div className={`lg:col-span-5 p-6 rounded-3xl border space-y-5 ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+          }`}>
           <div>
             <h3 className="font-display font-medium text-base">Public Website Status</h3>
             <p className={`text-xs ${isDarkMode ? "text-stone-400" : "text-stone-500"}`}>

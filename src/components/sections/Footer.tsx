@@ -12,21 +12,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer 
+    <footer
       id="footer-section"
-      className={`pt-24 pb-12 border-t relative transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#090909] text-stone-300 border-stone-850" 
+      className={`pt-24 pb-12 border-t relative transition-colors duration-500 ${isDarkMode
+          ? "bg-[#090909] text-stone-300 border-stone-850"
           : "bg-[#1A1A1A] text-[#F7F7F5] border-white/5"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        
+
         {/* Top Branding Panel */}
-        <div className={`grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b items-start ${
-          isDarkMode ? "border-stone-850" : "border-white/5"
-        }`}>
-          
+        <div className={`grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b items-start ${isDarkMode ? "border-stone-850" : "border-white/5"
+          }`}>
+
           {/* Logo Frame */}
           <div className="md:col-span-4 space-y-6 text-left">
             <div className="flex items-center gap-3">
@@ -47,9 +45,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
               {settings?.branding.shortDescription || "The premier real estate agency and title curation collective in Quetta, Balochistan. Specializing in high-density premium apartments, exclusive walled estates, and secured land schemes."}
             </p>
 
-            <div className={`flex items-center gap-2 bg-white/5 border px-3.5 py-2 rounded-xl w-fit ${
-              isDarkMode ? "border-stone-800 bg-stone-900" : "border-white/10"
-            }`}>
+            <div className={`flex items-center gap-2 bg-white/5 border px-3.5 py-2 rounded-xl w-fit ${isDarkMode ? "border-stone-800 bg-stone-900" : "border-white/10"
+              }`}>
               <span className="w-1.5 h-1.5 rounded-full bg-[#DF9B43] animate-pulse" />
               <span className="font-mono text-[10px] text-stone-300">Quetta Site Operations Active</span>
             </div>
@@ -62,7 +59,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
             </span>
             <ul className="space-y-2.5">
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("home")}
                   className="text-xs text-stone-400 hover:text-[#FF9E4A] transition-colors cursor-pointer text-left block"
                 >
@@ -70,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("apartments")}
                   className="text-xs text-stone-400 hover:text-[#FF9E4A] transition-colors cursor-pointer text-left block"
                 >
@@ -78,7 +75,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("properties")}
                   className="text-xs text-stone-400 hover:text-[#FF9E4A] transition-colors cursor-pointer text-left block"
                 >
@@ -86,7 +83,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("about")}
                   className="text-xs text-stone-400 hover:text-[#FF9E4A] transition-colors cursor-pointer text-left block"
                 >
@@ -94,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("home-private-office")}
                   className="text-xs text-stone-400 hover:text-[#FF9E4A] transition-colors cursor-pointer text-left block"
                 >
@@ -102,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => onNavigate("admin")}
                   className="text-xs text-[#FF9E4A] hover:text-white transition-colors cursor-pointer text-left block flex items-center gap-1.5"
                 >
@@ -120,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
             <div className="space-y-3">
               <div className="flex flex-col">
                 <span className={`text-xs font-medium leading-normal ${isDarkMode ? "text-stone-200" : "text-[#F7F7F5]"}`}>
-                  {settings?.branding.ownerName || "Haji Saud Zehri"}
+                  {settings?.branding.ownerName || "Haji Saud Ahmed Zehri"}
                 </span>
                 <span className="font-mono text-[9px] text-[#FF9E4A] uppercase tracking-wider block mt-0.5">
                   {settings?.branding.ownerTitle || "Managing Director / Founder"}
@@ -146,8 +143,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={13} className="text-[#FF9E4A] shrink-0" />
-                <a 
-                  href={`tel:${settings?.contact.primaryPhone || "+923337861928"}`} 
+                <a
+                  href={`tel:${settings?.contact.primaryPhone || "+923337861928"}`}
                   className="hover:text-[#FF9E4A] transition-colors"
                 >
                   {settings?.contact.primaryPhone || "+92 333 786 1928"}
@@ -155,8 +152,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, isDarkMode = false }
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail size={13} className="text-[#FF9E4A] shrink-0" />
-                <a 
-                  href={`mailto:${settings?.contact.emailAddress || "hajisaud@bismillahrealestate.pk"}`} 
+                <a
+                  href={`mailto:${settings?.contact.emailAddress || "hajisaud@bismillahrealestate.pk"}`}
                   className="hover:text-[#FF9E4A] transition-colors break-all"
                 >
                   {settings?.contact.emailAddress || "hajisaud@bismillahrealestate.pk"}

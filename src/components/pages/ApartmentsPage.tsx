@@ -19,7 +19,7 @@ export const ApartmentsPage: React.FC<ApartmentsPageProps> = ({ onContactClick, 
   return (
     <div className={`pt-28 sm:pt-36 pb-24 px-4 md:px-8 ${isDarkMode ? "bg-[#111110] text-[#F7F7F5]" : "bg-[#F7F7F5] text-[#1A1A1A]"} min-h-screen text-left transition-colors duration-500`}>
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Editorial Heading */}
         <div className="border-b border-[#E2E8F0]/30 dark:border-stone-850 pb-10 mb-12">
           <span className="text-[10px] uppercase tracking-[0.4em] text-[#FF9E4A] font-bold block mb-3">
@@ -29,7 +29,7 @@ export const ApartmentsPage: React.FC<ApartmentsPageProps> = ({ onContactClick, 
             Premium <span className="italic font-serif text-[#FF9E4A]">Apartments aur Flats</span>
           </h1>
           <p className={`max-w-xl text-xs sm:text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-600"}`}>
-            Hum aap ko Quetta ke sab se mehfooz vertical residential flats faraham karte hain. All documents are 100% verified under Haji Saud Zehri supervision for your supreme comfort and security.
+            Hum aap ko Quetta ke sab se mehfooz vertical residential flats faraham karte hain. All documents are 100% verified under Haji Saud Ahmed Zehri supervision for your supreme comfort and security.
           </p>
         </div>
 
@@ -42,11 +42,10 @@ export const ApartmentsPage: React.FC<ApartmentsPageProps> = ({ onContactClick, 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.6 }}
-              className={`rounded-3xl border overflow-hidden grid grid-cols-1 lg:grid-cols-12 transition-all duration-500 ${
-                isDarkMode 
-                  ? "bg-[#161615] border-stone-850 hover:border-[#FF9E4A]/30 shadow-xl" 
+              className={`rounded-3xl border overflow-hidden grid grid-cols-1 lg:grid-cols-12 transition-all duration-500 ${isDarkMode
+                  ? "bg-[#161615] border-stone-850 hover:border-[#FF9E4A]/30 shadow-xl"
                   : "bg-white border-stone-200 shadow-sm hover:shadow-xl hover:border-stone-300"
-              }`}
+                }`}
             >
               {/* Image Column */}
               <div className="lg:col-span-5 relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-black min-h-[260px]">
@@ -82,9 +81,8 @@ export const ApartmentsPage: React.FC<ApartmentsPageProps> = ({ onContactClick, 
                     <Compass size={12} className="text-[#FF9E4A]" /> {apt.location}
                   </p>
 
-                  <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed ${
-                    isDarkMode ? "text-stone-300" : "text-stone-600"
-                  }`}>
+                  <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-600"
+                    }`}>
                     {apt.description}
                   </p>
 

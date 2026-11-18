@@ -44,7 +44,7 @@ export const Helmet: React.FC<HelmetProps> = ({
       keywordsMeta.setAttribute("content", keywords);
     } else {
       const keywordsMeta = getOrCreateMeta("name", "keywords");
-      keywordsMeta.setAttribute("content", "Bismillah Real Estate, Quetta, Haji Saud Zehri, A-1 City, Plots, Flats, Apartments, Balochistan Real Estate, Property Quetta");
+      keywordsMeta.setAttribute("content", "Bismillah Real Estate, Quetta, Haji Saud Ahmed Zehri, A-1 City, Plots, Flats, Apartments, Balochistan Real Estate, Property Quetta");
     }
 
     // 4. Open Graph Tags

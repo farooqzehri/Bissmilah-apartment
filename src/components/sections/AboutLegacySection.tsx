@@ -8,9 +8,9 @@ interface AboutLegacySectionProps {
   onBookingClick: () => void;
 }
 
-export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({ 
-  isDarkMode, 
-  onBookingClick 
+export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
+  isDarkMode,
+  onBookingClick
 }) => {
   const { homepage, settings } = useCMS();
   const aboutData = homepage?.about;
@@ -18,36 +18,33 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
   if (aboutData?.published === false) return null;
 
   return (
-    <section 
+    <section
       id="legacy-section"
-      className={`py-20 sm:py-28 md:py-36 border-t relative overflow-hidden transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#090908] border-stone-850 text-[#F7F6F2]" 
+      className={`py-20 sm:py-28 md:py-36 border-t relative overflow-hidden transition-colors duration-500 ${isDarkMode
+          ? "bg-[#090908] border-stone-850 text-[#F7F6F2]"
           : "bg-[#F5F2EB] border-stone-200/80 text-[#141413]"
-      }`}
+        }`}
     >
       {/* Subtle California Sunlight Glow in Background */}
-      <div 
-        aria-hidden="true" 
-        className={`absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[120px] pointer-events-none -z-10 ${
-          isDarkMode ? "bg-[#DF9B43]/10" : "bg-[#DF9B43]/20"
-        }`} 
+      <div
+        aria-hidden="true"
+        className={`absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[120px] pointer-events-none -z-10 ${isDarkMode ? "bg-[#DF9B43]/10" : "bg-[#DF9B43]/20"
+          }`}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         {/* Section Marker */}
         <div className="flex items-center gap-2 mb-8 sm:mb-12">
           <span className="w-1.5 h-1.5 rounded-full bg-[#DF9B43]" />
-          <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${
-            isDarkMode ? "text-stone-400" : "text-stone-600"
-          }`}>
+          <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${isDarkMode ? "text-stone-400" : "text-stone-600"
+            }`}>
             03 / THE FOUNDATION OF TRUST
           </span>
         </div>
 
         {/* Two-Column Asymmetrical California Editorial Spread */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
+
           {/* Left Column: High-Fashion Portrait & Revenue Board Accreditation */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -57,19 +54,18 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
             className="lg:col-span-5 relative"
           >
             {/* The Main Founder Portrait Card */}
-            <div className={`relative rounded-3xl overflow-hidden border shadow-2xl ${
-              isDarkMode 
-                ? "bg-[#141412] border-white/[0.08] shadow-[0_25px_60px_rgba(0,0,0,0.6)]" 
+            <div className={`relative rounded-3xl overflow-hidden border shadow-2xl ${isDarkMode
+                ? "bg-[#141412] border-white/[0.08] shadow-[0_25px_60px_rgba(0,0,0,0.6)]"
                 : "bg-white border-stone-200 shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
-            }`}>
+              }`}>
               <div className="relative aspect-[4/5] overflow-hidden bg-stone-900">
                 <img
                   src={aboutData?.ownerImage || settings?.branding.ownerImage || "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80"}
-                  alt={aboutData?.ownerName || "Haji Saud Zehri"}
+                  alt={aboutData?.ownerName || "Haji Saud Ahmed Zehri"}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-top filter grayscale-[15%] hover:grayscale-0 transition-all duration-700"
                 />
-                
+
                 {/* Gradient Shadow */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
@@ -79,7 +75,7 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
                     FOUNDER & MANAGING DIRECTOR
                   </span>
                   <h3 className="text-xl sm:text-2xl font-display font-medium tracking-tight">
-                    {aboutData?.ownerName || "Haji Saud Zehri"}
+                    {aboutData?.ownerName || "Haji Saud Ahmed Zehri"}
                   </h3>
                   <p className="text-xs text-stone-300 font-light mt-0.5">
                     Guiding 22+ years of ethical real estate development in Quetta.
@@ -88,9 +84,8 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
               </div>
 
               {/* Founder's Personal Urdu Quote Strip */}
-              <div className={`p-5 sm:p-6 text-left border-t ${
-                isDarkMode ? "border-stone-800 bg-[#121210]" : "border-stone-200/60 bg-[#FAF8F5]"
-              }`}>
+              <div className={`p-5 sm:p-6 text-left border-t ${isDarkMode ? "border-stone-800 bg-[#121210]" : "border-stone-200/60 bg-[#FAF8F5]"
+                }`}>
                 <p className="font-serif italic text-xs sm:text-sm leading-relaxed text-[#DF9B43]">
                   "{settings?.branding.ownerQuote || "Hum sirf zameen nahi bechty, hum aap ka khwab banatay hain. 100% legal registry aur mehfooz zameen ke sath apna ghar banayen."}"
                 </p>
@@ -98,11 +93,10 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
             </div>
 
             {/* Floating Revenue Board Verification Badge */}
-            <div className={`absolute -bottom-5 -right-3 sm:-bottom-6 sm:-right-6 backdrop-blur-xl p-4 rounded-2xl border shadow-xl flex items-center gap-3.5 text-left max-w-xs ${
-              isDarkMode 
-                ? "bg-[#181816]/95 border-stone-700/60 text-white" 
+            <div className={`absolute -bottom-5 -right-3 sm:-bottom-6 sm:-right-6 backdrop-blur-xl p-4 rounded-2xl border shadow-xl flex items-center gap-3.5 text-left max-w-xs ${isDarkMode
+                ? "bg-[#181816]/95 border-stone-700/60 text-white"
                 : "bg-white/95 border-stone-200/90 text-stone-900"
-            }`}>
+              }`}>
               <div className="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 shrink-0">
                 <Landmark size={20} />
               </div>
@@ -130,18 +124,17 @@ export const AboutLegacySection: React.FC<AboutLegacySectionProps> = ({
                 {aboutData?.badge || "LEGACY & FIDELITY"}
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.08]">
-                {aboutData?.heading || "Haji Saud Zehri ki Sarbarahi Mein Bismillah Real Estate"}
+                {aboutData?.heading || "Haji Saud Ahmed Zehri ki Sarbarahi Mein Bismillah Real Estate"}
               </h2>
               <p className={`font-serif italic text-base sm:text-lg mt-3 text-[#DF9B43]`}>
                 {aboutData?.subheading || "100% Legal Registry aur Mehfooz Zameen ki Tareekh"}
               </p>
             </div>
 
-            <div className={`space-y-4 text-xs sm:text-sm font-light leading-relaxed ${
-              isDarkMode ? "text-stone-300" : "text-stone-700"
-            }`}>
+            <div className={`space-y-4 text-xs sm:text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-700"
+              }`}>
               <p>
-                {aboutData?.descriptionP1 || "Bismillah Real Estate ki bunyad Haji Saud Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay."}
+                {aboutData?.descriptionP1 || "Bismillah Real Estate ki bunyad Haji Saud Ahmed Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay."}
               </p>
               <p>
                 {aboutData?.descriptionP2 || "Hum har plot, apartment aur home scheme ki documents file ko khud check kartay hain. Hum se zameen khareedna bilkul safe aur aasan hai. Hamaray har client ko mukammal legal verification aur safety guaranteed di jati hai."}

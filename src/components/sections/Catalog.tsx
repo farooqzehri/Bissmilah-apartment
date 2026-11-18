@@ -10,10 +10,10 @@ interface CatalogProps {
   selectedCategoryFilter?: string;
 }
 
-export const Catalog: React.FC<CatalogProps> = ({ 
-  isDarkMode, 
+export const Catalog: React.FC<CatalogProps> = ({
+  isDarkMode,
   onInquireClick,
-  selectedCategoryFilter 
+  selectedCategoryFilter
 }) => {
   const { properties } = useProperties();
   const [activeCategory, setActiveCategory] = useState<string>(selectedCategoryFilter || "all");
@@ -46,59 +46,54 @@ export const Catalog: React.FC<CatalogProps> = ({
   };
 
   return (
-    <section 
-      id="curation" 
-      className={`py-20 sm:py-28 md:py-36 border-t relative transition-colors duration-500 ${
-        isDarkMode 
-          ? "bg-[#0D0D0C] border-stone-850 text-[#F7F6F2]" 
+    <section
+      id="curation"
+      className={`py-20 sm:py-28 md:py-36 border-t relative transition-colors duration-500 ${isDarkMode
+          ? "bg-[#0D0D0C] border-stone-850 text-[#F7F6F2]"
           : "bg-[#FAF8F5] border-stone-200/80 text-[#141413]"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
-        
+
         {/* Editorial Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 sm:mb-16 gap-6 pb-6 border-b dark:border-stone-850 border-stone-200">
           <div className="flex flex-col text-left items-start max-w-2xl">
             <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 rounded-full bg-[#DF9B43] shadow-[0_0_8px_#DF9B43] animate-pulse" />
-              <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${
-                isDarkMode ? "text-stone-400" : "text-stone-600"
-              }`}>
+              <span className={`font-mono text-[10px] tracking-[0.25em] uppercase font-semibold ${isDarkMode ? "text-stone-400" : "text-stone-600"
+                }`}>
                 02 / ARCHITECTURAL PORTFOLIO
               </span>
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight leading-[1.08]">
               Curated <span className="font-serif italic font-normal text-[#DF9B43]">Estates & Residences</span>
             </h2>
-            
-            <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed ${
-              isDarkMode ? "text-stone-400" : "text-stone-600"
-            }`}>
-              Every property is inspected and certified by Haji Saud Zehri. Delivered with 100% verified Balochistan Land Revenue mutation deeds, independent solar power, and deep sweet-water tube well access.
+
+            <p className={`text-xs sm:text-sm font-light mt-3 leading-relaxed ${isDarkMode ? "text-stone-400" : "text-stone-600"
+              }`}>
+              Every property is inspected and certified by Haji Saud Ahmed Zehri. Delivered with 100% verified Balochistan Land Revenue mutation deeds, independent solar power, and deep sweet-water tube well access.
             </p>
           </div>
 
           {/* California Segmented Category Switcher */}
-          <div 
-            id="catalog-filters" 
-            className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto max-w-full no-scrollbar ${
-              isDarkMode 
-                ? "bg-[#161614] border-stone-800" 
+          <div
+            id="catalog-filters"
+            className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto max-w-full no-scrollbar ${isDarkMode
+                ? "bg-[#161614] border-stone-800"
                 : "bg-[#F3EFE8] border-stone-200"
-            }`}
+              }`}
           >
             {categories.map((cat) => (
               <button
                 key={cat.value}
                 onClick={() => setActiveCategory(cat.value)}
-                className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-display tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 ${
-                  activeCategory === cat.value
+                className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-display tracking-wider uppercase transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 ${activeCategory === cat.value
                     ? "bg-[#DF9B43] text-black font-semibold shadow-sm"
-                    : isDarkMode 
-                      ? "text-stone-400 hover:text-white" 
+                    : isDarkMode
+                      ? "text-stone-400 hover:text-white"
                       : "text-stone-600 hover:text-black"
-                }`}
+                  }`}
               >
                 {cat.label}
               </button>
@@ -107,7 +102,7 @@ export const Catalog: React.FC<CatalogProps> = ({
         </div>
 
         {/* California Luxury Property Grid */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10"
         >
@@ -122,14 +117,13 @@ export const Catalog: React.FC<CatalogProps> = ({
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.7, delay: idx * 0.08 }}
                   key={p.id}
-                  className={`group relative rounded-3xl overflow-hidden border flex flex-col transition-all duration-500 ${
-                    isDarkMode 
-                      ? "bg-[#141412] border-white/[0.07] hover:border-[#DF9B43]/50 shadow-[0_12px_40px_rgba(0,0,0,0.5)]" 
+                  className={`group relative rounded-3xl overflow-hidden border flex flex-col transition-all duration-500 ${isDarkMode
+                      ? "bg-[#141412] border-white/[0.07] hover:border-[#DF9B43]/50 shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
                       : "bg-white border-stone-200 hover:border-black/20 shadow-[0_12px_35px_rgba(0,0,0,0.04)] hover:shadow-xl"
-                  }`}
+                    }`}
                 >
                   {/* Aspect Ratio 16:10 Cinematic Architectural Photo */}
-                  <div 
+                  <div
                     onClick={() => openPropertyModal(p)}
                     className="relative aspect-[16/10] overflow-hidden bg-stone-900 cursor-pointer"
                   >
@@ -180,9 +174,8 @@ export const Catalog: React.FC<CatalogProps> = ({
                   <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between text-left">
                     <div>
                       {/* Unboxed Metadata Strip */}
-                      <div className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-4 border-b text-xs font-mono tracking-wider uppercase ${
-                        isDarkMode ? "border-stone-850 text-stone-400" : "border-stone-100 text-stone-600"
-                      }`}>
+                      <div className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-4 border-b text-xs font-mono tracking-wider uppercase ${isDarkMode ? "border-stone-850 text-stone-400" : "border-stone-100 text-stone-600"
+                        }`}>
                         <span className="flex items-center gap-1.5">
                           <Box size={13} className="text-[#DF9B43]" /> {p.size}
                         </span>
@@ -209,9 +202,8 @@ export const Catalog: React.FC<CatalogProps> = ({
                       </div>
 
                       {/* Editorial Description Excerpt */}
-                      <p className={`text-xs sm:text-sm font-light leading-relaxed mt-4 line-clamp-2 ${
-                        isDarkMode ? "text-stone-300" : "text-stone-700"
-                      }`}>
+                      <p className={`text-xs sm:text-sm font-light leading-relaxed mt-4 line-clamp-2 ${isDarkMode ? "text-stone-300" : "text-stone-700"
+                        }`}>
                         {p.description}
                       </p>
 
@@ -219,13 +211,12 @@ export const Catalog: React.FC<CatalogProps> = ({
                       {p.highlights && p.highlights.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-2">
                           {p.highlights.slice(0, 2).map((h, i) => (
-                            <span 
-                              key={i} 
-                              className={`text-[10px] font-mono px-3 py-1 rounded-lg border ${
-                                isDarkMode 
-                                  ? "bg-stone-900/60 border-stone-800 text-stone-300" 
+                            <span
+                              key={i}
+                              className={`text-[10px] font-mono px-3 py-1 rounded-lg border ${isDarkMode
+                                  ? "bg-stone-900/60 border-stone-800 text-stone-300"
                                   : "bg-stone-50 border-stone-200 text-stone-700"
-                              }`}
+                                }`}
                             >
                               {h}
                             </span>
@@ -238,11 +229,10 @@ export const Catalog: React.FC<CatalogProps> = ({
                     <div className="mt-6 pt-5 border-t dark:border-stone-850 border-stone-100 flex items-center justify-between gap-3">
                       <button
                         onClick={() => openPropertyModal(p)}
-                        className={`px-4 py-2.5 rounded-full text-xs font-display tracking-wider uppercase font-medium border flex items-center gap-2 cursor-pointer transition-colors ${
-                          isDarkMode 
-                            ? "border-stone-750 text-stone-300 hover:text-white hover:border-white" 
+                        className={`px-4 py-2.5 rounded-full text-xs font-display tracking-wider uppercase font-medium border flex items-center gap-2 cursor-pointer transition-colors ${isDarkMode
+                            ? "border-stone-750 text-stone-300 hover:text-white hover:border-white"
                             : "border-stone-300 text-stone-700 hover:text-black hover:border-black"
-                        }`}
+                          }`}
                       >
                         <Eye size={13} />
                         <span>View Specs</span>
@@ -283,11 +273,10 @@ export const Catalog: React.FC<CatalogProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-              className={`relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border shadow-2xl z-10 text-left my-auto ${
-                isDarkMode 
-                  ? "bg-[#141412] border-stone-750 text-white" 
+              className={`relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border shadow-2xl z-10 text-left my-auto ${isDarkMode
+                  ? "bg-[#141412] border-stone-750 text-white"
                   : "bg-white border-stone-200 text-stone-900"
-              }`}
+                }`}
             >
               {/* Close Button */}
               <button
@@ -335,9 +324,8 @@ export const Catalog: React.FC<CatalogProps> = ({
                     <button
                       key={i}
                       onClick={() => setActiveModalImageIndex(i)}
-                      className={`relative w-20 h-14 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-all ${
-                        activeModalImageIndex === i ? "border-[#DF9B43] scale-105" : "border-transparent opacity-60 hover:opacity-100"
-                      }`}
+                      className={`relative w-20 h-14 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-all ${activeModalImageIndex === i ? "border-[#DF9B43] scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                        }`}
                     >
                       <img src={imgUrl} alt="Thumbnail" className="w-full h-full object-cover" />
                     </button>
@@ -388,9 +376,8 @@ export const Catalog: React.FC<CatalogProps> = ({
                   <h4 className="font-display font-medium text-sm uppercase tracking-wider text-[#DF9B43] mb-2">
                     Architectural Overview
                   </h4>
-                  <p className={`text-xs sm:text-sm font-light leading-relaxed ${
-                    isDarkMode ? "text-stone-300" : "text-stone-700"
-                  }`}>
+                  <p className={`text-xs sm:text-sm font-light leading-relaxed ${isDarkMode ? "text-stone-300" : "text-stone-700"
+                    }`}>
                     {selectedProperty.description}
                   </p>
                 </div>
@@ -416,7 +403,7 @@ export const Catalog: React.FC<CatalogProps> = ({
                 <div className="pt-6 border-t dark:border-stone-800 border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="text-left">
                     <span className="font-mono text-[10px] text-stone-400 uppercase tracking-widest block">
-                      DIRECT DESK OF HAJI SAUD ZEHRI
+                      DIRECT DESK OF Haji Saud Ahmed Zehri
                     </span>
                     <span className="font-display font-medium text-xs">
                       Mutation documents ready for instant physical inspection.

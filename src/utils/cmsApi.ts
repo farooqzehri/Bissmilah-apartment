@@ -109,7 +109,7 @@ function recordLocalAudit(action: string, entity: string, details: string) {
     entity,
     details,
     timestamp: new Date().toISOString(),
-    performedBy: "Haji Saud Zehri Staff (Admin)",
+    performedBy: "Haji Saud Ahmed Zehri Staff (Admin)",
   };
   writeCache(CACHE_KEYS.audit, [newLog, ...currentLogs.slice(0, 99)]);
 }
