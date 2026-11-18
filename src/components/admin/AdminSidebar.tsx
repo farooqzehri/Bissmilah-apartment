@@ -1,17 +1,17 @@
 import React from "react";
-import { 
-  LayoutDashboard, Settings, Layers, Building2, Image as ImageIcon, 
+import {
+  LayoutDashboard, Settings, Layers, Building2, Image as ImageIcon,
   FileText, Users, ShieldAlert, ArrowLeft, ExternalLink, LogOut, Sparkles
 } from "lucide-react";
 
-export type AdminTab = 
-  | "overview" 
-  | "settings" 
-  | "homepage" 
-  | "properties" 
-  | "media" 
-  | "pages" 
-  | "leads" 
+export type AdminTab =
+  | "overview"
+  | "settings"
+  | "homepage"
+  | "properties"
+  | "media"
+  | "pages"
+  | "leads"
   | "audit";
 
 interface AdminSidebarProps {
@@ -43,9 +43,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   ];
 
   return (
-    <aside className={`w-full lg:w-64 shrink-0 rounded-3xl border p-4 sm:p-5 flex flex-col justify-between transition-colors ${
-      isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
-    }`}>
+    <aside className={`w-full lg:w-64 shrink-0 rounded-3xl border p-4 sm:p-5 flex flex-col justify-between transition-colors ${isDarkMode ? "bg-[#181817] border-stone-800" : "bg-white border-stone-200 shadow-sm"
+      }`}>
       <div className="space-y-6">
         {/* Back Link */}
         <button
@@ -65,7 +64,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </span>
           </div>
           <h2 className="text-base font-display font-medium mt-1">
-            Haji Saud Zehri
+            Haji Saud Ahmed Zehri
           </h2>
           <span className="text-[11px] text-stone-400 font-mono block">
             Bismillah Real Estate
@@ -82,22 +81,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 key={item.id}
                 type="button"
                 onClick={() => onSelectTab(item.id)}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-display tracking-wide transition-all cursor-pointer ${
-                  isActive
+                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-display tracking-wide transition-all cursor-pointer ${isActive
                     ? "bg-[#FF9E4A] text-black font-semibold shadow-md"
                     : isDarkMode
-                    ? "text-stone-300 hover:bg-stone-900 hover:text-white bg-stone-900/30 lg:bg-transparent"
-                    : "text-stone-700 hover:bg-stone-100 hover:text-black bg-stone-100/60 lg:bg-transparent"
-                }`}
+                      ? "text-stone-300 hover:bg-stone-900 hover:text-white bg-stone-900/30 lg:bg-transparent"
+                      : "text-stone-700 hover:bg-stone-100 hover:text-black bg-stone-100/60 lg:bg-transparent"
+                  }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon size={15} className={`shrink-0 ${isActive ? "text-black" : "text-[#FF9E4A]"}`} />
                   <span className="truncate">{item.label}</span>
                 </div>
                 {item.badge && item.badge > 0 ? (
-                  <span className={`ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${
-                    isActive ? "bg-black text-[#FF9E4A]" : "bg-[#FF9E4A] text-black"
-                  }`}>
+                  <span className={`ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${isActive ? "bg-black text-[#FF9E4A]" : "bg-[#FF9E4A] text-black"
+                    }`}>
                     {item.badge}
                   </span>
                 ) : null}
