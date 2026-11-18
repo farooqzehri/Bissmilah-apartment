@@ -71,15 +71,15 @@
       "enableSocialIcons": true,
       "enableContactForm": true
     },
-    "updatedAt": "Thu Nov 19 2026 01:15:28 GMT+0500 (Pakistan Standard Time)"
+    "updatedAt": "Thu Nov 19 2026 02:33:12 GMT+0500 (Pakistan Standard Time)"
   },
   "homepage": {
     "hero": {
       "headingLine1": "Bismillah",
       "headingLine2": "Real Estate.",
       "subheadingBadge": "APNA GHAR, APNI ZAMEEN",
-      "subheadingText": "Haji Saud Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat",
-      "description": "Quetta ke behtareen verified plots, shandaar apartments, aur home schemes. Mukammal legal registry deeds aur Haji Saud Zehri ki zati tasdeeq ke sath.",
+      "subheadingText": "Haji Saud Ahmed Zehri ki Sarbarahi Mein — Shandaar Aur Mehfooz Sazaawat",
+      "description": "Quetta ke behtareen verified plots, shandaar apartments, aur home schemes. Mukammal legal registry deeds aur Haji Ahmed Saud Zehri ki zati tasdeeq ke sath.",
       "backgroundImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "overlayOpacity": 0.65,
       "primaryButtonText": "Explore Properties",
@@ -90,13 +90,13 @@
     },
     "about": {
       "badge": "LEGACY & FIDELITY",
-      "heading": "Haji Saud Zehri ki Sarbarahi Mein Bismillah Real Estate",
+      "heading": "Haji Saud Ahmed Zehri ki Sarbarahi Mein Bismillah Real Estate",
       "subheading": "100% Legal Registry aur Mehfooz Zameen ki Tareekh",
-      "descriptionP1": "Bismillah Real Estate ki bunyad Haji Saud Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.",
+      "descriptionP1": "Bismillah Real Estate ki bunyad Haji Saud Ahmed Zehri ne rakhi thi. Hamara maqsad Quetta ke logon ko behtareen aur legal registry wale premium plots aur schemes faraham karna hai takay aap ka sarmaya bilkul mehfooz rahay.",
       "descriptionP2": "Hum har plot, apartment aur home scheme ki documents file ko khud check kartay hain. Hum se zameen khareedna bilkul safe aur aasan hai. Hamaray har client ko mukammal legal verification aur safety guaranteed di jati hai.",
       "ownerName": "Haji Saud Zehri",
       "ownerTitle": "Founder & Managing Partner",
-      "ownerImage": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+      "ownerImage": "https://res.cloudinary.com/dwmpvmagk/image/upload/v1795037716/Haji_Saud_Zehri__Real_Estate_Leadership_wjiap3.png?auto=format&fit=crop&w=600&q=80",
       "published": true
     },
     "amenities": [
@@ -286,7 +286,7 @@
       },
       {
         "id": "faq-4",
-        "question": "Haji Saud Zehri se direct private meeting kaise schedule karein?",
+        "question": "Haji Saud Ahmed Zehri se direct private meeting kaise schedule karein?",
         "answer": "Aap hamari website par 'Private Briefing' form submit karein ya direct WhatsApp / phone par rabta karein. Hamari office team aap ka exclusive VIP meeting time schedule karegi.",
         "category": "General",
         "order": 4,
@@ -295,15 +295,68 @@
     ],
     "cta": {
       "badge": "PRIVATE OFFICE — MEHFOOZ RABTA",
-      "heading": "Khush-Aamdeed. Haji Saud Zehri ki Sarbarahi Mein Apna Mehfooz Mustaqbil Banayen.",
+      "heading": "Khush-Aamdeed. Haji Saud Ahmed Zehri ki Sarbarahi Mein Apna Mehfooz Mustaqbil Banayen.",
       "description": "Hamari private office mein tashreef layein ya direct consultation schedule karein. Hum aap ko Quetta ke verified tareen plots aur apartments ka mukammal briefing package faraham karein ge.",
       "officeLocationNote": "Bismillah Executive Plaza, Sector A-1 Commercial Double Road, Quetta",
       "backgroundImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "published": true
     },
-    "updatedAt": "2026-10-28T08:48:34.893Z"
+    "updatedAt": "2026-11-18T21:39:15.287Z"
   },
   "properties": [
+    {
+      "id": "prop-1795037064293-691",
+      "slug": "elite-class-house",
+      "title": "Elite class house",
+      "category": "estates",
+      "price": "PKR 2.5 Crore",
+      "numericPrice": 25000000,
+      "currency": "PKR",
+      "location": "A-1 City, Block C, Quetta",
+      "city": "Quetta",
+      "area": "A-1 City",
+      "googleMapsUrl": "",
+      "size": "2,500 Sq. Ft.",
+      "coveredAreaUnit": "Sq. Ft.",
+      "tag": "Shandaar Flat",
+      "status": "100% Registry Ready",
+      "availability": "Available",
+      "published": true,
+      "featured": true,
+      "bedrooms": 3,
+      "bathrooms": 3,
+      "floorNumber": "1st Floor",
+      "totalFloors": "8 Floors",
+      "furnishingStatus": "Unfurnished",
+      "description": "jinnah town me availble hai",
+      "fullOverview": "jinnah town me availble hai",
+      "image": "https://res.cloudinary.com/dwmpvmagk/image/upload/v1795036982/bismillah_apartments/uri680khuuh8gonv5nrv.jpg",
+      "imagePublicId": "bismillah_apartments/uri680khuuh8gonv5nrv",
+      "gallery": [],
+      "galleryPublicIds": [],
+      "highlights": [
+        "Mukammal legal registry aur certified title transfer",
+        "Sweet water supply aur 24/7 solar backup battery",
+        "High security boundary wall aur gate surveillance"
+      ],
+      "specs": [
+        {
+          "label": "Format",
+          "value": "Luxury Residence"
+        },
+        {
+          "label": "Registry",
+          "value": "Direct Deed Ready"
+        },
+        {
+          "label": "Possession",
+          "value": "Immediate"
+        }
+      ],
+      "amenities": [],
+      "createdAt": "2026-11-18T21:24:24.292Z",
+      "updatedAt": "2026-11-18T21:24:38.903Z"
+    },
     {
       "id": "prop-1793794280467-495",
       "slug": "haxudio-digital-solutions",
@@ -386,7 +439,7 @@
         "Beautiful luxury view of Quetta mountain ranges",
         "Fine marble floors, bright open rooms, and royal decoration",
         "Private direct lift and safe reserved parking spot",
-        "Full title deed registered under Haji Saud Zehri supervision"
+        "Full title deed registered under Haji Saud Ahmed Zehri supervision"
       ],
       "specs": [
         {
@@ -628,6 +681,21 @@
   ],
   "media": [
     {
+      "id": "med-1795036984114-046b59981630718b",
+      "fileName": "elite-prop-hmlP-v0vJ5o-unsplash.jpg",
+      "originalName": "elite-prop-hmlP-v0vJ5o-unsplash.jpg",
+      "url": "https://res.cloudinary.com/dwmpvmagk/image/upload/v1795036982/bismillah_apartments/uri680khuuh8gonv5nrv.jpg",
+      "cloudinaryPublicId": "bismillah_apartments/uri680khuuh8gonv5nrv",
+      "mimeType": "image/jpeg",
+      "sizeBytes": 787879,
+      "category": "apartments",
+      "title": "elite-prop-hmlP-v0vJ5o-unsplash",
+      "altText": "elite-prop-hmlP-v0vJ5o-unsplash",
+      "caption": "",
+      "uploadedAt": "2026-11-18T21:22:58.935Z",
+      "usageCount": 0
+    },
+    {
       "id": "med-1793794253032-fc8d586db9ac2963",
       "fileName": "insta post hax.jfif",
       "originalName": "insta post hax.jfif",
@@ -720,12 +788,12 @@
       "preferredDate": "2027-08-06",
       "meetingType": "onsite",
       "clientNote": "Hello Testingg",
-      "status": "New",
+      "status": "Closed",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
       "createdAt": "2026-11-04T12:17:08.445Z",
-      "updatedAt": "2026-11-04T12:17:08.445Z"
+      "updatedAt": "2026-11-18T21:25:51.513Z"
     },
     {
       "id": "enq-1793786596305-463",
@@ -736,13 +804,13 @@
       "propertyInterest": "3-Bed Luxury Apartment",
       "preferredDate": "2026-11-04",
       "meetingType": "office",
-      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
-      "status": "New",
+      "clientNote": "Please schedule office meeting with Haji Saud Ahmed Zehri regarding registry deed.",
+      "status": "Closed",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
       "createdAt": "2026-11-04T10:03:16.305Z",
-      "updatedAt": "2026-11-04T10:03:16.305Z"
+      "updatedAt": "2026-11-18T21:25:54.106Z"
     },
     {
       "id": "enq-1793786576648-543",
@@ -753,13 +821,13 @@
       "propertyInterest": "3-Bed Luxury Apartment",
       "preferredDate": "2026-11-04",
       "meetingType": "office",
-      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
-      "status": "New",
+      "clientNote": "Please schedule office meeting with Haji Saud Ahmed Zehri regarding registry deed.",
+      "status": "Contacted",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
       "createdAt": "2026-11-04T10:02:56.649Z",
-      "updatedAt": "2026-11-04T10:02:56.649Z"
+      "updatedAt": "2026-11-18T21:25:58.384Z"
     },
     {
       "id": "enq-1793786554813-451",
@@ -770,13 +838,13 @@
       "propertyInterest": "3-Bed Luxury Apartment",
       "preferredDate": "2026-11-04",
       "meetingType": "office",
-      "clientNote": "Please schedule office meeting with Haji Saud Zehri regarding registry deed.",
-      "status": "New",
+      "clientNote": "Please schedule office meeting with Haji Saud Ahmed Zehri regarding registry deed.",
+      "status": "Archived",
       "internalNotes": [
         "Inquiry registered via California VIP Concierge form. IP: 127.0.0.1"
       ],
       "createdAt": "2026-11-04T10:02:34.813Z",
-      "updatedAt": "2026-11-04T10:02:34.813Z"
+      "updatedAt": "2026-11-18T21:26:04.800Z"
     },
     {
       "id": "enq-1793177327118-458",
@@ -807,13 +875,217 @@
       "status": "In Review",
       "internalNotes": [
         "Initial phone briefing completed on May 2. Client confirmed attendance for private meeting.",
-        "Title verification portfolio prepared under Haji Saud Zehri desk."
+        "Title verification portfolio prepared under Haji Saud Ahmed Zehri desk."
       ],
       "createdAt": "2026-05-01T10:30:00.000Z",
       "updatedAt": "2026-05-02T15:00:00.000Z"
     }
   ],
   "auditLogs": [
+    {
+      "id": "log-1795037955442-163",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:39:15.442Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037931991-329",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:38:51.991Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037902273-45",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:38:22.273Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037795561-576",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:36:35.561Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037592912-23",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:33:12.912Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037587292-10",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:33:07.292Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037582521-679",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:33:02.521Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037577599-572",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:32:57.599Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037565217-774",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:32:45.217Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037560197-831",
+      "action": "UPDATE_SETTINGS",
+      "entity": "GlobalSettings",
+      "details": "Updated global branding, contact, and website behavior settings",
+      "timestamp": "2026-11-18T21:32:40.197Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037355631-969",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:29:15.631Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037317065-717",
+      "action": "UPDATE_HOMEPAGE",
+      "entity": "HomepageCMS",
+      "details": "Updated full homepage sections",
+      "timestamp": "2026-11-18T21:28:37.065Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037203241-516",
+      "action": "DELETE_MEDIA",
+      "entity": "MediaLibrary",
+      "entityId": "med-1795036853684-728f7bb23e08ddc4",
+      "details": "Deleted image \"istagram post 3 haxudio.jfif\"",
+      "timestamp": "2026-11-18T21:26:43.241Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037195405-813",
+      "action": "DELETE_MEDIA",
+      "entity": "MediaLibrary",
+      "entityId": "med-1795034214434-8e00d08693861047",
+      "details": "Deleted image \"IMG_2656.jpeg\"",
+      "timestamp": "2026-11-18T21:26:35.405Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037164931-169",
+      "action": "UPDATE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793786554813-451",
+      "details": "Updated status to \"Archived\" for lead BME-749756",
+      "timestamp": "2026-11-18T21:26:04.931Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037158503-101",
+      "action": "UPDATE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793786576648-543",
+      "details": "Updated status to \"Contacted\" for lead BME-614580",
+      "timestamp": "2026-11-18T21:25:58.503Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037154247-20",
+      "action": "UPDATE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793786596305-463",
+      "details": "Updated status to \"Closed\" for lead BME-471095",
+      "timestamp": "2026-11-18T21:25:54.247Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037151654-824",
+      "action": "UPDATE_LEAD",
+      "entity": "Enquiry",
+      "entityId": "enq-1793794628445-284",
+      "details": "Updated status to \"Closed\" for lead BME-843825",
+      "timestamp": "2026-11-18T21:25:51.655Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037079012-565",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1795037064293-691",
+      "details": "Updated property \"Elite class house\"",
+      "timestamp": "2026-11-18T21:24:39.012Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037074824-60",
+      "action": "UPDATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1795037064293-691",
+      "details": "Updated property \"Elite class house\"",
+      "timestamp": "2026-11-18T21:24:34.824Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795037064417-833",
+      "action": "CREATE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1795037064293-691",
+      "details": "Created property: \"Elite class house\"",
+      "timestamp": "2026-11-18T21:24:24.417Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795036984189-793",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1795036984114-046b59981630718b",
+      "details": "Uploaded image \"elite-prop-hmlP-v0vJ5o-unsplash.jpg\" via Cloudinary",
+      "timestamp": "2026-11-18T21:23:04.189Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795036853768-356",
+      "action": "UPLOAD_IMAGE",
+      "entity": "MediaLibrary",
+      "entityId": "med-1795036853684-728f7bb23e08ddc4",
+      "details": "Uploaded image \"istagram post 3 haxudio.jfif\" via Cloudinary",
+      "timestamp": "2026-11-18T21:20:53.768Z",
+      "performedBy": "Admin"
+    },
+    {
+      "id": "log-1795036805480-530",
+      "action": "DELETE_PROPERTY",
+      "entity": "Properties",
+      "entityId": "prop-1795034299740-344",
+      "details": "Deleted property: \"Gadani farm house\"",
+      "timestamp": "2026-11-18T21:20:05.480Z",
+      "performedBy": "Admin"
+    },
     {
       "id": "log-1795032929096-873",
       "action": "UPDATE_SETTINGS",
@@ -957,25 +1229,25 @@
       "id": "log-1793728777620-242",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
-      "details": "Staff authenticated successfully (Haji Saud Zehri Admin)",
+      "details": "Staff authenticated successfully (Haji Saud Ahmed Zehri Admin)",
       "timestamp": "2026-11-03T17:59:37.620Z",
-      "performedBy": "Haji Saud Zehri Admin"
+      "performedBy": "Haji Saud Ahmed Zehri Admin"
     },
     {
       "id": "log-1793716852451-578",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
-      "details": "Staff authenticated successfully (Haji Saud Zehri Admin)",
+      "details": "Staff authenticated successfully (Haji Saud Ahmed Zehri Admin)",
       "timestamp": "2026-11-03T14:40:52.451Z",
-      "performedBy": "Haji Saud Zehri Admin"
+      "performedBy": "Haji Saud Ahmed Zehri Admin"
     },
     {
       "id": "log-1793716759408-423",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
-      "details": "Staff authenticated successfully (Haji Saud Zehri Admin)",
+      "details": "Staff authenticated successfully (Haji Saud Ahmed Zehri Admin)",
       "timestamp": "2026-11-03T14:39:19.408Z",
-      "performedBy": "Haji Saud Zehri Admin"
+      "performedBy": "Haji Saud Ahmed Zehri Admin"
     },
     {
       "id": "log-1793713755104-946",
@@ -990,9 +1262,9 @@
       "id": "log-1793713395735-192",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
-      "details": "Staff authenticated successfully (Haji Saud Zehri Admin)",
+      "details": "Staff authenticated successfully (Haji Saud Ahmed Zehri Admin)",
       "timestamp": "2026-11-03T13:43:15.735Z",
-      "performedBy": "Haji Saud Zehri Admin"
+      "performedBy": "Haji Saud Ahmed Zehri Admin"
     },
     {
       "id": "log-1793708904557-29",
@@ -1007,9 +1279,9 @@
       "id": "log-1793708853434-355",
       "action": "STAFF_LOGIN",
       "entity": "Authentication",
-      "details": "Staff authenticated successfully (Haji Saud Zehri Admin)",
+      "details": "Staff authenticated successfully (Haji Saud Ahmed Zehri Admin)",
       "timestamp": "2026-11-03T12:27:33.434Z",
-      "performedBy": "Haji Saud Zehri Admin"
+      "performedBy": "Haji Saud Ahmed Zehri Admin"
     },
     {
       "id": "log-1793704125270-185",
@@ -1364,7 +1636,7 @@
       "entity": "System",
       "details": "Bismillah Real Estate CMS initialized with persistent database storage.",
       "timestamp": "2026-10-28T08:48:34.894Z",
-      "performedBy": "Haji Saud Zehri (Admin)"
+      "performedBy": "Haji Saud Ahmed Zehri (Admin)"
     }
   ]
 }
