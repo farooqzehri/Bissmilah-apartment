@@ -55,7 +55,7 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div 
+      <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         onClick={onClose}
       >
@@ -65,17 +65,15 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
           onClick={(e) => e.stopPropagation()}
-          className={`w-full max-w-md p-6 sm:p-8 rounded-3xl border shadow-2xl relative text-left ${
-            isDarkMode ? "bg-[#181817] border-stone-800 text-white" : "bg-white border-stone-200 text-stone-900"
-          }`}
+          className={`w-full max-w-md p-6 sm:p-8 rounded-3xl border shadow-2xl relative text-left ${isDarkMode ? "bg-[#181817] border-stone-800 text-white" : "bg-white border-stone-200 text-stone-900"
+            }`}
         >
           {/* Close button */}
           <button
             type="button"
             onClick={onClose}
-            className={`absolute top-5 right-5 p-2 rounded-full cursor-pointer transition-colors ${
-              isDarkMode ? "hover:bg-stone-800 text-stone-400 hover:text-white" : "hover:bg-stone-100 text-stone-500 hover:text-black"
-            }`}
+            className={`absolute top-5 right-5 p-2 rounded-full cursor-pointer transition-colors ${isDarkMode ? "hover:bg-stone-800 text-stone-400 hover:text-white" : "hover:bg-stone-100 text-stone-500 hover:text-black"
+              }`}
           >
             <X size={18} />
           </button>
@@ -88,7 +86,7 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
             MANAGEMENT CONSOLE
           </span>
           <h2 className="text-xl sm:text-2xl font-display font-medium">
-            Haji Saud Zehri Staff Login
+            Haji Saud Ahmed Zehri Staff Login
           </h2>
           <p className={`text-xs mt-1 leading-relaxed ${isDarkMode ? "text-stone-400" : "text-stone-600"}`}>
             Enter the staff passcode configured by your site administrator to access the property management CMS.
@@ -118,9 +116,8 @@ export const AdminAuthModal: React.FC<AdminAuthModalProps> = ({
                     }
                   }}
                   autoFocus
-                  className={`w-full pl-10 pr-4 py-3 rounded-xl text-sm font-mono tracking-widest border focus:outline-none focus:border-[#FF9E4A] ${
-                    isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
-                  }`}
+                  className={`w-full pl-10 pr-4 py-3 rounded-xl text-sm font-mono tracking-widest border focus:outline-none focus:border-[#FF9E4A] ${isDarkMode ? "bg-stone-900 border-stone-800 text-white" : "bg-white border-stone-300 text-stone-900"
+                    }`}
                 />
               </div>
               {error && <p className="text-xs text-rose-500 font-mono mt-1">{error}</p>}
