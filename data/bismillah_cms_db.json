@@ -969,6 +969,22 @@
   ],
   "auditLogs": [
     {
+      "id": "log-1795023613803-849",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (admin)",
+      "timestamp": "2026-11-18T17:40:13.803Z",
+      "performedBy": "admin"
+    },
+    {
+      "id": "log-1795023607283-912",
+      "action": "STAFF_LOGIN",
+      "entity": "Authentication",
+      "details": "Staff authenticated successfully (admin)",
+      "timestamp": "2026-11-18T17:40:07.283Z",
+      "performedBy": "admin"
+    },
+    {
       "id": "log-1793794628625-336",
       "action": "NEW_LEAD",
       "entity": "Enquiry",
