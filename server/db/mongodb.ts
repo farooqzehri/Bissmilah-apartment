@@ -13,6 +13,15 @@ let retryAttempt = 0;
 
 const RETRY_BASE_DELAY_MS = 5_000;
 const RETRY_MAX_DELAY_MS = 60_000;
+const PROPERTY_SEED_MARKER_ID = "initial-properties-v1";
+const PROPERTY_SEED_LEASE_MS = 5 * 60_000;
+
+interface PropertySeedMarker {
+  _id: string;
+  status: string;
+  leaseUntil?: Date;
+  [key: string]: unknown;
+}
 
 mongoose.connection.on("error", (err) => {
   lastError = err?.message || String(err);
@@ -155,7 +164,7 @@ export const connectToMongoAtlas = (): Promise<boolean> => {
         // Safe ignore
       }
 
-      // Seed default data if collections are empty or missing records
+      // Import local seed data only during first-time initialization.
       await seedDefaultDataIfEmpty();
 
       return true;
@@ -186,59 +195,167 @@ export const connectToMongoAtlas = (): Promise<boolean> => {
   return connectionPromise;
 };
 
+function isDuplicateKeyError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === 11000
+  );
+}
+
+async function claimPropertySeed(): Promise<boolean> {
+  const database = mongoose.connection.db;
+  if (!database) {
+    throw new Error("MongoDB database handle is unavailable during property initialization");
+  }
+
+  const migrations = database.collection<PropertySeedMarker>("_cms_migrations");
+  const now = new Date();
+  const leaseUntil = new Date(now.getTime() + PROPERTY_SEED_LEASE_MS);
+  const marker = await migrations.findOne({ _id: PROPERTY_SEED_MARKER_ID });
+
+  if (marker?.status === "complete") {
+    console.log("[MongoDB Atlas] Property seed migration already completed; leaving Atlas properties unchanged.");
+    return false;
+  }
+
+  if (marker) {
+    if (marker.status === "running" && marker.leaseUntil instanceof Date && marker.leaseUntil > now) {
+      console.log("[MongoDB Atlas] Property seed migration is already running in another process.");
+      return false;
+    }
+
+    const takeover = await migrations.updateOne(
+      {
+        _id: PROPERTY_SEED_MARKER_ID,
+        status: marker.status,
+        ...(marker.leaseUntil ? { leaseUntil: marker.leaseUntil } : {}),
+      },
+      {
+        $set: { status: "running", startedAt: now, leaseUntil },
+      }
+    );
+    return takeover.modifiedCount === 1;
+  }
+
+  const [propertyCount, settingsCount, mediaCount, inquiryCount] = await Promise.all([
+    PropertyModel.countDocuments(),
+    WebsiteSettingsModel.countDocuments(),
+    MediaAssetModel.countDocuments(),
+    CustomerInquiryModel.countDocuments(),
+  ]);
+  const hasExistingCmsData = propertyCount + settingsCount + mediaCount + inquiryCount > 0;
+
+  try {
+    await migrations.insertOne({
+      _id: PROPERTY_SEED_MARKER_ID,
+      status: hasExistingCmsData ? "complete" : "running",
+      source: "local-json",
+      startedAt: now,
+      ...(hasExistingCmsData ? { completedAt: now, result: "skipped-existing-atlas-data" } : { leaseUntil }),
+    });
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return false;
+    }
+    throw error;
+  }
+
+  if (hasExistingCmsData) {
+    console.log(
+      "[MongoDB Atlas] Existing CMS data detected; skipping legacy property import to preserve Atlas deletions."
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function toMongoProperty(property: ReturnType<typeof dbManager.getDb>["properties"][number]) {
+  return {
+    id: property.id,
+    propertyId: property.id,
+    slug: property.slug,
+    title: property.title,
+    category: property.category,
+    purpose: "sale" as const,
+    price: property.price,
+    numericPrice: property.numericPrice,
+    currency: property.currency,
+    location: property.location,
+    city: property.city,
+    area: property.area,
+    googleMapsUrl: property.googleMapsUrl,
+    size: property.size,
+    coveredAreaUnit: property.coveredAreaUnit,
+    tag: property.tag,
+    status: property.status,
+    availability: property.availability,
+    published: property.published !== false,
+    featured: Boolean(property.featured),
+    bedrooms: property.bedrooms,
+    bathrooms: property.bathrooms,
+    floorNumber: property.floorNumber,
+    totalFloors: property.totalFloors,
+    furnishingStatus: property.furnishingStatus,
+    description: property.description,
+    fullOverview: property.fullOverview,
+    image: property.image,
+    gallery: property.gallery || [],
+    highlights: property.highlights || [],
+    specs: property.specs || [],
+    amenities: property.amenities || [],
+  };
+}
+
+async function seedPropertiesOnce(localDb: ReturnType<typeof dbManager.getDb>): Promise<void> {
+  const shouldSeed = await claimPropertySeed();
+  if (!shouldSeed) {
+    return;
+  }
+
+  const properties = localDb.properties || [];
+  const migrations = mongoose.connection.db!.collection<PropertySeedMarker>("_cms_migrations");
+  try {
+    for (const property of properties) {
+      await PropertyModel.updateOne(
+        { id: property.id },
+        { $setOnInsert: toMongoProperty(property) },
+        { upsert: true }
+      );
+    }
+
+    const completedAt = new Date();
+    const completion = await migrations.updateOne(
+      { _id: PROPERTY_SEED_MARKER_ID, status: "running" },
+      {
+        $set: { status: "complete", completedAt, seededCount: properties.length },
+        $unset: { leaseUntil: "" },
+      }
+    );
+    if (completion.matchedCount !== 1) {
+      throw new Error("Property seed migration marker was not owned by this process");
+    }
+
+    console.log(`[MongoDB Atlas] Initial property import completed (${properties.length} properties).`);
+  } catch (error) {
+    await migrations.updateOne(
+      { _id: PROPERTY_SEED_MARKER_ID, status: "running" },
+      { $set: { status: "failed", failedAt: new Date(), error: String(error) }, $unset: { leaseUntil: "" } }
+    );
+    throw error;
+  }
+}
+
 /**
- * Seed initial data from local DB seeds into MongoDB Atlas if collections are empty or missing records.
+ * Import local JSON data into a new Atlas database once; existing Atlas data remains authoritative.
  */
-async function seedDefaultDataIfEmpty() {
+async function seedDefaultDataIfEmpty(): Promise<void> {
   try {
     const localDb = dbManager.getDb();
 
-    // 1. Seed Properties (ensure all initial catalog items exist in Atlas)
-    if (localDb.properties && localDb.properties.length > 0) {
-      for (const p of localDb.properties) {
-        const existing = await PropertyModel.findOne({
-          $or: [{ id: p.id }, { slug: p.slug }, { title: p.title }],
-        });
-
-        if (!existing) {
-          console.log(`[MongoDB Atlas] Syncing catalog property "${p.title}"...`);
-          await PropertyModel.create({
-            id: p.id,
-            propertyId: p.id,
-            slug: p.slug,
-            title: p.title,
-            category: p.category,
-            purpose: "sale",
-            price: p.price,
-            numericPrice: p.numericPrice,
-            currency: p.currency,
-            location: p.location,
-            city: p.city,
-            area: p.area,
-            googleMapsUrl: p.googleMapsUrl,
-            size: p.size,
-            coveredAreaUnit: p.coveredAreaUnit,
-            tag: p.tag,
-            status: p.status,
-            availability: p.availability,
-            published: p.published !== false,
-            featured: Boolean(p.featured),
-            bedrooms: p.bedrooms,
-            bathrooms: p.bathrooms,
-            floorNumber: p.floorNumber,
-            totalFloors: p.totalFloors,
-            furnishingStatus: p.furnishingStatus,
-            description: p.description,
-            fullOverview: p.fullOverview,
-            image: p.image,
-            gallery: p.gallery || [],
-            highlights: p.highlights || [],
-            specs: p.specs || [],
-            amenities: p.amenities || [],
-          });
-        }
-      }
-    }
+    await seedPropertiesOnce(localDb);
 
     // 2. Seed Settings
     const settingsDoc = await WebsiteSettingsModel.findOne();
@@ -309,6 +426,7 @@ async function seedDefaultDataIfEmpty() {
       }
     }
   } catch (err) {
-    console.warn("[MongoDB Atlas] Seed check notice:", err);
+    console.error("[MongoDB Atlas] Initial data migration failed:", err);
+    throw err;
   }
 }
